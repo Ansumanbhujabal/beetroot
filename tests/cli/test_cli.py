@@ -117,6 +117,36 @@ def test_synth_adversarial_subcommand_runs():
     assert "generated 10 adversarial cases" in result.output
 
 
+def test_prompts_status_reports_where_each_prompt_resolved_from():
+    """"We use prompt management" is only honest if the fallback is visible.
+
+    With no credentials every prompt resolves from the local file, and that
+    is a supported, expected state — not a degraded one to hide. This
+    command exists so the answer is readable rather than assumed.
+    """
+    result = runner.invoke(app, ["prompts", "status"])
+    assert result.exit_code == 0, result.output
+    for name in ("compile_constraints", "explain", "rerank", "rewrite_query"):
+        assert name in result.output
+    assert "@local:" in result.output, "the hermetic suite has no Langfuse credentials"
+
+
+def test_obs_check_reports_unconfigured_without_credentials():
+    """A diagnostic must report the keyless path as a state, not an error."""
+    result = runner.invoke(app, ["obs", "check"])
+    assert result.exit_code == 0, result.output
+    assert "not configured" in result.output.lower()
+
+
+def test_prompts_push_fails_loudly_without_credentials():
+    """The opposite posture to `status`: pushing is an action with an
+    intended effect, so silently doing nothing would be the wrong kind of
+    quiet. It exits non-zero and says why."""
+    result = runner.invoke(app, ["prompts", "push"])
+    assert result.exit_code == 1
+    assert "not configured" in result.output.lower()
+
+
 def test_heal_subcommand_runs(tmp_path):
     out_dir = tmp_path / "healing"
     result = runner.invoke(app, ["heal", "--out-dir", str(out_dir)])

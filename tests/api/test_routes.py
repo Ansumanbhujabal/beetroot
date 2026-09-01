@@ -36,6 +36,24 @@ def test_health_exposes_the_live_trust_config_not_a_frontend_literal(client):
     assert abs(sum(trust["weights"].values()) - 1.0) < 1e-9
 
 
+def test_health_distinguishes_tracing_configured_from_tracing_working(client):
+    """`/health` reports whether Langfuse CREDENTIALS resolved — not whether
+    spans are arriving.
+
+    Those are different claims, and conflating them is exactly how this
+    system spent a whole debugging session with a fully "configured"
+    observability stack that exported nothing: the credentials
+    authenticated, the callback was registered, the logger was constructed,
+    and no trace ever reached the backend. The field name says
+    `langfuse_configured` for that reason, and the honest way to check
+    export is `beatroot obs check` plus actually looking at the traces.
+    """
+    body = client.get("/health").json()
+    tracing = body["tracing"]
+    assert tracing["langfuse_configured"] is False, "the test suite is hermetic"
+    assert "langfuse" in tracing["instrumentation"].lower()
+
+
 def test_recommend_returns_a_terminal_state_and_trust_breakdown(client):
     r = client.post(
         "/recommend",
