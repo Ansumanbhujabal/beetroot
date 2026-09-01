@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>beatroot — incidents</title>
+<style>
+  :root{
+    --bg:#0b0f14; --panel:#121820; --panel-2:#1a222c; --border:#25313d;
+    --text:#e7edf3; --muted:#8ea0b0; --muted-2:#5c6f80;
+    --commit:#2fbf71; --negotiate:#e0a52c; --escalate:#e0523f; --pending:#4c8de0;
+    --deterministic:#4c8de0; --model:#b06ce0; --accent:#4c8de0;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+  .wrap{padding:24px;max-width:1080px;margin:0 auto}
+  h1{font-size:20px;font-weight:700;letter-spacing:.02em;margin:0 0 2px}
+  .sub{color:var(--muted);font-size:12.5px;margin-bottom:20px}
+  section{background:var(--panel);border:1px solid var(--border);border-radius:10px;
+    padding:18px 20px;margin-bottom:16px}
+  h2{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);
+    margin:0 0 14px;font-weight:600}
+  label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
+  select,button{font:inherit;color:var(--text);background:var(--panel-2);
+    border:1px solid var(--border);border-radius:6px;padding:7px 9px}
+  button{cursor:pointer}
+  button:hover{border-color:var(--muted-2)}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-bottom:10px}
+  .field{display:flex;flex-direction:column;gap:2px}
+  table{width:100%;border-collapse:collapse;font-size:12.5px}
+  th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--border)}
+  th{color:var(--muted);font-weight:600;text-transform:uppercase;font-size:10.5px;letter-spacing:.05em}
+  .empty{color:var(--muted-2);font-size:12.5px;font-style:italic}
+  .error{color:var(--escalate);font-size:12.5px;margin-top:8px}
+  .badge{font-size:10px;text-transform:uppercase;letter-spacing:.05em;padding:2px 6px;
+    border-radius:4px;background:var(--border);color:var(--muted)}
+  .badge.escalation{color:var(--escalate);border:1px solid var(--escalate);background:transparent}
+  .badge.infeasible{color:var(--negotiate);border:1px solid var(--negotiate);background:transparent}
+  .badge.drift{color:var(--model);border:1px solid var(--model);background:transparent}
+  .badge.unknown_ingredient{color:var(--pending);border:1px solid var(--pending);background:transparent}
+  td.delta-pos{color:var(--escalate)}
+  td.delta-zero{color:var(--muted-2)}
+  .count{color:var(--muted);font-size:12px;margin-top:8px}
+
+  nav.topnav{display:flex;align-items:center;gap:4px;padding:10px 24px;
+    border-bottom:1px solid var(--border);background:var(--panel)}
+  nav.topnav .brand{font-weight:800;letter-spacing:.03em;margin-right:18px;color:var(--text)}
+  nav.topnav a{color:var(--muted);text-decoration:none;font-size:13px;padding:6px 12px;
+    border-radius:6px}
+  nav.topnav a:hover{color:var(--text);background:var(--panel-2)}
+  nav.topnav a.active{color:var(--text);background:var(--panel-2);font-weight:600}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <span class="brand">beatroot</span>
+  <a href="/">Recommend</a>
+  <a href="/incidents" class="active">Incidents &amp; drift</a>
+  <a href="/evals">Evals &amp; logs</a>
+  <a href="/docs">Architecture &amp; docs</a>
+</nav>
+<div class="wrap">
+  <h1>Incidents &amp; drift</h1>
+  <div class="sub">every escalation, refusal, drift finding, and infeasibility beatroot has logged — moved off the main page so a recording of a single recommendation stays readable</div>
+
+  <section id="incidentSection">
+    <h2>Incident feed <button id="refreshIncidents" style="float:right">refresh</button></h2>
+    <div class="row">
+      <div class="field">
+        <label>filter by kind</label>
+        <select id="kindFilter">
+          <option value="">all kinds</option>
+        </select>
+      </div>
+    </div>
+    <table id="incidentTable">
+      <thead><tr><th>kind</th><th>profile</th><th>detail</th><th>when</th></tr></thead>
+      <tbody id="incidentBody"></tbody>
+    </table>
+    <div class="count" id="incidentCount"></div>
+  </section>
+
+  <section id="driftSection">
+    <h2>Drift ledger — model-stated vs catalog-computed</h2>
+    <table id="driftTable">
+      <thead><tr><th>profile</th><th>field</th><th>stated</th><th>computed</th><th>delta</th></tr></thead>
+      <tbody id="driftBody"></tbody>
+    </table>
+  </section>
+</div>
+
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
+let allIncidents = [];
+
+async function api(path) {
+  const res = await fetch(path);
+  let body = null;
+  try { body = await res.json(); } catch (e) { /* no body */ }
+  if (!res.ok) {
+    const detail = body && (body.detail || body.error) ? (body.detail || body.error) : res.status;
+    throw new Error(String(detail));
+  }
+  return body;
+}
+
+// detect_drift() (eval/verifiers/nutrition_drift.py) writes incidents whose
+// `detail` is literally "{field} stated {stated} vs computed {computed}" —
+// this is a display-only parse of that exact, code-owned format, with a
+// safe fallback if it ever changes shape.
+const DRIFT_DETAIL = /^(\S+) stated ([\d.]+) vs computed ([\d.]+)$/;
+
+function renderDriftLedger(incidents) {
+  const box = $("driftBody");
+  const drift = incidents.filter((i) => i.kind === "drift");
+  if (!drift.length) {
+    box.innerHTML = '<tr><td colspan="5" class="empty">no nutrition drift detected</td></tr>';
+    return;
+  }
+  box.innerHTML = "";
+  for (const inc of drift.slice().reverse()) {
+    const m = DRIFT_DETAIL.exec(inc.detail);
+    const field = m ? m[1] : "?";
+    const stated = m ? parseFloat(m[2]) : null;
+    const computed = m ? parseFloat(m[3]) : null;
+    const deltaPct = inc.payload && typeof inc.payload.delta_pct === "number" ? inc.payload.delta_pct : null;
+    let deltaText = "?";
+    let deltaCls = "";
+    if (stated != null && computed != null) {
+      const delta = stated - computed;
+      deltaCls = Math.abs(delta) < 1e-9 ? "delta-zero" : "delta-pos";
+      deltaText = (delta > 0 ? "+" : "") + delta.toFixed(2);
+      if (deltaPct != null) deltaText += ` (${(deltaPct * 100).toFixed(1)}%)`;
+    }
+    const tr = document.createElement("tr");
+    tr.innerHTML =
+      `<td>${inc.profile_id}</td><td>${field}</td><td>${stated ?? "?"}</td>` +
+      `<td>${computed ?? "?"}</td><td class="${deltaCls}">${deltaText}</td>`;
+    box.appendChild(tr);
+  }
+}
+
+function populateKindFilter(incidents) {
+  const sel = $("kindFilter");
+  const current = sel.value;
+  const kinds = [...new Set(incidents.map((i) => i.kind))].sort();
+  sel.innerHTML = '<option value="">all kinds</option>' +
+    kinds.map((k) => `<option value="${k}">${k}</option>`).join("");
+  if (kinds.includes(current)) sel.value = current;
+}
+
+function renderIncidentTable() {
+  const kind = $("kindFilter").value;
+  const filtered = kind ? allIncidents.filter((i) => i.kind === kind) : allIncidents;
+  const tbody = $("incidentBody");
+  tbody.innerHTML = "";
+  if (!filtered.length) {
+    tbody.innerHTML = '<tr><td colspan="4" class="empty">no incidents recorded' + (kind ? ` for kind "${kind}"` : "") + '</td></tr>';
+  } else {
+    for (const inc of filtered.slice().reverse()) {
+      const tr = document.createElement("tr");
+      tr.innerHTML =
+        `<td><span class="badge ${inc.kind}">${inc.kind}</span></td><td>${inc.profile_id}</td>` +
+        `<td>${inc.detail}</td><td>${new Date(inc.created_at).toLocaleString()}</td>`;
+      tbody.appendChild(tr);
+    }
+  }
+  $("incidentCount").textContent = `${filtered.length} of ${allIncidents.length} incident(s) shown`;
+}
+
+async function loadIncidents() {
+  try {
+    const body = await api("/api/incidents");
+    allIncidents = body.incidents;
+    populateKindFilter(allIncidents);
+    renderIncidentTable();
+    renderDriftLedger(allIncidents);
+  } catch (e) {
+    $("incidentBody").innerHTML = `<tr><td colspan="4" class="error">${e.message}</td></tr>`;
+    $("driftBody").innerHTML = `<tr><td colspan="5" class="error">${e.message}</td></tr>`;
+  }
+}
+$("refreshIncidents").addEventListener("click", loadIncidents);
+$("kindFilter").addEventListener("change", renderIncidentTable);
+
+loadIncidents();
+</script>
+</body>
+</html>

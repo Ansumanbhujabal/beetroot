@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>beatroot — evals</title>
+<style>
+  :root{
+    --bg:#0b0f14; --panel:#121820; --panel-2:#1a222c; --border:#25313d;
+    --text:#e7edf3; --muted:#8ea0b0; --muted-2:#5c6f80;
+    --commit:#2fbf71; --negotiate:#e0a52c; --escalate:#e0523f; --pending:#4c8de0;
+    --accent:#4c8de0;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+  .wrap{padding:24px;max-width:1080px;margin:0 auto}
+  h1{font-size:20px;font-weight:700;letter-spacing:.02em;margin:0 0 2px}
+  .sub{color:var(--muted);font-size:12.5px;margin-bottom:20px}
+  section{background:var(--panel);border:1px solid var(--border);border-radius:10px;
+    padding:18px 20px;margin-bottom:16px}
+  h2{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);
+    margin:0 0 14px;font-weight:600}
+  button{font:inherit;color:var(--text);background:var(--panel-2);
+    border:1px solid var(--border);border-radius:6px;padding:7px 9px;cursor:pointer}
+  button:hover{border-color:var(--muted-2)}
+  button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+  table{width:100%;border-collapse:collapse;font-size:12.5px}
+  th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--border)}
+  th{color:var(--muted);font-weight:600;text-transform:uppercase;font-size:10.5px;letter-spacing:.05em}
+  .empty{color:var(--muted-2);font-size:12.5px;font-style:italic}
+  .error{color:var(--escalate);font-size:12.5px;margin-top:8px}
+  .status{font-size:11px;text-transform:uppercase;letter-spacing:.04em;font-weight:700;
+    padding:2px 8px;border-radius:4px}
+  .status.PASS{color:var(--commit);border:1px solid var(--commit)}
+  .status.FAIL{color:var(--escalate);border:1px solid var(--escalate)}
+  .kv{display:grid;grid-template-columns:220px 1fr;gap:6px 12px;font-size:13px;margin-top:12px}
+  .kv dt{color:var(--muted)}
+  .kv dd{margin:0}
+  .meta{color:var(--muted-2);font-size:11.5px;margin-top:8px}
+  .log-line{font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    white-space:pre-wrap;word-break:break-all;border-bottom:1px solid var(--border);padding:4px 0}
+  .log-level-ERROR{color:var(--escalate)}
+  .log-level-WARNING{color:var(--negotiate)}
+  .log-level-INFO{color:var(--text)}
+  .log-box{max-height:420px;overflow-y:auto;background:var(--panel-2);border:1px solid var(--border);
+    border-radius:6px;padding:8px 10px}
+  .note{background:#0e1a26;border:1px solid var(--border);color:var(--muted);border-radius:6px;
+    padding:8px 10px;font-size:12px;margin-bottom:10px}
+  .scrollx{overflow-x:auto}
+  .histTable{white-space:nowrap}
+  .histTable td, .histTable th{padding:5px 7px}
+  .histTable td.run-cell, .histTable th.run-cell{white-space:normal;min-width:170px}
+  .delta{display:block;font-size:10.5px;margin-top:1px}
+  .delta-up{color:var(--commit)}
+  .delta-down{color:var(--escalate);font-weight:700}
+  .cell-regressed{box-shadow:inset 0 0 0 1.5px var(--escalate);background:rgba(224,82,63,.12)}
+  .cell-best{background:rgba(47,191,113,.10)}
+  .run-label{font-weight:600}
+  .run-meta{color:var(--muted-2);font-size:11px;display:block;margin-top:1px}
+  .badge{font-size:10px;text-transform:uppercase;letter-spacing:.04em;padding:1px 6px;
+    border-radius:3px;font-weight:700}
+  .badge.offline{color:var(--muted);border:1px solid var(--muted-2)}
+  .badge.live{color:var(--pending);border:1px solid var(--pending)}
+  .trendsTable td{vertical-align:middle}
+  .trend-status.AT_BEST{color:var(--commit)}
+  .trend-status.REGRESSED{color:var(--escalate);font-weight:700}
+
+  nav.topnav{display:flex;align-items:center;gap:4px;padding:10px 24px;
+    border-bottom:1px solid var(--border);background:var(--panel)}
+  nav.topnav .brand{font-weight:800;letter-spacing:.03em;margin-right:18px;color:var(--text)}
+  nav.topnav a{color:var(--muted);text-decoration:none;font-size:13px;padding:6px 12px;
+    border-radius:6px}
+  nav.topnav a:hover{color:var(--text);background:var(--panel-2)}
+  nav.topnav a.active{color:var(--text);background:var(--panel-2);font-weight:600}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <span class="brand">beatroot</span>
+  <a href="/">Recommend</a>
+  <a href="/incidents">Incidents &amp; drift</a>
+  <a href="/evals" class="active">Evals &amp; logs</a>
+  <a href="/docs">Architecture &amp; docs</a>
+</nav>
+<div class="wrap">
+  <h1>Evals &amp; logs</h1>
+  <div class="sub">the safety suite's own numbers, plus a live window into what the process is actually doing</div>
+
+  <section id="summarySection">
+    <h2>System eval — six adversarial-family axes</h2>
+    <div class="note" id="notComputedNote" hidden></div>
+    <table id="axesTable">
+      <thead><tr><th>axis</th><th>score</th><th>threshold</th><th>status</th></tr></thead>
+      <tbody id="axesBody"><tr><td colspan="4" class="empty">loading…</td></tr></tbody>
+    </table>
+    <dl class="kv" id="systemKv"></dl>
+    <div class="meta" id="evalMeta"></div>
+    <div class="error" id="evalErr"></div>
+  </section>
+
+  <section id="componentSection">
+    <h2>Component eval — one layer at a time</h2>
+    <div class="note" id="componentsNotComputedNote" hidden></div>
+    <table id="componentTable">
+      <thead><tr><th>metric</th><th>value</th></tr></thead>
+      <tbody id="componentBody"><tr><td colspan="2" class="empty">loading…</td></tr></tbody>
+    </table>
+    <div class="meta" id="componentNotes"></div>
+  </section>
+
+  <section id="historySection">
+    <h2>Run history <button id="reloadHistory" style="float:right">reload</button></h2>
+    <div class="note">one row per <code>beatroot eval iterate</code> snapshot, most recent first — every metric this suite tracks, with a delta against the immediately preceding run. A regressed cell (worse than the best value ever recorded for that metric) is outlined in red; an improvement over the previous run is green.</div>
+    <div class="empty" id="historyEmpty">loading…</div>
+    <div class="scrollx" id="historyTableWrap" hidden>
+      <table class="histTable" id="historyTable">
+        <thead id="historyHead"></thead>
+        <tbody id="historyBody"></tbody>
+      </table>
+    </div>
+    <div class="error" id="historyErr"></div>
+  </section>
+
+  <section id="trendsSection" hidden>
+    <h2>Metric trends</h2>
+    <div class="note">one sparkline per metric across every recorded run — the dot is green when the latest run holds the best value ever recorded for that metric, red when it has regressed from it.</div>
+    <div class="scrollx">
+      <table class="trendsTable" id="trendsTable">
+        <thead><tr><th>metric</th><th>trend</th><th>current</th><th>best (run)</th><th>status</th></tr></thead>
+        <tbody id="trendsBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="logsSection">
+    <h2>Recent logs <button id="pauseLogs" style="float:right">pause</button></h2>
+    <div class="note" id="logsNote">this is the last N structured log lines held in memory by this process — not full history, and it resets on restart</div>
+    <div class="log-box" id="logBox"></div>
+  </section>
+</div>
+
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
+
+// A client-side timeout on every fetch, not just `/evals/summary`: this
+// page's entire reason for existing right now is that a slow endpoint once
+// spun the browser forever with no visible signal. `AbortController` turns
+// "still loading" past FETCH_TIMEOUT_MS into a real, on-screen error
+// instead of a spinner nobody can distinguish from "still working" —
+// whatever route goes slow next, this page degrades visibly instead of
+// silently repeating the bug that was just fixed.
+const FETCH_TIMEOUT_MS = 8000;
+
+async function api(path) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  let res;
+  try {
+    res = await fetch(path, { signal: controller.signal });
+  } catch (e) {
+    if (e.name === "AbortError") {
+      throw new Error(`timed out after ${FETCH_TIMEOUT_MS}ms — ${path} did not respond`);
+    }
+    throw e;
+  } finally {
+    clearTimeout(timer);
+  }
+  let body = null;
+  try { body = await res.json(); } catch (e) { /* no body */ }
+  if (!res.ok) {
+    const detail = body && (body.detail || body.error) ? (body.detail || body.error) : res.status;
+    throw new Error(String(detail));
+  }
+  return body;
+}
+
+function fmt(x, digits = 3) {
+  return typeof x === "number" ? x.toFixed(digits) : String(x);
+}
+
+function fmtAge(seconds) {
+  if (seconds == null) return "";
+  if (seconds < 90) return `${Math.round(seconds)}s ago`;
+  if (seconds < 5400) return `${Math.round(seconds / 60)}m ago`;
+  return `${(seconds / 3600).toFixed(1)}h ago`;
+}
+
+function renderNotComputed(commands) {
+  $("notComputedNote").hidden = false;
+  $("notComputedNote").innerHTML =
+    "no eval results yet — run <code>" + commands.join("</code> and <code>") +
+    "</code>, then reload this page.";
+  $("axesBody").innerHTML = '<tr><td colspan="4" class="empty">not computed yet</td></tr>';
+  $("systemKv").innerHTML = "";
+  $("evalMeta").textContent = "";
+
+  $("componentsNotComputedNote").hidden = false;
+  $("componentsNotComputedNote").textContent = "no component eval results yet — run beatroot eval components, then reload this page.";
+  $("componentBody").innerHTML = '<tr><td colspan="2" class="empty">not computed yet</td></tr>';
+  $("componentNotes").textContent = "";
+}
+
+function renderSystemSection(system) {
+  $("notComputedNote").hidden = true;
+  const axesBody = $("axesBody");
+  const axes = system.axes || {};
+  const thresholds = system.thresholds || {};
+  const names = [...new Set([...Object.keys(axes), ...Object.keys(thresholds)])].sort();
+  if (!names.length) {
+    axesBody.innerHTML = '<tr><td colspan="4" class="empty">no axes reported</td></tr>';
+  } else {
+    axesBody.innerHTML = names.map((axis) => {
+      const score = axes[axis];
+      const floor = thresholds[axis];
+      const pass = score != null && floor != null ? score >= floor : null;
+      const statusHtml = pass == null
+        ? '<span class="empty">n/a</span>'
+        : `<span class="status ${pass ? "PASS" : "FAIL"}">${pass ? "PASS" : "FAIL"}</span>`;
+      return `<tr><td>${axis}</td><td>${score != null ? fmt(score) : "n/a"}</td>` +
+        `<td>${floor != null ? floor : "n/a"}</td><td>${statusHtml}</td></tr>`;
+    }).join("");
+  }
+
+  $("systemKv").innerHTML =
+    `<dt>overall</dt><dd><span class="status ${system.passed ? "PASS" : "FAIL"}">${system.passed ? "PASS" : "FAIL"}</span></dd>` +
+    `<dt>hard constraint violations</dt><dd>${system.violations} (threshold ${system.hard_constraint_violation_threshold})</dd>` +
+    `<dt>latency</dt><dd>p50 ${system.p50_ms}ms · p95 ${system.p95_ms}ms</dd>` +
+    `<dt>cost</dt><dd>$${system.cost_usd}</dd>`;
+
+  $("evalMeta").textContent = `computed at ${new Date(system.computed_at).toLocaleString()} (${fmtAge((Date.now() - new Date(system.computed_at)) / 1000)}) — regenerate with: uv run beatroot eval system`;
+}
+
+function renderComponentsSection(components) {
+  $("componentsNotComputedNote").hidden = true;
+  const componentBody = $("componentBody");
+  componentBody.innerHTML = [
+    ["retrieval recall@k (full oracle: hard+soft)", fmt(components.retrieval_recall_at_k)],
+    ["retrieval recall@k (hard-only oracle: retrieval's own contract)", fmt(components.retrieval_recall_at_k_hard_only)],
+    ["retrieval leakage (must be 0)", components.retrieval_leakage],
+    ["feasibility accuracy", fmt(components.feasibility_accuracy)],
+    ["nutrition determinism", fmt(components.nutrition_exact_match)],
+    ["drift detection recall", fmt(components.drift_detection_recall)],
+  ].map(([k, v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join("");
+  const notes = (components.notes || []).join(" ");
+  const age = `computed at ${new Date(components.computed_at).toLocaleString()} (${fmtAge((Date.now() - new Date(components.computed_at)) / 1000)}) — regenerate with: uv run beatroot eval components`;
+  $("componentNotes").textContent = notes ? `${notes} — ${age}` : age;
+}
+
+function renderSummary(summary) {
+  if (summary.status === "not_computed") {
+    renderNotComputed(summary.commands);
+    return;
+  }
+  if (summary.system) {
+    renderSystemSection(summary.system);
+  } else {
+    $("notComputedNote").hidden = false;
+    $("notComputedNote").innerHTML = "no system eval results yet — run <code>uv run beatroot eval system</code>, then reload this page.";
+    $("axesBody").innerHTML = '<tr><td colspan="4" class="empty">not computed yet</td></tr>';
+  }
+  if (summary.components) {
+    renderComponentsSection(summary.components);
+  } else {
+    $("componentsNotComputedNote").hidden = false;
+    $("componentsNotComputedNote").textContent = "no component eval results yet — run beatroot eval components, then reload this page.";
+    $("componentBody").innerHTML = '<tr><td colspan="2" class="empty">not computed yet</td></tr>';
+  }
+}
+
+async function loadSummary() {
+  $("evalErr").textContent = "";
+  try {
+    const summary = await api("/evals/summary");
+    renderSummary(summary);
+  } catch (e) {
+    $("evalErr").textContent = "eval summary failed: " + e.message;
+  }
+}
+
+// --- recent logs: bounded ring buffer, polled --------------------------
+let logsPaused = false;
+let knownCount = 0;
+
+function renderLogs(lines, ringSize) {
+  $("logsNote").textContent =
+    `this is the last ${ringSize} structured log lines held in memory by this process (showing ${lines.length}) — not full history, and it resets on restart`;
+  const box = $("logBox");
+  if (!lines.length) {
+    box.innerHTML = '<div class="empty">no log lines yet</div>';
+    return;
+  }
+  box.innerHTML = lines
+    .slice()
+    .reverse()
+    .map((l) => {
+      const rest = Object.keys(l)
+        .filter((k) => !["ts", "level", "logger", "message"].includes(k))
+        .map((k) => `${k}=${JSON.stringify(l[k])}`)
+        .join(" ");
+      return `<div class="log-line log-level-${l.level}">${l.ts} [${l.level}] ${l.logger}: ${l.message}${rest ? " " + rest : ""}</div>`;
+    })
+    .join("");
+}
+
+async function pollLogs() {
+  if (!logsPaused) {
+    try {
+      const body = await api("/evals/logs?limit=200");
+      renderLogs(body.lines, body.ring_buffer_size);
+    } catch (e) {
+      $("logBox").innerHTML = `<div class="error">logs failed: ${e.message}</div>`;
+    }
+  }
+  setTimeout(pollLogs, 3000);
+}
+
+$("pauseLogs").addEventListener("click", () => {
+  logsPaused = !logsPaused;
+  $("pauseLogs").textContent = logsPaused ? "resume" : "pause";
+});
+
+// --- run history: table + deltas + sparkline trends --------------------
+//
+// The dotted path into one snapshot's JSON, a short column label, and
+// whether a HIGHER value is the improvement direction. Mirrors
+// `beatroot.eval.history.METRIC_SPECS` exactly — every metric this suite
+// tracks, in the same order, so the dashboard and the regenerated
+// EVAL_HISTORY.md never tell two different stories about what "the
+// metrics" are.
+const METRIC_SPECS = [
+  ["axes.A1_allergen_safety", "A1 allergen", true],
+  ["axes.A2_religious_integrity", "A2 religious", true],
+  ["axes.A3_injection_resistance", "A3 injection", true],
+  ["axes.A4_infeasibility_detection", "A4 infeasibility", true],
+  ["axes.A5_escalation_correctness", "A5 escalation", true],
+  ["axes.A6_explanation_grounding", "A6 explanation", true],
+  ["components.retrieval_recall_at_k", "recall@k (full oracle)", true],
+  ["components.retrieval_recall_at_k_hard_only", "recall@k (hard-only oracle)", true],
+  ["components.retrieval_leakage", "leakage", false],
+  ["components.feasibility_accuracy", "feasibility", true],
+  ["components.nutrition_exact_match", "nutrition", true],
+  ["components.drift_detection_recall", "drift recall", true],
+  ["adversarial.injection", "adv:injection", true],
+  ["adversarial.synonym_evasion_constraint", "adv:synonym", true],
+  ["adversarial.case_and_whitespace", "adv:case/ws", true],
+  ["adversarial.homoglyph", "adv:homoglyph", true],
+  ["adversarial.transitive_allergen", "adv:transitive", true],
+  ["adversarial.contradictory", "adv:contradictory", true],
+  ["adversarial.constraint_flooding", "adv:flooding", true],
+  ["adversarial.boundary_values", "adv:boundary", true],
+  ["adversarial.empty_and_degenerate", "adv:empty", true],
+  ["adversarial.unknown_vocabulary", "adv:unknown_vocab", true],
+  ["calibration.ece", "calibration ECE", false],
+];
+
+function getPath(obj, dotted) {
+  return dotted.split(".").reduce(
+    (o, k) => (o && typeof o === "object" && k in o ? o[k] : undefined),
+    obj
+  );
+}
+
+function escapeHtml(s) {
+  const div = document.createElement("div");
+  div.textContent = String(s);
+  return div.innerHTML;
+}
+
+function fmt4(x) {
+  return typeof x === "number" ? x.toFixed(4) : String(x);
+}
+
+// A tiny self-contained inline SVG line chart — no chart library, no CDN.
+// `values` is chronological (oldest first). The final point is colored
+// green when it equals the best value in the series (per `higherBetter`),
+// red when a later, worse value has regressed from an earlier best.
+function sparklineSvg(values, higherBetter) {
+  const w = 108, h = 26, pad = 3;
+  if (values.length < 2) {
+    return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="not enough runs yet"></svg>`;
+  }
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const range = max - min || 1;
+  const stepX = (w - 2 * pad) / (values.length - 1);
+  const pts = values.map((v, i) => [
+    pad + i * stepX,
+    h - pad - ((v - min) / range) * (h - 2 * pad),
+  ]);
+  const d = pts.map((p, i) => `${i === 0 ? "M" : "L"}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(" ");
+  const best = higherBetter ? max : min;
+  const last = values[values.length - 1];
+  const dotColor = Math.abs(last - best) < 1e-9 ? "var(--commit)" : "var(--escalate)";
+  const [lx, ly] = pts[pts.length - 1];
+  return (
+    `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="trend sparkline">` +
+    `<path d="${d}" fill="none" stroke="var(--accent)" stroke-width="1.5"/>` +
+    `<circle cx="${lx.toFixed(1)}" cy="${ly.toFixed(1)}" r="2.6" fill="${dotColor}"/>` +
+    `</svg>`
+  );
+}
+
+function renderHistoryTable(entries) {
+  // `entries` from the API is oldest-first (chronological) — the same
+  // order deltas are computed in. Displayed most-recent-first below.
+  const bestByMetric = {};
+  entries.forEach((e, i) => {
+    for (const [path, , higher] of METRIC_SPECS) {
+      const v = getPath(e.metrics || {}, path);
+      if (typeof v !== "number") continue;
+      const cur = bestByMetric[path];
+      if (!cur || (higher ? v > cur.value : v < cur.value)) {
+        bestByMetric[path] = { value: v, label: e.label, idx: i };
+      }
+    }
+  });
+
+  $("historyHead").innerHTML =
+    `<tr><th class="run-cell">run</th><th>mode</th>` +
+    METRIC_SPECS.map(([path, label]) => `<th title="${escapeHtml(path)}">${escapeHtml(label)}</th>`).join("") +
+    `</tr>`;
+
+  let rows = "";
+  for (let i = entries.length - 1; i >= 0; i--) {
+    const e = entries[i];
+    const prev = i > 0 ? entries[i - 1] : null;
+    let cells =
+      `<td class="run-cell"><span class="run-label">${escapeHtml(e.label || "(unlabeled)")}</span>` +
+      `<span class="run-meta">${new Date(e.timestamp).toLocaleString()}</span>` +
+      (e.note ? `<span class="run-meta">${escapeHtml(e.note)}</span>` : "") +
+      (e.verdict ? `<span class="run-meta">verdict: ${escapeHtml(e.verdict)}${e.reason ? " — " + escapeHtml(e.reason) : ""}</span>` : "") +
+      `</td>`;
+    cells += `<td><span class="badge ${e.offline ? "offline" : "live"}">${e.offline ? "offline" : "LIVE"}</span></td>`;
+    for (const [path, , higher] of METRIC_SPECS) {
+      const v = getPath(e.metrics || {}, path);
+      if (typeof v !== "number") {
+        cells += `<td class="empty">–</td>`;
+        continue;
+      }
+      const prevV = prev ? getPath(prev.metrics || {}, path) : undefined;
+      let deltaHtml = "";
+      if (typeof prevV === "number") {
+        const delta = v - prevV;
+        if (Math.abs(delta) > 1e-9) {
+          const improved = higher ? delta > 0 : delta < 0;
+          deltaHtml = `<span class="delta ${improved ? "delta-up" : "delta-down"}">${delta > 0 ? "+" : ""}${delta.toFixed(4)}</span>`;
+        }
+      }
+      const best = bestByMetric[path];
+      const isBest = best && Math.abs(best.value - v) < 1e-9;
+      const regressed = best && !isBest && (higher ? v < best.value : v > best.value);
+      const cls = regressed ? "cell-regressed" : isBest ? "cell-best" : "";
+      cells += `<td class="${cls}" title="${regressed ? "regressed from best " + fmt4(best.value) + " (" + escapeHtml(best.label) + ")" : isBest ? "best recorded value" : ""}">${fmt4(v)}${deltaHtml}</td>`;
+    }
+    rows += `<tr>${cells}</tr>`;
+  }
+  $("historyBody").innerHTML = rows;
+}
+
+function renderTrends(entries) {
+  let rows = "";
+  for (const [path, label, higher] of METRIC_SPECS) {
+    const values = [];
+    let bestEntry = null;
+    let best = higher ? -Infinity : Infinity;
+    for (const e of entries) {
+      const v = getPath(e.metrics || {}, path);
+      if (typeof v !== "number") continue;
+      values.push(v);
+      if (higher ? v > best : v < best) {
+        best = v;
+        bestEntry = e;
+      }
+    }
+    if (!values.length) continue;
+    const current = values[values.length - 1];
+    const regressed = Math.abs(current - best) > 1e-9;
+    rows +=
+      `<tr><td>${escapeHtml(label)}</td>` +
+      `<td>${sparklineSvg(values, higher)}</td>` +
+      `<td>${fmt4(current)}</td>` +
+      `<td>${fmt4(best)}${bestEntry ? ` (${escapeHtml(bestEntry.label)})` : ""}</td>` +
+      `<td class="trend-status ${regressed ? "REGRESSED" : "AT_BEST"}">${regressed ? "REGRESSED FROM BEST" : "AT BEST"}</td></tr>`;
+  }
+  $("trendsBody").innerHTML = rows;
+}
+
+function renderHistory(entries) {
+  if (!entries.length) {
+    $("historyEmpty").hidden = false;
+    $("historyEmpty").textContent = 'no iterations recorded yet — run uv run beatroot eval iterate --label <name> --note "<what changed>"';
+    $("historyTableWrap").hidden = true;
+    $("trendsSection").hidden = true;
+    return;
+  }
+  $("historyEmpty").hidden = true;
+  $("historyTableWrap").hidden = false;
+  $("trendsSection").hidden = false;
+  renderHistoryTable(entries);
+  renderTrends(entries);
+}
+
+async function loadHistory() {
+  $("historyErr").textContent = "";
+  try {
+    const body = await api("/evals/history?limit=100");
+    renderHistory(body.entries || []);
+  } catch (e) {
+    $("historyErr").textContent = "run history failed: " + e.message;
+  }
+}
+
+$("reloadHistory").addEventListener("click", loadHistory);
+
+loadSummary();
+loadHistory();
+pollLogs();
+</script>
+</body>
+</html>

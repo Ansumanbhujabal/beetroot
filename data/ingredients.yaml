@@ -1,0 +1,2358 @@
+- id: ing_onion
+  name: Onion
+  synonyms:
+  - pyaz
+  - kanda
+  allergen_tags: []
+  religious_tags:
+  - root_vegetable
+  - allium
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 40
+    protein_g: 1.1
+    carbs_g: 9.3
+    fat_g: 0.1
+    sodium_mg: 4
+    fibre_g: 1.7
+  cost_per_100g_inr: 4
+- id: ing_garlic
+  name: Garlic
+  synonyms:
+  - lahsun
+  - vellulli
+  allergen_tags: []
+  religious_tags:
+  - root_vegetable
+  - allium
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 149
+    protein_g: 6.4
+    carbs_g: 33.1
+    fat_g: 0.5
+    sodium_mg: 17
+    fibre_g: 2.1
+  cost_per_100g_inr: 12
+- id: ing_tomato
+  name: Tomato
+  synonyms:
+  - tamatar
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 18
+    protein_g: 0.9
+    carbs_g: 3.9
+    fat_g: 0.2
+    sodium_mg: 5
+    fibre_g: 1.2
+  cost_per_100g_inr: 5
+- id: ing_potato
+  name: Potato
+  synonyms:
+  - aloo
+  - batata
+  allergen_tags: []
+  religious_tags:
+  - root_vegetable
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 77
+    protein_g: 2.0
+    carbs_g: 17.0
+    fat_g: 0.1
+    sodium_mg: 6
+    fibre_g: 2.2
+  cost_per_100g_inr: 3
+- id: ing_carrot
+  name: Carrot
+  synonyms:
+  - gajar
+  allergen_tags: []
+  religious_tags:
+  - root_vegetable
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 41
+    protein_g: 0.9
+    carbs_g: 9.6
+    fat_g: 0.2
+    sodium_mg: 69
+    fibre_g: 2.8
+  cost_per_100g_inr: 6
+- id: ing_spinach
+  name: Spinach
+  synonyms:
+  - palak
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 23
+    protein_g: 2.9
+    carbs_g: 3.6
+    fat_g: 0.4
+    sodium_mg: 79
+    fibre_g: 2.2
+  cost_per_100g_inr: 8
+- id: ing_cauliflower
+  name: Cauliflower
+  synonyms:
+  - gobi
+  - phool gobi
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 25
+    protein_g: 1.9
+    carbs_g: 5.0
+    fat_g: 0.3
+    sodium_mg: 30
+    fibre_g: 2.0
+  cost_per_100g_inr: 6
+- id: ing_capsicum
+  name: Capsicum
+  synonyms:
+  - bell pepper
+  - shimla mirch
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 20
+    protein_g: 0.9
+    carbs_g: 4.6
+    fat_g: 0.2
+    sodium_mg: 3
+    fibre_g: 1.7
+  cost_per_100g_inr: 10
+- id: ing_ginger
+  name: Ginger
+  synonyms:
+  - adrak
+  allergen_tags: []
+  religious_tags:
+  - root_vegetable
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 80
+    protein_g: 1.8
+    carbs_g: 17.8
+    fat_g: 0.8
+    sodium_mg: 13
+    fibre_g: 2.0
+  cost_per_100g_inr: 15
+- id: ing_green_chilli
+  name: Green chilli
+  synonyms:
+  - hari mirch
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 40
+    protein_g: 2.0
+    carbs_g: 9.0
+    fat_g: 0.2
+    sodium_mg: 7
+    fibre_g: 1.5
+  cost_per_100g_inr: 10
+- id: ing_eggplant
+  name: Eggplant
+  synonyms:
+  - brinjal
+  - baingan
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 25
+    protein_g: 1.0
+    carbs_g: 6.0
+    fat_g: 0.2
+    sodium_mg: 2
+    fibre_g: 3.0
+  cost_per_100g_inr: 6
+- id: ing_okra
+  name: Okra
+  synonyms:
+  - bhindi
+  - ladyfinger
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 33
+    protein_g: 1.9
+    carbs_g: 7.5
+    fat_g: 0.2
+    sodium_mg: 7
+    fibre_g: 3.2
+  cost_per_100g_inr: 8
+- id: ing_cabbage
+  name: Cabbage
+  synonyms:
+  - patta gobi
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 25
+    protein_g: 1.3
+    carbs_g: 5.8
+    fat_g: 0.1
+    sodium_mg: 18
+    fibre_g: 2.5
+  cost_per_100g_inr: 5
+- id: ing_green_peas
+  name: Green peas
+  synonyms:
+  - matar
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 81
+    protein_g: 5.4
+    carbs_g: 14.5
+    fat_g: 0.4
+    sodium_mg: 5
+    fibre_g: 5.7
+  cost_per_100g_inr: 9
+- id: ing_pumpkin
+  name: Pumpkin
+  synonyms:
+  - kaddu
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 26
+    protein_g: 1.0
+    carbs_g: 6.5
+    fat_g: 0.1
+    sodium_mg: 1
+    fibre_g: 0.5
+  cost_per_100g_inr: 6
+- id: ing_bottle_gourd
+  name: Bottle gourd
+  synonyms:
+  - lauki
+  - doodhi
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 14
+    protein_g: 0.6
+    carbs_g: 3.4
+    fat_g: 0.02
+    sodium_mg: 2
+    fibre_g: 0.5
+  cost_per_100g_inr: 5
+- id: ing_mushroom
+  name: Mushroom
+  synonyms:
+  - khumb
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 22
+    protein_g: 3.1
+    carbs_g: 3.3
+    fat_g: 0.3
+    sodium_mg: 5
+    fibre_g: 1.0
+  cost_per_100g_inr: 18
+- id: ing_broccoli
+  name: Broccoli
+  synonyms: []
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 34
+    protein_g: 2.8
+    carbs_g: 6.6
+    fat_g: 0.4
+    sodium_mg: 33
+    fibre_g: 2.6
+  cost_per_100g_inr: 20
+- id: ing_zucchini
+  name: Zucchini
+  synonyms: []
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 17
+    protein_g: 1.2
+    carbs_g: 3.1
+    fat_g: 0.3
+    sodium_mg: 8
+    fibre_g: 1.0
+  cost_per_100g_inr: 16
+- id: ing_beetroot
+  name: Beetroot
+  synonyms:
+  - chukandar
+  allergen_tags: []
+  religious_tags:
+  - root_vegetable
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 43
+    protein_g: 1.6
+    carbs_g: 10.0
+    fat_g: 0.2
+    sodium_mg: 78
+    fibre_g: 2.8
+  cost_per_100g_inr: 7
+- id: ing_radish
+  name: Radish
+  synonyms:
+  - mooli
+  allergen_tags: []
+  religious_tags:
+  - root_vegetable
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 16
+    protein_g: 0.7
+    carbs_g: 3.4
+    fat_g: 0.1
+    sodium_mg: 39
+    fibre_g: 1.6
+  cost_per_100g_inr: 5
+- id: ing_lettuce
+  name: Lettuce
+  synonyms: []
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 15
+    protein_g: 1.4
+    carbs_g: 2.9
+    fat_g: 0.2
+    sodium_mg: 28
+    fibre_g: 1.3
+  cost_per_100g_inr: 18
+- id: ing_cucumber
+  name: Cucumber
+  synonyms:
+  - kheera
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 15
+    protein_g: 0.7
+    carbs_g: 3.6
+    fat_g: 0.1
+    sodium_mg: 2
+    fibre_g: 0.5
+  cost_per_100g_inr: 5
+- id: ing_sweet_potato
+  name: Sweet potato
+  synonyms:
+  - shakarkandi
+  allergen_tags: []
+  religious_tags:
+  - root_vegetable
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 86
+    protein_g: 1.6
+    carbs_g: 20.1
+    fat_g: 0.1
+    sodium_mg: 55
+    fibre_g: 3.0
+  cost_per_100g_inr: 10
+- id: ing_lemon
+  name: Lemon
+  synonyms:
+  - nimbu
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 29
+    protein_g: 1.1
+    carbs_g: 9.3
+    fat_g: 0.3
+    sodium_mg: 2
+    fibre_g: 2.8
+  cost_per_100g_inr: 10
+- id: ing_coconut
+  name: Coconut (fresh)
+  synonyms:
+  - nariyal
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 354
+    protein_g: 3.3
+    carbs_g: 15.2
+    fat_g: 33.5
+    sodium_mg: 20
+    fibre_g: 9.0
+  cost_per_100g_inr: 15
+- id: ing_mango
+  name: Mango
+  synonyms:
+  - aam
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 60
+    protein_g: 0.8
+    carbs_g: 15.0
+    fat_g: 0.4
+    sodium_mg: 1
+    fibre_g: 1.6
+  cost_per_100g_inr: 12
+- id: ing_banana
+  name: Banana
+  synonyms:
+  - kela
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 89
+    protein_g: 1.1
+    carbs_g: 22.8
+    fat_g: 0.3
+    sodium_mg: 1
+    fibre_g: 2.6
+  cost_per_100g_inr: 5
+- id: ing_apple
+  name: Apple
+  synonyms:
+  - seb
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 52
+    protein_g: 0.3
+    carbs_g: 13.8
+    fat_g: 0.2
+    sodium_mg: 1
+    fibre_g: 2.4
+  cost_per_100g_inr: 15
+- id: ing_pomegranate
+  name: Pomegranate
+  synonyms:
+  - anar
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 83
+    protein_g: 1.7
+    carbs_g: 18.7
+    fat_g: 1.2
+    sodium_mg: 3
+    fibre_g: 4.0
+  cost_per_100g_inr: 18
+- id: ing_avocado
+  name: Avocado
+  synonyms: []
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 160
+    protein_g: 2.0
+    carbs_g: 8.5
+    fat_g: 14.7
+    sodium_mg: 7
+    fibre_g: 6.7
+  cost_per_100g_inr: 40
+- id: ing_lime
+  name: Lime
+  synonyms:
+  - key lime
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 30
+    protein_g: 0.7
+    carbs_g: 10.5
+    fat_g: 0.2
+    sodium_mg: 2
+    fibre_g: 2.8
+  cost_per_100g_inr: 12
+- id: ing_tamarind
+  name: Tamarind
+  synonyms:
+  - imli
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 239
+    protein_g: 2.8
+    carbs_g: 62.5
+    fat_g: 0.6
+    sodium_mg: 28
+    fibre_g: 5.1
+  cost_per_100g_inr: 20
+- id: ing_rice
+  name: Rice (raw)
+  synonyms:
+  - chawal
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 130
+    protein_g: 2.7
+    carbs_g: 28.0
+    fat_g: 0.3
+    sodium_mg: 1
+    fibre_g: 0.4
+  cost_per_100g_inr: 6
+- id: ing_basmati_rice
+  name: Basmati rice
+  synonyms:
+  - basmati chawal
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 121
+    protein_g: 3.5
+    carbs_g: 25.2
+    fat_g: 0.4
+    sodium_mg: 2
+    fibre_g: 0.6
+  cost_per_100g_inr: 9
+- id: ing_wheat_flour
+  name: Whole wheat flour
+  synonyms:
+  - atta
+  - gehun ka atta
+  allergen_tags:
+  - gluten
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 340
+    protein_g: 13.2
+    carbs_g: 72.0
+    fat_g: 2.5
+    sodium_mg: 2
+    fibre_g: 10.7
+  cost_per_100g_inr: 5
+- id: ing_refined_flour
+  name: Refined flour
+  synonyms:
+  - maida
+  allergen_tags:
+  - gluten
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 364
+    protein_g: 10.3
+    carbs_g: 76.3
+    fat_g: 1.0
+    sodium_mg: 2
+    fibre_g: 2.7
+  cost_per_100g_inr: 4
+- id: ing_semolina
+  name: Semolina
+  synonyms:
+  - suji
+  - rava
+  allergen_tags:
+  - gluten
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 360
+    protein_g: 12.7
+    carbs_g: 72.8
+    fat_g: 1.1
+    sodium_mg: 1
+    fibre_g: 3.9
+  cost_per_100g_inr: 5
+- id: ing_rice_flour
+  name: Rice flour
+  synonyms:
+  - chawal ka atta
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 366
+    protein_g: 5.9
+    carbs_g: 80.1
+    fat_g: 1.4
+    sodium_mg: 0
+    fibre_g: 2.4
+  cost_per_100g_inr: 8
+- id: ing_oats
+  name: Rolled oats
+  synonyms: []
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 389
+    protein_g: 16.9
+    carbs_g: 66.3
+    fat_g: 6.9
+    sodium_mg: 2
+    fibre_g: 10.6
+  cost_per_100g_inr: 12
+- id: ing_poha
+  name: Flattened rice
+  synonyms:
+  - poha
+  - chivda
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 346
+    protein_g: 6.6
+    carbs_g: 76.9
+    fat_g: 1.0
+    sodium_mg: 6
+    fibre_g: 1.6
+  cost_per_100g_inr: 7
+- id: ing_vermicelli
+  name: Vermicelli
+  synonyms:
+  - seviyan
+  allergen_tags:
+  - gluten
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 348
+    protein_g: 10.0
+    carbs_g: 73.0
+    fat_g: 1.2
+    sodium_mg: 5
+    fibre_g: 2.9
+  cost_per_100g_inr: 8
+- id: ing_quinoa
+  name: Quinoa
+  synonyms: []
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 368
+    protein_g: 14.1
+    carbs_g: 64.2
+    fat_g: 6.1
+    sodium_mg: 5
+    fibre_g: 7.0
+  cost_per_100g_inr: 35
+- id: ing_bread
+  name: White bread
+  synonyms:
+  - pav
+  - double roti
+  allergen_tags:
+  - gluten
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 265
+    protein_g: 9.0
+    carbs_g: 49.0
+    fat_g: 3.2
+    sodium_mg: 490
+    fibre_g: 2.7
+  cost_per_100g_inr: 6
+- id: ing_corn
+  name: Sweet corn
+  synonyms:
+  - makka
+  - bhutta
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 86
+    protein_g: 3.2
+    carbs_g: 19.0
+    fat_g: 1.2
+    sodium_mg: 15
+    fibre_g: 2.7
+  cost_per_100g_inr: 8
+- id: ing_rice_noodles
+  name: Rice noodles
+  synonyms: []
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 109
+    protein_g: 0.9
+    carbs_g: 25.2
+    fat_g: 0.2
+    sodium_mg: 3
+    fibre_g: 1.0
+  cost_per_100g_inr: 10
+- id: ing_pasta
+  name: Durum wheat pasta
+  synonyms: []
+  allergen_tags:
+  - gluten
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 371
+    protein_g: 13.0
+    carbs_g: 75.0
+    fat_g: 1.5
+    sodium_mg: 6
+    fibre_g: 3.2
+  cost_per_100g_inr: 12
+- id: ing_tortilla
+  name: Corn tortilla
+  synonyms: []
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 218
+    protein_g: 5.7
+    carbs_g: 44.6
+    fat_g: 2.9
+    sodium_mg: 11
+    fibre_g: 6.3
+  cost_per_100g_inr: 8
+- id: ing_chana_dal
+  name: Split chickpea lentil
+  synonyms:
+  - chana dal
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 364
+    protein_g: 22.4
+    carbs_g: 57.8
+    fat_g: 6.7
+    sodium_mg: 24
+    fibre_g: 13.0
+  cost_per_100g_inr: 9
+- id: ing_toor_dal
+  name: Split pigeon pea
+  synonyms:
+  - toor dal
+  - arhar dal
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 343
+    protein_g: 22.3
+    carbs_g: 57.6
+    fat_g: 1.5
+    sodium_mg: 17
+    fibre_g: 15.5
+  cost_per_100g_inr: 10
+- id: ing_moong_dal
+  name: Split moong lentil
+  synonyms:
+  - moong dal
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 347
+    protein_g: 24.0
+    carbs_g: 59.0
+    fat_g: 1.2
+    sodium_mg: 15
+    fibre_g: 16.3
+  cost_per_100g_inr: 10
+- id: ing_masoor_dal
+  name: Split red lentil
+  synonyms:
+  - masoor dal
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 352
+    protein_g: 25.8
+    carbs_g: 60.0
+    fat_g: 1.1
+    sodium_mg: 6
+    fibre_g: 11.5
+  cost_per_100g_inr: 9
+- id: ing_rajma
+  name: Kidney beans
+  synonyms:
+  - rajma
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 333
+    protein_g: 23.6
+    carbs_g: 60.0
+    fat_g: 0.8
+    sodium_mg: 24
+    fibre_g: 24.9
+  cost_per_100g_inr: 10
+- id: ing_chickpeas
+  name: Chickpeas
+  synonyms:
+  - chana
+  - kabuli chana
+  - garbanzo beans
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 364
+    protein_g: 19.3
+    carbs_g: 61.0
+    fat_g: 6.0
+    sodium_mg: 24
+    fibre_g: 17.4
+  cost_per_100g_inr: 8
+- id: ing_black_gram
+  name: Black gram
+  synonyms:
+  - urad dal
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 341
+    protein_g: 25.2
+    carbs_g: 58.9
+    fat_g: 1.6
+    sodium_mg: 38
+    fibre_g: 18.3
+  cost_per_100g_inr: 11
+- id: ing_soybean
+  name: Soybean
+  synonyms:
+  - soya
+  allergen_tags:
+  - soy
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 446
+    protein_g: 36.5
+    carbs_g: 30.2
+    fat_g: 19.9
+    sodium_mg: 2
+    fibre_g: 9.3
+  cost_per_100g_inr: 14
+- id: ing_tofu
+  name: Tofu
+  synonyms:
+  - soy paneer
+  allergen_tags:
+  - soy
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 76
+    protein_g: 8.1
+    carbs_g: 1.9
+    fat_g: 4.8
+    sodium_mg: 7
+    fibre_g: 0.3
+  cost_per_100g_inr: 22
+- id: ing_black_eyed_peas
+  name: Black-eyed peas
+  synonyms:
+  - lobia
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 336
+    protein_g: 23.5
+    carbs_g: 60.6
+    fat_g: 1.3
+    sodium_mg: 16
+    fibre_g: 10.7
+  cost_per_100g_inr: 9
+- id: ing_paneer
+  name: Paneer
+  synonyms:
+  - cottage cheese
+  - chhena
+  allergen_tags:
+  - dairy
+  religious_tags: []
+  dietary_tags:
+  - vegetarian
+  per_100g:
+    kcal: 265
+    protein_g: 18.3
+    carbs_g: 1.2
+    fat_g: 20.8
+    sodium_mg: 18
+    fibre_g: 0.0
+  cost_per_100g_inr: 48
+- id: ing_yoghurt
+  name: Yoghurt
+  synonyms:
+  - curd
+  - dahi
+  allergen_tags:
+  - dairy
+  religious_tags: []
+  dietary_tags:
+  - vegetarian
+  per_100g:
+    kcal: 61
+    protein_g: 3.5
+    carbs_g: 4.7
+    fat_g: 3.3
+    sodium_mg: 36
+    fibre_g: 0.0
+  cost_per_100g_inr: 8
+- id: ing_milk
+  name: Milk (full cream)
+  synonyms:
+  - doodh
+  allergen_tags:
+  - dairy
+  religious_tags: []
+  dietary_tags:
+  - vegetarian
+  per_100g:
+    kcal: 61
+    protein_g: 3.2
+    carbs_g: 4.8
+    fat_g: 3.3
+    sodium_mg: 43
+    fibre_g: 0.0
+  cost_per_100g_inr: 6
+- id: ing_butter
+  name: Butter
+  synonyms:
+  - makhan
+  allergen_tags:
+  - dairy
+  religious_tags: []
+  dietary_tags:
+  - vegetarian
+  per_100g:
+    kcal: 717
+    protein_g: 0.9
+    carbs_g: 0.1
+    fat_g: 81.1
+    sodium_mg: 11
+    fibre_g: 0.0
+  cost_per_100g_inr: 45
+- id: ing_ghee
+  name: Ghee
+  synonyms:
+  - clarified butter
+  allergen_tags:
+  - dairy
+  religious_tags: []
+  dietary_tags:
+  - vegetarian
+  per_100g:
+    kcal: 900
+    protein_g: 0.0
+    carbs_g: 0.0
+    fat_g: 100.0
+    sodium_mg: 0
+    fibre_g: 0.0
+  cost_per_100g_inr: 55
+- id: ing_cheese
+  name: Cheddar cheese
+  synonyms: []
+  allergen_tags:
+  - dairy
+  religious_tags: []
+  dietary_tags:
+  - vegetarian
+  per_100g:
+    kcal: 403
+    protein_g: 25.0
+    carbs_g: 1.3
+    fat_g: 33.1
+    sodium_mg: 621
+    fibre_g: 0.0
+  cost_per_100g_inr: 60
+- id: ing_cream
+  name: Fresh cream
+  synonyms:
+  - malai
+  allergen_tags:
+  - dairy
+  religious_tags: []
+  dietary_tags:
+  - vegetarian
+  per_100g:
+    kcal: 340
+    protein_g: 2.1
+    carbs_g: 2.8
+    fat_g: 36.0
+    sodium_mg: 27
+    fibre_g: 0.0
+  cost_per_100g_inr: 35
+- id: ing_mozzarella
+  name: Mozzarella cheese
+  synonyms: []
+  allergen_tags:
+  - dairy
+  religious_tags: []
+  dietary_tags:
+  - vegetarian
+  per_100g:
+    kcal: 280
+    protein_g: 28.0
+    carbs_g: 3.1
+    fat_g: 17.0
+    sodium_mg: 373
+    fibre_g: 0.0
+  cost_per_100g_inr: 70
+- id: ing_egg
+  name: Egg
+  synonyms:
+  - anda
+  allergen_tags:
+  - egg
+  religious_tags: []
+  dietary_tags: []
+  per_100g:
+    kcal: 155
+    protein_g: 13.0
+    carbs_g: 1.1
+    fat_g: 11.0
+    sodium_mg: 124
+    fibre_g: 0.0
+  cost_per_100g_inr: 8
+- id: ing_chicken_breast
+  name: Chicken breast
+  synonyms:
+  - murgh
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags: []
+  per_100g:
+    kcal: 165
+    protein_g: 31.0
+    carbs_g: 0.0
+    fat_g: 3.6
+    sodium_mg: 74
+    fibre_g: 0.0
+  cost_per_100g_inr: 28
+- id: ing_chicken_thigh
+  name: Chicken thigh
+  synonyms: []
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags: []
+  per_100g:
+    kcal: 209
+    protein_g: 26.0
+    carbs_g: 0.0
+    fat_g: 10.9
+    sodium_mg: 90
+    fibre_g: 0.0
+  cost_per_100g_inr: 22
+- id: ing_mutton
+  name: Mutton
+  synonyms:
+  - bakra
+  - goat meat
+  allergen_tags: []
+  religious_tags:
+  - red_meat
+  dietary_tags: []
+  per_100g:
+    kcal: 294
+    protein_g: 25.0
+    carbs_g: 0.0
+    fat_g: 21.0
+    sodium_mg: 72
+    fibre_g: 0.0
+  cost_per_100g_inr: 55
+- id: ing_beef
+  name: Beef
+  synonyms: []
+  allergen_tags: []
+  religious_tags:
+  - beef
+  - red_meat
+  dietary_tags: []
+  per_100g:
+    kcal: 250
+    protein_g: 26.0
+    carbs_g: 0.0
+    fat_g: 15.0
+    sodium_mg: 72
+    fibre_g: 0.0
+  cost_per_100g_inr: 40
+- id: ing_pork
+  name: Pork
+  synonyms: []
+  allergen_tags: []
+  religious_tags:
+  - pork
+  dietary_tags: []
+  per_100g:
+    kcal: 242
+    protein_g: 27.0
+    carbs_g: 0.0
+    fat_g: 14.0
+    sodium_mg: 62
+    fibre_g: 0.0
+  cost_per_100g_inr: 38
+- id: ing_fish_rohu
+  name: Rohu fish
+  synonyms:
+  - rohu
+  - freshwater fish
+  allergen_tags:
+  - fish
+  religious_tags: []
+  dietary_tags: []
+  per_100g:
+    kcal: 97
+    protein_g: 16.6
+    carbs_g: 0.0
+    fat_g: 2.8
+    sodium_mg: 45
+    fibre_g: 0.0
+  cost_per_100g_inr: 25
+- id: ing_prawns
+  name: Prawns
+  synonyms:
+  - shrimp
+  - jhinga
+  allergen_tags:
+  - shellfish
+  religious_tags: []
+  dietary_tags: []
+  per_100g:
+    kcal: 99
+    protein_g: 24.0
+    carbs_g: 0.2
+    fat_g: 0.3
+    sodium_mg: 111
+    fibre_g: 0.0
+  cost_per_100g_inr: 45
+- id: ing_salmon
+  name: Salmon
+  synonyms: []
+  allergen_tags:
+  - fish
+  religious_tags: []
+  dietary_tags: []
+  per_100g:
+    kcal: 208
+    protein_g: 20.4
+    carbs_g: 0.0
+    fat_g: 13.4
+    sodium_mg: 59
+    fibre_g: 0.0
+  cost_per_100g_inr: 90
+- id: ing_pomfret
+  name: Pomfret fish
+  synonyms: []
+  allergen_tags:
+  - fish
+  religious_tags: []
+  dietary_tags: []
+  per_100g:
+    kcal: 138
+    protein_g: 18.8
+    carbs_g: 0.0
+    fat_g: 6.8
+    sodium_mg: 68
+    fibre_g: 0.0
+  cost_per_100g_inr: 60
+- id: ing_gelatin
+  name: Gelatin
+  synonyms: []
+  allergen_tags: []
+  religious_tags:
+  - gelatin
+  dietary_tags: []
+  per_100g:
+    kcal: 335
+    protein_g: 85.6
+    carbs_g: 0.0
+    fat_g: 0.1
+    sodium_mg: 126
+    fibre_g: 0.0
+  cost_per_100g_inr: 90
+- id: ing_peanut_oil
+  name: Peanut oil
+  synonyms:
+  - groundnut oil
+  - arachis oil
+  allergen_tags:
+  - peanut
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 884
+    protein_g: 0.0
+    carbs_g: 0.0
+    fat_g: 100.0
+    sodium_mg: 0
+    fibre_g: 0.0
+  cost_per_100g_inr: 22
+- id: ing_mustard_oil
+  name: Mustard oil
+  synonyms:
+  - sarson ka tel
+  - mustard
+  # Mustard is one of the 14 major allergens under EU/UK food law, and this
+  # catalog had no way to express a mustard allergy at all. Tagging it also
+  # makes the ordinary case work: "dislikes mustard" is a CATEGORY (oil and
+  # seeds), which `exclude_ingredient` cannot express in one constraint —
+  # before this, the compiler emitted a bare "mustard" that resolved to
+  # neither id and correctly escalated rather than guessing which was meant.
+  allergen_tags: [mustard]
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 884
+    protein_g: 0.0
+    carbs_g: 0.0
+    fat_g: 100.0
+    sodium_mg: 0
+    fibre_g: 0.0
+  cost_per_100g_inr: 16
+- id: ing_sunflower_oil
+  name: Sunflower oil
+  synonyms: []
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 884
+    protein_g: 0.0
+    carbs_g: 0.0
+    fat_g: 100.0
+    sodium_mg: 0
+    fibre_g: 0.0
+  cost_per_100g_inr: 14
+- id: ing_olive_oil
+  name: Olive oil
+  synonyms: []
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 884
+    protein_g: 0.0
+    carbs_g: 0.0
+    fat_g: 100.0
+    sodium_mg: 2
+    fibre_g: 0.0
+  cost_per_100g_inr: 60
+- id: ing_sesame_oil
+  name: Sesame oil
+  synonyms: []
+  allergen_tags:
+  - sesame
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 884
+    protein_g: 0.0
+    carbs_g: 0.0
+    fat_g: 100.0
+    sodium_mg: 0
+    fibre_g: 0.0
+  cost_per_100g_inr: 30
+- id: ing_coconut_oil
+  name: Coconut oil
+  synonyms: []
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 862
+    protein_g: 0.0
+    carbs_g: 0.0
+    fat_g: 100.0
+    sodium_mg: 0
+    fibre_g: 0.0
+  cost_per_100g_inr: 25
+- id: ing_peanuts
+  name: Peanuts
+  synonyms:
+  - groundnuts
+  - moongphali
+  allergen_tags:
+  - peanut
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 567
+    protein_g: 25.8
+    carbs_g: 16.1
+    fat_g: 49.2
+    sodium_mg: 18
+    fibre_g: 8.5
+  cost_per_100g_inr: 12
+- id: ing_cashew
+  name: Cashew nuts
+  synonyms:
+  - kaju
+  allergen_tags:
+  - tree_nut
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 553
+    protein_g: 18.2
+    carbs_g: 30.2
+    fat_g: 43.9
+    sodium_mg: 12
+    fibre_g: 3.3
+  cost_per_100g_inr: 70
+- id: ing_almond
+  name: Almonds
+  synonyms:
+  - badam
+  allergen_tags:
+  - tree_nut
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 579
+    protein_g: 21.2
+    carbs_g: 21.6
+    fat_g: 49.9
+    sodium_mg: 1
+    fibre_g: 12.5
+  cost_per_100g_inr: 80
+- id: ing_walnut
+  name: Walnuts
+  synonyms:
+  - akhrot
+  allergen_tags:
+  - tree_nut
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 654
+    protein_g: 15.2
+    carbs_g: 13.7
+    fat_g: 65.2
+    sodium_mg: 2
+    fibre_g: 6.7
+  cost_per_100g_inr: 90
+- id: ing_sesame_seeds
+  name: Sesame seeds
+  synonyms:
+  - til
+  allergen_tags:
+  - sesame
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 573
+    protein_g: 17.7
+    carbs_g: 23.4
+    fat_g: 49.7
+    sodium_mg: 11
+    fibre_g: 11.8
+  cost_per_100g_inr: 30
+- id: ing_chia_seeds
+  name: Chia seeds
+  synonyms: []
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 486
+    protein_g: 16.5
+    carbs_g: 42.1
+    fat_g: 30.7
+    sodium_mg: 16
+    fibre_g: 34.4
+  cost_per_100g_inr: 60
+- id: ing_cumin
+  name: Cumin seeds
+  synonyms:
+  - jeera
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 375
+    protein_g: 17.8
+    carbs_g: 44.2
+    fat_g: 22.3
+    sodium_mg: 168
+    fibre_g: 10.5
+  cost_per_100g_inr: 12
+- id: ing_turmeric
+  name: Turmeric powder
+  synonyms:
+  - haldi
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 354
+    protein_g: 7.8
+    carbs_g: 64.9
+    fat_g: 9.9
+    sodium_mg: 38
+    fibre_g: 21.1
+  cost_per_100g_inr: 18
+- id: ing_coriander_powder
+  name: Coriander powder
+  synonyms:
+  - dhania powder
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 298
+    protein_g: 12.4
+    carbs_g: 55.0
+    fat_g: 17.8
+    sodium_mg: 35
+    fibre_g: 41.9
+  cost_per_100g_inr: 10
+- id: ing_garam_masala
+  name: Garam masala
+  synonyms: []
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 379
+    protein_g: 14.0
+    carbs_g: 50.0
+    fat_g: 15.0
+    sodium_mg: 45
+    fibre_g: 20.0
+  cost_per_100g_inr: 25
+- id: ing_red_chilli_powder
+  name: Red chilli powder
+  synonyms:
+  - lal mirch powder
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 282
+    protein_g: 14.0
+    carbs_g: 50.0
+    fat_g: 14.3
+    sodium_mg: 32
+    fibre_g: 34.8
+  cost_per_100g_inr: 15
+- id: ing_salt
+  name: Salt
+  synonyms:
+  - namak
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 0
+    protein_g: 0.0
+    carbs_g: 0.0
+    fat_g: 0.0
+    sodium_mg: 38758
+    fibre_g: 0.0
+  cost_per_100g_inr: 2
+- id: ing_sugar
+  name: Sugar
+  synonyms:
+  - cheeni
+  - chini
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 387
+    protein_g: 0.0
+    carbs_g: 100.0
+    fat_g: 0.0
+    sodium_mg: 1
+    fibre_g: 0.0
+  cost_per_100g_inr: 4
+- id: ing_jaggery
+  name: Jaggery
+  synonyms:
+  - gur
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 383
+    protein_g: 0.4
+    carbs_g: 97.3
+    fat_g: 0.1
+    sodium_mg: 39
+    fibre_g: 0.0
+  cost_per_100g_inr: 6
+- id: ing_soy_sauce
+  name: Soy sauce
+  synonyms: []
+  allergen_tags:
+  - soy
+  - gluten
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 53
+    protein_g: 8.1
+    carbs_g: 4.9
+    fat_g: 0.6
+    sodium_mg: 5493
+    fibre_g: 0.8
+  cost_per_100g_inr: 10
+- id: ing_vinegar
+  name: Vinegar
+  synonyms: []
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 18
+    protein_g: 0.0
+    carbs_g: 0.4
+    fat_g: 0.0
+    sodium_mg: 2
+    fibre_g: 0.0
+  cost_per_100g_inr: 5
+- id: ing_tomato_ketchup
+  name: Tomato ketchup
+  synonyms: []
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 112
+    protein_g: 1.2
+    carbs_g: 27.0
+    fat_g: 0.2
+    sodium_mg: 1100
+    fibre_g: 0.4
+  cost_per_100g_inr: 8
+- id: ing_mayonnaise
+  name: Mayonnaise
+  synonyms: []
+  allergen_tags:
+  - egg
+  religious_tags: []
+  dietary_tags:
+  - vegetarian
+  per_100g:
+    kcal: 680
+    protein_g: 1.0
+    carbs_g: 2.0
+    fat_g: 75.0
+    sodium_mg: 500
+    fibre_g: 0.0
+  cost_per_100g_inr: 20
+- id: ing_curry_leaves
+  name: Curry leaves
+  synonyms:
+  - kadi patta
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 108
+    protein_g: 6.1
+    carbs_g: 18.7
+    fat_g: 1.0
+    sodium_mg: 6
+    fibre_g: 6.4
+  cost_per_100g_inr: 20
+- id: ing_mustard_seeds
+  name: Mustard seeds
+  synonyms:
+  - rai
+  - sarson
+  - mustard
+  # Mustard is one of the 14 major allergens under EU/UK food law, and this
+  # catalog had no way to express a mustard allergy at all. Tagging it also
+  # makes the ordinary case work: "dislikes mustard" is a CATEGORY (oil and
+  # seeds), which `exclude_ingredient` cannot express in one constraint —
+  # before this, the compiler emitted a bare "mustard" that resolved to
+  # neither id and correctly escalated rather than guessing which was meant.
+  allergen_tags: [mustard]
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 508
+    protein_g: 26.1
+    carbs_g: 28.1
+    fat_g: 36.2
+    sodium_mg: 13
+    fibre_g: 12.2
+  cost_per_100g_inr: 10
+- id: ing_coriander_leaves
+  name: Coriander leaves
+  synonyms:
+  - dhania
+  - cilantro
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 23
+    protein_g: 2.1
+    carbs_g: 3.7
+    fat_g: 0.5
+    sodium_mg: 46
+    fibre_g: 2.8
+  cost_per_100g_inr: 10
+- id: ing_mint_leaves
+  name: Mint leaves
+  synonyms:
+  - pudina
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 70
+    protein_g: 3.8
+    carbs_g: 14.9
+    fat_g: 0.9
+    sodium_mg: 31
+    fibre_g: 8.0
+  cost_per_100g_inr: 12
+- id: ing_peanut_sauce
+  name: Peanut sauce
+  synonyms:
+  - satay sauce
+  allergen_tags:
+  - peanut
+  - soy
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 280
+    protein_g: 9.0
+    carbs_g: 14.0
+    fat_g: 22.0
+    sodium_mg: 680
+    fibre_g: 3.0
+  cost_per_100g_inr: 18
+- id: ing_curry_paste_base
+  name: Onion-tomato curry paste
+  synonyms: []
+  allergen_tags: []
+  religious_tags:
+  - root_vegetable
+  - allium
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 70
+    protein_g: 1.5
+    carbs_g: 9.0
+    fat_g: 3.0
+    sodium_mg: 350
+    fibre_g: 1.8
+  cost_per_100g_inr: 12
+- id: ing_pesto
+  name: Basil pesto
+  synonyms: []
+  allergen_tags:
+  - tree_nut
+  - dairy
+  religious_tags: []
+  dietary_tags:
+  - vegetarian
+  per_100g:
+    kcal: 303
+    protein_g: 4.5
+    carbs_g: 4.0
+    fat_g: 30.0
+    sodium_mg: 380
+    fibre_g: 2.0
+  cost_per_100g_inr: 45
+- id: ing_hummus
+  name: Hummus
+  synonyms: []
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 166
+    protein_g: 7.9
+    carbs_g: 14.3
+    fat_g: 9.6
+    sodium_mg: 379
+    fibre_g: 6.0
+  cost_per_100g_inr: 25
+- id: ing_tahini
+  name: Tahini
+  synonyms:
+  - sesame paste
+  allergen_tags:
+  - sesame
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 595
+    protein_g: 17.0
+    carbs_g: 21.2
+    fat_g: 53.8
+    sodium_mg: 115
+    fibre_g: 9.3
+  cost_per_100g_inr: 40
+- id: ing_white_sauce
+  name: Bechamel white sauce
+  synonyms: []
+  allergen_tags:
+  - dairy
+  - gluten
+  religious_tags: []
+  dietary_tags:
+  - vegetarian
+  per_100g:
+    kcal: 150
+    protein_g: 4.0
+    carbs_g: 10.0
+    fat_g: 10.0
+    sodium_mg: 200
+    fibre_g: 0.3
+  cost_per_100g_inr: 15
+- id: ing_kimchi
+  name: Kimchi
+  synonyms: []
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 15
+    protein_g: 1.1
+    carbs_g: 2.4
+    fat_g: 0.5
+    sodium_mg: 498
+    fibre_g: 1.6
+  cost_per_100g_inr: 20
+- id: ing_miso_paste
+  name: Miso paste
+  synonyms: []
+  allergen_tags:
+  - soy
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 199
+    protein_g: 12.8
+    carbs_g: 26.5
+    fat_g: 6.0
+    sodium_mg: 3728
+    fibre_g: 5.4
+  cost_per_100g_inr: 35
+- id: ing_salsa
+  name: Tomato salsa
+  synonyms: []
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 36
+    protein_g: 1.5
+    carbs_g: 7.5
+    fat_g: 0.2
+    sodium_mg: 430
+    fibre_g: 1.8
+  cost_per_100g_inr: 15
+- id: ing_guacamole
+  name: Guacamole
+  synonyms: []
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 150
+    protein_g: 2.0
+    carbs_g: 8.5
+    fat_g: 13.0
+    sodium_mg: 350
+    fibre_g: 6.0
+  cost_per_100g_inr: 35
+- id: ing_satay_marinade
+  name: Satay marinade
+  synonyms: []
+  allergen_tags:
+  - peanut
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 250
+    protein_g: 8.0
+    carbs_g: 12.0
+    fat_g: 19.0
+    sodium_mg: 520
+    fibre_g: 2.5
+  cost_per_100g_inr: 16
+- id: ing_moong_sprouts
+  name: Sprouted moong
+  synonyms: []
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 30
+    protein_g: 3.2
+    carbs_g: 5.9
+    fat_g: 0.2
+    sodium_mg: 6
+    fibre_g: 1.8
+  cost_per_100g_inr: 10
+- id: ing_bean_sprouts
+  name: Bean sprouts
+  synonyms: []
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 30
+    protein_g: 3.0
+    carbs_g: 6.0
+    fat_g: 0.2
+    sodium_mg: 6
+    fibre_g: 1.8
+  cost_per_100g_inr: 10
+- id: ing_star_anise
+  name: Star anise
+  synonyms: []
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 337
+    protein_g: 17.6
+    carbs_g: 50.1
+    fat_g: 15.9
+    sodium_mg: 28
+    fibre_g: 14.6
+  cost_per_100g_inr: 40
+- id: ing_ginger_garlic_paste
+  name: Ginger garlic paste
+  synonyms: []
+  allergen_tags: []
+  religious_tags:
+  - root_vegetable
+  - allium
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 95
+    protein_g: 3.5
+    carbs_g: 17.0
+    fat_g: 1.5
+    sodium_mg: 25
+    fibre_g: 2.5
+  cost_per_100g_inr: 15
+- id: ing_yeast
+  name: Baker's yeast
+  synonyms: []
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 325
+    protein_g: 40.0
+    carbs_g: 38.0
+    fat_g: 7.6
+    sodium_mg: 51
+    fibre_g: 26.9
+  cost_per_100g_inr: 30
+- id: ing_baking_powder
+  name: Baking powder
+  synonyms: []
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 53
+    protein_g: 0.0
+    carbs_g: 28.0
+    fat_g: 0.0
+    sodium_mg: 10600
+    fibre_g: 0.2
+  cost_per_100g_inr: 10
+- id: ing_coconut_milk
+  name: Coconut milk
+  synonyms: []
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 230
+    protein_g: 2.3
+    carbs_g: 5.5
+    fat_g: 23.8
+    sodium_mg: 15
+    fibre_g: 2.2
+  cost_per_100g_inr: 18
+- id: ing_fenugreek_leaves
+  name: Fenugreek leaves
+  synonyms:
+  - methi
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 49
+    protein_g: 4.4
+    carbs_g: 6.0
+    fat_g: 0.9
+    sodium_mg: 76
+    fibre_g: 24.6
+  cost_per_100g_inr: 10
+- id: ing_drumstick
+  name: Drumstick vegetable
+  synonyms:
+  - moringa
+  - sahjan
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 37
+    protein_g: 2.1
+    carbs_g: 8.5
+    fat_g: 0.2
+    sodium_mg: 42
+    fibre_g: 3.2
+  cost_per_100g_inr: 10
+- id: ing_fish_sauce
+  name: Fish sauce
+  synonyms: []
+  allergen_tags:
+  - fish
+  religious_tags: []
+  dietary_tags: []
+  per_100g:
+    kcal: 35
+    protein_g: 5.1
+    carbs_g: 3.6
+    fat_g: 0.0
+    sodium_mg: 7850
+    fibre_g: 0.0
+  cost_per_100g_inr: 25
+- id: ing_oyster_sauce
+  name: Oyster sauce
+  synonyms: []
+  allergen_tags:
+  - shellfish
+  - soy
+  religious_tags: []
+  dietary_tags: []
+  per_100g:
+    kcal: 51
+    protein_g: 1.4
+    carbs_g: 11.0
+    fat_g: 0.3
+    sodium_mg: 2700
+    fibre_g: 0.4
+  cost_per_100g_inr: 20
+- id: ing_gochujang
+  name: Gochujang paste
+  synonyms: []
+  allergen_tags:
+  - soy
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 170
+    protein_g: 4.5
+    carbs_g: 35.0
+    fat_g: 1.5
+    sodium_mg: 1900
+    fibre_g: 4.0
+  cost_per_100g_inr: 30
+- id: ing_black_pepper
+  name: Black pepper
+  synonyms:
+  - kali mirch
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 251
+    protein_g: 10.4
+    carbs_g: 63.9
+    fat_g: 3.3
+    sodium_mg: 20
+    fibre_g: 25.3
+  cost_per_100g_inr: 25
+- id: ing_bay_leaf
+  name: Bay leaf
+  synonyms:
+  - tej patta
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 313
+    protein_g: 7.6
+    carbs_g: 75.0
+    fat_g: 8.4
+    sodium_mg: 23
+    fibre_g: 26.3
+  cost_per_100g_inr: 15
+- id: ing_cinnamon
+  name: Cinnamon
+  synonyms:
+  - dalchini
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 247
+    protein_g: 4.0
+    carbs_g: 80.6
+    fat_g: 1.2
+    sodium_mg: 10
+    fibre_g: 53.1
+  cost_per_100g_inr: 20
+- id: ing_asafoetida
+  name: Asafoetida
+  synonyms:
+  - hing
+  # Compounded asafoetida — the standard retail form in India — is cut with
+  # WHEAT FLOUR as a bulking and anti-caking agent. Pure resin is gluten-free,
+  # but the catalog cannot tell the two apart from an ingredient id, and
+  # coeliac guidance flags hing for exactly this reason. Tagged gluten as the
+  # fail-closed default: before this, 12 asafoetida dishes were legal for the
+  # `nonveg_coeliac` preset. If a verified pure-resin supply is ever modelled,
+  # add it as a SEPARATE ingredient id rather than removing this tag.
+  allergen_tags: [gluten]
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 297
+    protein_g: 4.0
+    carbs_g: 67.8
+    fat_g: 1.1
+    sodium_mg: 610
+    fibre_g: 4.1
+  cost_per_100g_inr: 80
+- id: ing_besan
+  name: Besan (chickpea flour)
+  synonyms:
+  - gram flour
+  - chana flour
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 387
+    protein_g: 22.4
+    carbs_g: 57.8
+    fat_g: 6.7
+    sodium_mg: 64
+    fibre_g: 10.8
+  cost_per_100g_inr: 9
+- id: ing_ragi_flour
+  name: Ragi flour
+  synonyms:
+  - finger millet flour
+  - nachni
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 328
+    protein_g: 7.3
+    carbs_g: 72.0
+    fat_g: 1.3
+    sodium_mg: 11
+    fibre_g: 3.6
+  cost_per_100g_inr: 9
+- id: ing_ridge_gourd
+  name: Ridge gourd
+  synonyms:
+  - turai
+  - beerakaya
+  allergen_tags: []
+  religious_tags: []
+  dietary_tags:
+  - vegan
+  - vegetarian
+  per_100g:
+    kcal: 20
+    protein_g: 1.2
+    carbs_g: 4.4
+    fat_g: 0.2
+    sodium_mg: 3
+    fibre_g: 1.1
+  cost_per_100g_inr: 6
+- id: ing_mackerel
+  name: Mackerel
+  synonyms:
+  - bangda
+  allergen_tags:
+  - fish
+  religious_tags: []
+  dietary_tags: []
+  per_100g:
+    kcal: 205
+    protein_g: 18.6
+    carbs_g: 0.0
+    fat_g: 13.9
+    sodium_mg: 90
+    fibre_g: 0.0
+  cost_per_100g_inr: 30
+- id: ing_tuna
+  name: Tuna (canned in water)
+  synonyms:
+  - tuna fish
+  allergen_tags:
+  - fish
+  religious_tags: []
+  dietary_tags: []
+  per_100g:
+    kcal: 116
+    protein_g: 25.5
+    carbs_g: 0.0
+    fat_g: 0.8
+    sodium_mg: 247
+    fibre_g: 0.0
+  cost_per_100g_inr: 55

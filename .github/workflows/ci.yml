@@ -1,0 +1,21 @@
+name: ci
+on: [push, pull_request]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+      - run: uv sync --all-extras
+      - run: uv run ruff check src tests
+      - run: uv run mypy src
+      - run: uv run pytest --cov --cov-report=term-missing
+      - name: Safety evals (no credentials required)
+        env:
+          BEATROOT_OFFLINE: "1"
+        run: |
+          uv run beatroot eval system
+          uv run beatroot eval components

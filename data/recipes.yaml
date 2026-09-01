@@ -1,0 +1,3315 @@
+- id: rec_paneer_butter_masala
+  name: Paneer butter masala
+  cuisine: north_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 35
+  ingredients:
+  - ingredient_id: ing_paneer
+    grams: 150
+  - ingredient_id: ing_tomato
+    grams: 150
+  - ingredient_id: ing_onion
+    grams: 80
+  - ingredient_id: ing_butter
+    grams: 15
+  - ingredient_id: ing_cream
+    grams: 30
+  - ingredient_id: ing_ginger_garlic_paste
+    grams: 10
+  - ingredient_id: ing_garam_masala
+    grams: 5
+  - ingredient_id: ing_salt
+    grams: 1
+- id: rec_dal_makhani
+  name: Dal makhani
+  cuisine: north_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 45
+  ingredients:
+  - ingredient_id: ing_black_gram
+    grams: 90
+  - ingredient_id: ing_rajma
+    grams: 50
+  - ingredient_id: ing_butter
+    grams: 20
+  - ingredient_id: ing_cream
+    grams: 40
+  - ingredient_id: ing_tomato
+    grams: 100
+  - ingredient_id: ing_onion
+    grams: 60
+  - ingredient_id: ing_curry_paste_base
+    grams: 30
+  - ingredient_id: ing_ginger_garlic_paste
+    grams: 10
+  - ingredient_id: ing_garam_masala
+    grams: 5
+- id: rec_chole
+  name: Chole masala
+  cuisine: north_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_chickpeas
+    grams: 90
+  - ingredient_id: ing_onion
+    grams: 80
+  - ingredient_id: ing_tomato
+    grams: 100
+  - ingredient_id: ing_ginger_garlic_paste
+    grams: 10
+  - ingredient_id: ing_cumin
+    grams: 3
+  - ingredient_id: ing_coriander_powder
+    grams: 5
+  - ingredient_id: ing_garam_masala
+    grams: 5
+  - ingredient_id: ing_sunflower_oil
+    grams: 15
+- id: rec_aloo_gobi
+  name: Aloo gobi
+  cuisine: north_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 25
+  ingredients:
+  - ingredient_id: ing_potato
+    grams: 150
+  - ingredient_id: ing_cauliflower
+    grams: 150
+  - ingredient_id: ing_onion
+    grams: 70
+  - ingredient_id: ing_turmeric
+    grams: 3
+  - ingredient_id: ing_cumin
+    grams: 3
+  - ingredient_id: ing_mustard_oil
+    grams: 15
+- id: rec_rajma_chawal
+  name: Rajma chawal
+  cuisine: north_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 40
+  ingredients:
+  - ingredient_id: ing_rajma
+    grams: 90
+  - ingredient_id: ing_rice
+    grams: 100
+  - ingredient_id: ing_onion
+    grams: 60
+  - ingredient_id: ing_tomato
+    grams: 80
+  - ingredient_id: ing_ginger_garlic_paste
+    grams: 10
+  - ingredient_id: ing_garam_masala
+    grams: 5
+  - ingredient_id: ing_sunflower_oil
+    grams: 10
+- id: rec_palak_paneer
+  name: Palak paneer
+  cuisine: north_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_spinach
+    grams: 150
+  - ingredient_id: ing_paneer
+    grams: 150
+  - ingredient_id: ing_onion
+    grams: 50
+  - ingredient_id: ing_tomato
+    grams: 60
+  - ingredient_id: ing_cream
+    grams: 20
+  - ingredient_id: ing_ginger_garlic_paste
+    grams: 8
+  - ingredient_id: ing_garam_masala
+    grams: 4
+- id: rec_chicken_curry_punjabi
+  name: Punjabi chicken curry
+  cuisine: north_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 45
+  ingredients:
+  - ingredient_id: ing_chicken_thigh
+    grams: 180
+  - ingredient_id: ing_onion
+    grams: 100
+  - ingredient_id: ing_tomato
+    grams: 120
+  - ingredient_id: ing_yoghurt
+    grams: 50
+  - ingredient_id: ing_ginger_garlic_paste
+    grams: 12
+  - ingredient_id: ing_garam_masala
+    grams: 6
+  - ingredient_id: ing_mustard_oil
+    grams: 15
+- id: rec_butter_chicken
+  name: Butter chicken
+  cuisine: north_indian
+  meal_slot:
+  - dinner
+  prep_minutes: 50
+  ingredients:
+  - ingredient_id: ing_chicken_breast
+    grams: 180
+  - ingredient_id: ing_tomato
+    grams: 150
+  - ingredient_id: ing_butter
+    grams: 20
+  - ingredient_id: ing_cream
+    grams: 40
+  - ingredient_id: ing_yoghurt
+    grams: 30
+  - ingredient_id: ing_ginger_garlic_paste
+    grams: 10
+  - ingredient_id: ing_garam_masala
+    grams: 6
+- id: rec_stuffed_paratha
+  name: Aloo paratha
+  cuisine: north_indian
+  meal_slot:
+  - breakfast
+  prep_minutes: 20
+  ingredients:
+  - ingredient_id: ing_wheat_flour
+    grams: 90
+  - ingredient_id: ing_potato
+    grams: 100
+  - ingredient_id: ing_green_chilli
+    grams: 5
+  - ingredient_id: ing_ghee
+    grams: 15
+  - ingredient_id: ing_salt
+    grams: 2
+- id: rec_poha_breakfast
+  name: Peanut poha
+  cuisine: north_indian
+  meal_slot:
+  - breakfast
+  prep_minutes: 15
+  ingredients:
+  - ingredient_id: ing_poha
+    grams: 100
+  - ingredient_id: ing_onion
+    grams: 40
+  - ingredient_id: ing_green_chilli
+    grams: 5
+  - ingredient_id: ing_mustard_seeds
+    grams: 3
+  - ingredient_id: ing_peanuts
+    grams: 15
+  - ingredient_id: ing_sunflower_oil
+    grams: 10
+  - ingredient_id: ing_curry_leaves
+    grams: 2
+  - ingredient_id: ing_lemon
+    grams: 10
+- id: rec_lassi
+  name: Sweet lassi
+  cuisine: north_indian
+  meal_slot:
+  - breakfast
+  - snack
+  prep_minutes: 5
+  ingredients:
+  - ingredient_id: ing_yoghurt
+    grams: 200
+  - ingredient_id: ing_sugar
+    grams: 20
+  - ingredient_id: ing_milk
+    grams: 50
+- id: rec_aloo_tikki
+  name: Aloo tikki
+  cuisine: north_indian
+  meal_slot:
+  - snack
+  prep_minutes: 20
+  ingredients:
+  - ingredient_id: ing_potato
+    grams: 150
+  - ingredient_id: ing_green_chilli
+    grams: 5
+  - ingredient_id: ing_coriander_leaves
+    grams: 5
+  - ingredient_id: ing_red_chilli_powder
+    grams: 2
+  - ingredient_id: ing_peanut_oil
+    grams: 15
+- id: rec_jeera_rice
+  name: Jeera rice
+  cuisine: north_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 20
+  ingredients:
+  - ingredient_id: ing_basmati_rice
+    grams: 100
+  - ingredient_id: ing_cumin
+    grams: 4
+  - ingredient_id: ing_ghee
+    grams: 20
+  - ingredient_id: ing_salt
+    grams: 2
+- id: rec_paneer_tikka
+  name: Paneer tikka
+  cuisine: north_indian
+  meal_slot:
+  - snack
+  - dinner
+  prep_minutes: 25
+  ingredients:
+  - ingredient_id: ing_paneer
+    grams: 180
+  - ingredient_id: ing_capsicum
+    grams: 60
+  - ingredient_id: ing_onion
+    grams: 60
+  - ingredient_id: ing_yoghurt
+    grams: 50
+  - ingredient_id: ing_ginger_garlic_paste
+    grams: 10
+  - ingredient_id: ing_garam_masala
+    grams: 5
+  - ingredient_id: ing_mustard_oil
+    grams: 10
+- id: rec_masala_dosa
+  name: Masala dosa
+  cuisine: south_indian
+  meal_slot:
+  - breakfast
+  prep_minutes: 40
+  ingredients:
+  - ingredient_id: ing_rice
+    grams: 100
+  - ingredient_id: ing_black_gram
+    grams: 50
+  - ingredient_id: ing_potato
+    grams: 150
+  - ingredient_id: ing_onion
+    grams: 40
+  - ingredient_id: ing_mustard_seeds
+    grams: 3
+  - ingredient_id: ing_curry_leaves
+    grams: 2
+  - ingredient_id: ing_sunflower_oil
+    grams: 15
+  - ingredient_id: ing_turmeric
+    grams: 2
+- id: rec_idli
+  name: Steamed idli
+  cuisine: south_indian
+  meal_slot:
+  - breakfast
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_rice
+    grams: 100
+  - ingredient_id: ing_black_gram
+    grams: 50
+  - ingredient_id: ing_salt
+    grams: 2
+- id: rec_sambar
+  name: Vegetable sambar
+  cuisine: south_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 35
+  ingredients:
+  - ingredient_id: ing_toor_dal
+    grams: 90
+  - ingredient_id: ing_drumstick
+    grams: 60
+  - ingredient_id: ing_tomato
+    grams: 60
+  - ingredient_id: ing_tamarind
+    grams: 15
+  - ingredient_id: ing_curry_leaves
+    grams: 2
+  - ingredient_id: ing_mustard_seeds
+    grams: 3
+  - ingredient_id: ing_turmeric
+    grams: 2
+  - ingredient_id: ing_sunflower_oil
+    grams: 10
+  - ingredient_id: ing_onion
+    grams: 40
+- id: rec_rasam
+  name: Tomato rasam
+  cuisine: south_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 20
+  ingredients:
+  - ingredient_id: ing_toor_dal
+    grams: 60
+  - ingredient_id: ing_tomato
+    grams: 120
+  - ingredient_id: ing_tamarind
+    grams: 10
+  - ingredient_id: ing_black_pepper
+    grams: 2
+  - ingredient_id: ing_cumin
+    grams: 2
+  - ingredient_id: ing_curry_leaves
+    grams: 2
+  - ingredient_id: ing_garlic
+    grams: 10
+- id: rec_curd_rice
+  name: Curd rice
+  cuisine: south_indian
+  meal_slot:
+  - lunch
+  prep_minutes: 10
+  ingredients:
+  - ingredient_id: ing_rice
+    grams: 120
+  - ingredient_id: ing_yoghurt
+    grams: 200
+  - ingredient_id: ing_mustard_seeds
+    grams: 2
+  - ingredient_id: ing_curry_leaves
+    grams: 2
+  - ingredient_id: ing_green_chilli
+    grams: 3
+- id: rec_upma
+  name: Peanut upma
+  cuisine: south_indian
+  meal_slot:
+  - breakfast
+  prep_minutes: 20
+  ingredients:
+  - ingredient_id: ing_semolina
+    grams: 90
+  - ingredient_id: ing_onion
+    grams: 40
+  - ingredient_id: ing_green_chilli
+    grams: 5
+  - ingredient_id: ing_mustard_seeds
+    grams: 2
+  - ingredient_id: ing_curry_leaves
+    grams: 2
+  - ingredient_id: ing_peanuts
+    grams: 10
+  - ingredient_id: ing_sunflower_oil
+    grams: 10
+- id: rec_coconut_chutney
+  name: Coconut chutney
+  cuisine: south_indian
+  meal_slot:
+  - snack
+  prep_minutes: 10
+  ingredients:
+  - ingredient_id: ing_coconut
+    grams: 60
+  - ingredient_id: ing_green_chilli
+    grams: 5
+  - ingredient_id: ing_chana_dal
+    grams: 10
+  - ingredient_id: ing_mustard_seeds
+    grams: 2
+  - ingredient_id: ing_curry_leaves
+    grams: 2
+  - ingredient_id: ing_sunflower_oil
+    grams: 5
+- id: rec_vegetable_uttapam
+  name: Vegetable uttapam
+  cuisine: south_indian
+  meal_slot:
+  - breakfast
+  prep_minutes: 25
+  ingredients:
+  - ingredient_id: ing_rice
+    grams: 100
+  - ingredient_id: ing_black_gram
+    grams: 50
+  - ingredient_id: ing_onion
+    grams: 40
+  - ingredient_id: ing_tomato
+    grams: 30
+  - ingredient_id: ing_capsicum
+    grams: 30
+- id: rec_lemon_rice
+  name: Peanut lemon rice
+  cuisine: south_indian
+  meal_slot:
+  - lunch
+  prep_minutes: 20
+  ingredients:
+  - ingredient_id: ing_rice
+    grams: 100
+  - ingredient_id: ing_lemon
+    grams: 15
+  - ingredient_id: ing_mustard_seeds
+    grams: 3
+  - ingredient_id: ing_curry_leaves
+    grams: 2
+  - ingredient_id: ing_peanuts
+    grams: 15
+  - ingredient_id: ing_turmeric
+    grams: 2
+  - ingredient_id: ing_sunflower_oil
+    grams: 10
+- id: rec_fish_curry_kerala
+  name: Kerala fish curry
+  cuisine: south_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 35
+  ingredients:
+  - ingredient_id: ing_fish_rohu
+    grams: 180
+  - ingredient_id: ing_coconut_milk
+    grams: 150
+  - ingredient_id: ing_tamarind
+    grams: 10
+  - ingredient_id: ing_curry_leaves
+    grams: 2
+  - ingredient_id: ing_turmeric
+    grams: 3
+  - ingredient_id: ing_red_chilli_powder
+    grams: 5
+  - ingredient_id: ing_coconut_oil
+    grams: 15
+- id: rec_avial
+  name: Avial
+  cuisine: south_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_drumstick
+    grams: 80
+  - ingredient_id: ing_potato
+    grams: 60
+  - ingredient_id: ing_carrot
+    grams: 60
+  - ingredient_id: ing_cucumber
+    grams: 50
+  - ingredient_id: ing_coconut
+    grams: 60
+  - ingredient_id: ing_yoghurt
+    grams: 30
+  - ingredient_id: ing_curry_leaves
+    grams: 2
+  - ingredient_id: ing_coconut_oil
+    grams: 10
+- id: rec_pesarattu
+  name: Pesarattu
+  cuisine: south_indian
+  meal_slot:
+  - breakfast
+  prep_minutes: 25
+  ingredients:
+  - ingredient_id: ing_moong_dal
+    grams: 90
+  - ingredient_id: ing_ginger
+    grams: 15
+  - ingredient_id: ing_green_chilli
+    grams: 5
+  - ingredient_id: ing_cumin
+    grams: 3
+  - ingredient_id: ing_sunflower_oil
+    grams: 10
+- id: rec_bisi_bele_bath
+  name: Bisi bele bath
+  cuisine: south_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 40
+  ingredients:
+  - ingredient_id: ing_rice
+    grams: 100
+  - ingredient_id: ing_toor_dal
+    grams: 80
+  - ingredient_id: ing_carrot
+    grams: 50
+  - ingredient_id: ing_green_peas
+    grams: 40
+  - ingredient_id: ing_tamarind
+    grams: 10
+  - ingredient_id: ing_coconut
+    grams: 30
+  - ingredient_id: ing_sunflower_oil
+    grams: 10
+  - ingredient_id: ing_curry_leaves
+    grams: 2
+- id: rec_macher_jhol
+  name: Macher jhol
+  cuisine: bengali
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 35
+  ingredients:
+  - ingredient_id: ing_fish_rohu
+    grams: 180
+  - ingredient_id: ing_potato
+    grams: 100
+  - ingredient_id: ing_tomato
+    grams: 60
+  - ingredient_id: ing_mustard_oil
+    grams: 15
+  - ingredient_id: ing_turmeric
+    grams: 4
+  - ingredient_id: ing_green_chilli
+    grams: 5
+- id: rec_chingri_malai_curry
+  name: Chingri malai curry
+  cuisine: bengali
+  meal_slot:
+  - dinner
+  prep_minutes: 40
+  ingredients:
+  - ingredient_id: ing_prawns
+    grams: 180
+  - ingredient_id: ing_coconut_milk
+    grams: 150
+  - ingredient_id: ing_onion
+    grams: 60
+  - ingredient_id: ing_ginger_garlic_paste
+    grams: 10
+  - ingredient_id: ing_turmeric
+    grams: 3
+  - ingredient_id: ing_mustard_oil
+    grams: 15
+- id: rec_aloo_posto
+  name: Aloo posto
+  cuisine: bengali
+  meal_slot:
+  - lunch
+  prep_minutes: 25
+  ingredients:
+  - ingredient_id: ing_potato
+    grams: 180
+  - ingredient_id: ing_mustard_oil
+    grams: 15
+  - ingredient_id: ing_green_chilli
+    grams: 5
+  - ingredient_id: ing_turmeric
+    grams: 2
+- id: rec_chana_dal_bengali
+  name: Bengali chana dal
+  cuisine: bengali
+  meal_slot:
+  - lunch
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_chana_dal
+    grams: 90
+  - ingredient_id: ing_coconut
+    grams: 30
+  - ingredient_id: ing_bay_leaf
+    grams: 1
+  - ingredient_id: ing_cumin
+    grams: 3
+  - ingredient_id: ing_mustard_oil
+    grams: 10
+- id: rec_bengali_egg_curry
+  name: Bengali egg curry
+  cuisine: bengali
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_egg
+    grams: 150
+  - ingredient_id: ing_potato
+    grams: 100
+  - ingredient_id: ing_onion
+    grams: 60
+  - ingredient_id: ing_tomato
+    grams: 60
+  - ingredient_id: ing_ginger_garlic_paste
+    grams: 10
+  - ingredient_id: ing_garam_masala
+    grams: 5
+  - ingredient_id: ing_mustard_oil
+    grams: 15
+- id: rec_luchi
+  name: Luchi
+  cuisine: bengali
+  meal_slot:
+  - breakfast
+  prep_minutes: 25
+  ingredients:
+  - ingredient_id: ing_refined_flour
+    grams: 80
+  - ingredient_id: ing_sunflower_oil
+    grams: 15
+  - ingredient_id: ing_salt
+    grams: 2
+- id: rec_mishti_doi
+  name: Mishti doi
+  cuisine: bengali
+  meal_slot:
+  - snack
+  prep_minutes: 10
+  ingredients:
+  - ingredient_id: ing_yoghurt
+    grams: 200
+  - ingredient_id: ing_jaggery
+    grams: 30
+- id: rec_bengali_khichuri
+  name: Bengali khichuri
+  cuisine: bengali
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 35
+  ingredients:
+  - ingredient_id: ing_rice
+    grams: 100
+  - ingredient_id: ing_moong_dal
+    grams: 90
+  - ingredient_id: ing_potato
+    grams: 60
+  - ingredient_id: ing_cauliflower
+    grams: 60
+  - ingredient_id: ing_bay_leaf
+    grams: 1
+  - ingredient_id: ing_ghee
+    grams: 15
+  - ingredient_id: ing_turmeric
+    grams: 3
+- id: rec_shukto
+  name: Shukto
+  cuisine: bengali
+  meal_slot:
+  - lunch
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_eggplant
+    grams: 80
+  - ingredient_id: ing_potato
+    grams: 80
+  - ingredient_id: ing_bottle_gourd
+    grams: 80
+  - ingredient_id: ing_drumstick
+    grams: 60
+  - ingredient_id: ing_mustard_oil
+    grams: 15
+  - ingredient_id: ing_ginger
+    grams: 8
+- id: rec_bengali_fish_fry
+  name: Bengali fish fry
+  cuisine: bengali
+  meal_slot:
+  - snack
+  - dinner
+  prep_minutes: 20
+  ingredients:
+  - ingredient_id: ing_pomfret
+    grams: 180
+  - ingredient_id: ing_semolina
+    grams: 40
+  - ingredient_id: ing_turmeric
+    grams: 3
+  - ingredient_id: ing_red_chilli_powder
+    grams: 3
+  - ingredient_id: ing_sunflower_oil
+    grams: 15
+- id: rec_margherita_pizza
+  name: Margherita pizza
+  cuisine: italian
+  meal_slot:
+  - dinner
+  prep_minutes: 40
+  ingredients:
+  - ingredient_id: ing_refined_flour
+    grams: 120
+  - ingredient_id: ing_tomato
+    grams: 150
+  - ingredient_id: ing_mozzarella
+    grams: 60
+  - ingredient_id: ing_olive_oil
+    grams: 15
+  - ingredient_id: ing_yeast
+    grams: 5
+  - ingredient_id: ing_salt
+    grams: 1
+- id: rec_aglio_olio
+  name: Aglio e olio
+  cuisine: italian
+  meal_slot:
+  - dinner
+  - lunch
+  prep_minutes: 20
+  ingredients:
+  - ingredient_id: ing_pasta
+    grams: 100
+  - ingredient_id: ing_garlic
+    grams: 25
+  - ingredient_id: ing_olive_oil
+    grams: 15
+  - ingredient_id: ing_red_chilli_powder
+    grams: 2
+  - ingredient_id: ing_coriander_leaves
+    grams: 5
+- id: rec_pesto_pasta
+  name: Pesto pasta
+  cuisine: italian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 20
+  ingredients:
+  - ingredient_id: ing_pasta
+    grams: 100
+  - ingredient_id: ing_pesto
+    grams: 40
+  - ingredient_id: ing_olive_oil
+    grams: 10
+  - ingredient_id: ing_cheese
+    grams: 20
+- id: rec_bruschetta
+  name: Tomato bruschetta
+  cuisine: italian
+  meal_slot:
+  - snack
+  prep_minutes: 15
+  ingredients:
+  - ingredient_id: ing_bread
+    grams: 80
+  - ingredient_id: ing_tomato
+    grams: 100
+  - ingredient_id: ing_olive_oil
+    grams: 10
+  - ingredient_id: ing_garlic
+    grams: 10
+- id: rec_minestrone_soup
+  name: Minestrone soup
+  cuisine: italian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 35
+  ingredients:
+  - ingredient_id: ing_carrot
+    grams: 60
+  - ingredient_id: ing_potato
+    grams: 60
+  - ingredient_id: ing_tomato
+    grams: 100
+  - ingredient_id: ing_chickpeas
+    grams: 80
+  - ingredient_id: ing_pasta
+    grams: 40
+  - ingredient_id: ing_olive_oil
+    grams: 10
+  - ingredient_id: ing_onion
+    grams: 50
+- id: rec_risotto_mushroom
+  name: Mushroom risotto
+  cuisine: italian
+  meal_slot:
+  - dinner
+  prep_minutes: 35
+  ingredients:
+  - ingredient_id: ing_rice
+    grams: 100
+  - ingredient_id: ing_mushroom
+    grams: 150
+  - ingredient_id: ing_butter
+    grams: 20
+  - ingredient_id: ing_cheese
+    grams: 30
+  - ingredient_id: ing_onion
+    grams: 50
+  - ingredient_id: ing_olive_oil
+    grams: 10
+- id: rec_caprese_salad
+  name: Caprese salad
+  cuisine: italian
+  meal_slot:
+  - snack
+  - lunch
+  prep_minutes: 10
+  ingredients:
+  - ingredient_id: ing_tomato
+    grams: 150
+  - ingredient_id: ing_mozzarella
+    grams: 80
+  - ingredient_id: ing_olive_oil
+    grams: 15
+  - ingredient_id: ing_coriander_leaves
+    grams: 5
+- id: rec_lasagna
+  name: Vegetable lasagna
+  cuisine: italian
+  meal_slot:
+  - dinner
+  prep_minutes: 75
+  ingredients:
+  - ingredient_id: ing_pasta
+    grams: 100
+  - ingredient_id: ing_white_sauce
+    grams: 100
+  - ingredient_id: ing_tomato
+    grams: 150
+  - ingredient_id: ing_mozzarella
+    grams: 50
+  - ingredient_id: ing_onion
+    grams: 50
+  - ingredient_id: ing_garlic
+    grams: 10
+- id: rec_focaccia
+  name: Focaccia
+  cuisine: italian
+  meal_slot:
+  - snack
+  prep_minutes: 60
+  ingredients:
+  - ingredient_id: ing_refined_flour
+    grams: 80
+  - ingredient_id: ing_olive_oil
+    grams: 12
+  - ingredient_id: ing_yeast
+    grams: 6
+  - ingredient_id: ing_salt
+    grams: 2
+- id: rec_panna_cotta
+  name: Panna cotta
+  cuisine: italian
+  meal_slot:
+  - snack
+  prep_minutes: 15
+  ingredients:
+  - ingredient_id: ing_cream
+    grams: 40
+  - ingredient_id: ing_sugar
+    grams: 30
+  - ingredient_id: ing_gelatin
+    grams: 8
+  - ingredient_id: ing_milk
+    grams: 50
+- id: rec_arrabbiata_pasta
+  name: Pasta arrabbiata
+  cuisine: italian
+  meal_slot:
+  - dinner
+  prep_minutes: 25
+  ingredients:
+  - ingredient_id: ing_pasta
+    grams: 100
+  - ingredient_id: ing_tomato
+    grams: 150
+  - ingredient_id: ing_garlic
+    grams: 15
+  - ingredient_id: ing_red_chilli_powder
+    grams: 3
+  - ingredient_id: ing_olive_oil
+    grams: 15
+- id: rec_italian_veg_soup
+  name: Italian vegetable soup
+  cuisine: italian
+  meal_slot:
+  - lunch
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_zucchini
+    grams: 80
+  - ingredient_id: ing_tomato
+    grams: 100
+  - ingredient_id: ing_carrot
+    grams: 60
+  - ingredient_id: ing_chickpeas
+    grams: 60
+  - ingredient_id: ing_olive_oil
+    grams: 10
+  - ingredient_id: ing_onion
+    grams: 50
+- id: rec_garlic_bread
+  name: Garlic bread
+  cuisine: italian
+  meal_slot:
+  - snack
+  prep_minutes: 15
+  ingredients:
+  - ingredient_id: ing_bread
+    grams: 90
+  - ingredient_id: ing_butter
+    grams: 15
+  - ingredient_id: ing_garlic
+    grams: 20
+  - ingredient_id: ing_cheese
+    grams: 30
+- id: rec_hummus_platter
+  name: Hummus platter
+  cuisine: mediterranean
+  meal_slot:
+  - snack
+  prep_minutes: 10
+  ingredients:
+  - ingredient_id: ing_hummus
+    grams: 90
+  - ingredient_id: ing_cucumber
+    grams: 80
+  - ingredient_id: ing_tomato
+    grams: 80
+  - ingredient_id: ing_olive_oil
+    grams: 10
+  - ingredient_id: ing_bread
+    grams: 60
+- id: rec_falafel
+  name: Falafel
+  cuisine: mediterranean
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_chickpeas
+    grams: 90
+  - ingredient_id: ing_onion
+    grams: 40
+  - ingredient_id: ing_garlic
+    grams: 15
+  - ingredient_id: ing_coriander_leaves
+    grams: 10
+  - ingredient_id: ing_cumin
+    grams: 4
+  - ingredient_id: ing_sunflower_oil
+    grams: 15
+- id: rec_greek_salad
+  name: Greek salad
+  cuisine: mediterranean
+  meal_slot:
+  - lunch
+  - snack
+  prep_minutes: 10
+  ingredients:
+  - ingredient_id: ing_cucumber
+    grams: 100
+  - ingredient_id: ing_tomato
+    grams: 100
+  - ingredient_id: ing_cheese
+    grams: 60
+  - ingredient_id: ing_olive_oil
+    grams: 15
+  - ingredient_id: ing_onion
+    grams: 30
+- id: rec_tabbouleh
+  name: Tabbouleh
+  cuisine: mediterranean
+  meal_slot:
+  - lunch
+  - snack
+  prep_minutes: 15
+  ingredients:
+  - ingredient_id: ing_semolina
+    grams: 80
+  - ingredient_id: ing_tomato
+    grams: 80
+  - ingredient_id: ing_cucumber
+    grams: 60
+  - ingredient_id: ing_mint_leaves
+    grams: 10
+  - ingredient_id: ing_lemon
+    grams: 15
+  - ingredient_id: ing_olive_oil
+    grams: 15
+- id: rec_grilled_salmon_mediterranean
+  name: Grilled salmon Mediterranean-style
+  cuisine: mediterranean
+  meal_slot:
+  - dinner
+  prep_minutes: 25
+  ingredients:
+  - ingredient_id: ing_salmon
+    grams: 180
+  - ingredient_id: ing_lemon
+    grams: 20
+  - ingredient_id: ing_olive_oil
+    grams: 15
+  - ingredient_id: ing_garlic
+    grams: 10
+  - ingredient_id: ing_black_pepper
+    grams: 2
+- id: rec_shakshuka
+  name: Shakshuka
+  cuisine: mediterranean
+  meal_slot:
+  - breakfast
+  prep_minutes: 25
+  ingredients:
+  - ingredient_id: ing_egg
+    grams: 150
+  - ingredient_id: ing_tomato
+    grams: 150
+  - ingredient_id: ing_capsicum
+    grams: 60
+  - ingredient_id: ing_onion
+    grams: 60
+  - ingredient_id: ing_garlic
+    grams: 10
+  - ingredient_id: ing_olive_oil
+    grams: 15
+  - ingredient_id: ing_red_chilli_powder
+    grams: 2
+- id: rec_stuffed_zucchini
+  name: Stuffed zucchini
+  cuisine: mediterranean
+  meal_slot:
+  - dinner
+  prep_minutes: 40
+  ingredients:
+  - ingredient_id: ing_zucchini
+    grams: 150
+  - ingredient_id: ing_rice
+    grams: 100
+  - ingredient_id: ing_tomato
+    grams: 60
+  - ingredient_id: ing_onion
+    grams: 40
+  - ingredient_id: ing_olive_oil
+    grams: 12
+  - ingredient_id: ing_garlic
+    grams: 8
+- id: rec_lentil_soup_med
+  name: Mediterranean lentil soup
+  cuisine: mediterranean
+  meal_slot:
+  - lunch
+  prep_minutes: 35
+  ingredients:
+  - ingredient_id: ing_masoor_dal
+    grams: 90
+  - ingredient_id: ing_carrot
+    grams: 60
+  - ingredient_id: ing_onion
+    grams: 50
+  - ingredient_id: ing_tomato
+    grams: 60
+  - ingredient_id: ing_cumin
+    grams: 3
+  - ingredient_id: ing_olive_oil
+    grams: 10
+- id: rec_pita_hummus_wrap
+  name: Pita hummus wrap
+  cuisine: mediterranean
+  meal_slot:
+  - snack
+  - lunch
+  prep_minutes: 10
+  ingredients:
+  - ingredient_id: ing_bread
+    grams: 120
+  - ingredient_id: ing_hummus
+    grams: 100
+  - ingredient_id: ing_cucumber
+    grams: 60
+  - ingredient_id: ing_lettuce
+    grams: 30
+- id: rec_grilled_chicken_med
+  name: Grilled Mediterranean chicken
+  cuisine: mediterranean
+  meal_slot:
+  - dinner
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_chicken_breast
+    grams: 180
+  - ingredient_id: ing_lemon
+    grams: 15
+  - ingredient_id: ing_olive_oil
+    grams: 15
+  - ingredient_id: ing_garlic
+    grams: 10
+  - ingredient_id: ing_black_pepper
+    grams: 2
+- id: rec_baba_ganoush
+  name: Baba ganoush
+  cuisine: mediterranean
+  meal_slot:
+  - snack
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_eggplant
+    grams: 150
+  - ingredient_id: ing_tahini
+    grams: 25
+  - ingredient_id: ing_garlic
+    grams: 10
+  - ingredient_id: ing_lemon
+    grams: 15
+  - ingredient_id: ing_olive_oil
+    grams: 10
+- id: rec_greek_yoghurt_bowl
+  name: Greek yoghurt bowl
+  cuisine: mediterranean
+  meal_slot:
+  - breakfast
+  prep_minutes: 5
+  ingredients:
+  - ingredient_id: ing_yoghurt
+    grams: 200
+  - ingredient_id: ing_jaggery
+    grams: 20
+  - ingredient_id: ing_walnut
+    grams: 15
+  - ingredient_id: ing_pomegranate
+    grams: 30
+- id: rec_veg_fried_rice
+  name: Vegetable fried rice
+  cuisine: east_asian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 20
+  ingredients:
+  - ingredient_id: ing_rice
+    grams: 100
+  - ingredient_id: ing_carrot
+    grams: 40
+  - ingredient_id: ing_capsicum
+    grams: 40
+  - ingredient_id: ing_green_peas
+    grams: 30
+  - ingredient_id: ing_soy_sauce
+    grams: 10
+  - ingredient_id: ing_sesame_oil
+    grams: 10
+  - ingredient_id: ing_egg
+    grams: 50
+- id: rec_chicken_hakka_noodles
+  name: Chicken hakka noodles
+  cuisine: east_asian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 25
+  ingredients:
+  - ingredient_id: ing_rice_noodles
+    grams: 100
+  - ingredient_id: ing_chicken_breast
+    grams: 150
+  - ingredient_id: ing_cabbage
+    grams: 60
+  - ingredient_id: ing_carrot
+    grams: 40
+  - ingredient_id: ing_soy_sauce
+    grams: 15
+  - ingredient_id: ing_sesame_oil
+    grams: 10
+- id: rec_veg_manchurian
+  name: Vegetable Manchurian
+  cuisine: east_asian
+  meal_slot:
+  - dinner
+  prep_minutes: 35
+  ingredients:
+  - ingredient_id: ing_cabbage
+    grams: 150
+  - ingredient_id: ing_carrot
+    grams: 50
+  - ingredient_id: ing_refined_flour
+    grams: 40
+  - ingredient_id: ing_soy_sauce
+    grams: 15
+  - ingredient_id: ing_garlic
+    grams: 15
+  - ingredient_id: ing_ginger
+    grams: 10
+  - ingredient_id: ing_sunflower_oil
+    grams: 15
+- id: rec_thai_peanut_noodles
+  name: Thai peanut noodles
+  cuisine: east_asian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 20
+  ingredients:
+  - ingredient_id: ing_rice_noodles
+    grams: 100
+  - ingredient_id: ing_peanut_sauce
+    grams: 60
+  - ingredient_id: ing_carrot
+    grams: 40
+  - ingredient_id: ing_cabbage
+    grams: 40
+  - ingredient_id: ing_bean_sprouts
+    grams: 30
+  - ingredient_id: ing_sesame_oil
+    grams: 5
+- id: rec_chicken_satay
+  name: Chicken satay
+  cuisine: east_asian
+  meal_slot:
+  - snack
+  - dinner
+  prep_minutes: 25
+  ingredients:
+  - ingredient_id: ing_chicken_breast
+    grams: 180
+  - ingredient_id: ing_satay_marinade
+    grams: 50
+  - ingredient_id: ing_sunflower_oil
+    grams: 10
+- id: rec_kimchi_fried_rice
+  name: Kimchi fried rice
+  cuisine: east_asian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 20
+  ingredients:
+  - ingredient_id: ing_rice
+    grams: 100
+  - ingredient_id: ing_kimchi
+    grams: 100
+  - ingredient_id: ing_egg
+    grams: 75
+  - ingredient_id: ing_sesame_oil
+    grams: 10
+  - ingredient_id: ing_fish_sauce
+    grams: 5
+- id: rec_miso_soup
+  name: Miso soup
+  cuisine: east_asian
+  meal_slot:
+  - lunch
+  prep_minutes: 15
+  ingredients:
+  - ingredient_id: ing_miso_paste
+    grams: 25
+  - ingredient_id: ing_tofu
+    grams: 150
+  - ingredient_id: ing_bean_sprouts
+    grams: 30
+- id: rec_gochujang_chicken
+  name: Gochujang chicken
+  cuisine: east_asian
+  meal_slot:
+  - dinner
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_chicken_thigh
+    grams: 180
+  - ingredient_id: ing_gochujang
+    grams: 40
+  - ingredient_id: ing_garlic
+    grams: 10
+  - ingredient_id: ing_ginger
+    grams: 8
+  - ingredient_id: ing_sesame_oil
+    grams: 10
+- id: rec_veg_spring_rolls
+  name: Vegetable spring rolls
+  cuisine: east_asian
+  meal_slot:
+  - snack
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_refined_flour
+    grams: 50
+  - ingredient_id: ing_cabbage
+    grams: 80
+  - ingredient_id: ing_carrot
+    grams: 40
+  - ingredient_id: ing_bean_sprouts
+    grams: 40
+  - ingredient_id: ing_sunflower_oil
+    grams: 10
+- id: rec_tofu_stir_fry
+  name: Tofu stir fry
+  cuisine: east_asian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 20
+  ingredients:
+  - ingredient_id: ing_tofu
+    grams: 180
+  - ingredient_id: ing_broccoli
+    grams: 100
+  - ingredient_id: ing_capsicum
+    grams: 60
+  - ingredient_id: ing_soy_sauce
+    grams: 10
+  - ingredient_id: ing_sesame_oil
+    grams: 10
+  - ingredient_id: ing_garlic
+    grams: 10
+  - ingredient_id: ing_oyster_sauce
+    grams: 8
+- id: rec_prawn_fried_rice
+  name: Prawn fried rice
+  cuisine: east_asian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 25
+  ingredients:
+  - ingredient_id: ing_rice
+    grams: 100
+  - ingredient_id: ing_prawns
+    grams: 150
+  - ingredient_id: ing_green_peas
+    grams: 30
+  - ingredient_id: ing_egg
+    grams: 50
+  - ingredient_id: ing_soy_sauce
+    grams: 10
+  - ingredient_id: ing_sesame_oil
+    grams: 10
+- id: rec_dumpling_soup
+  name: Dumpling soup
+  cuisine: east_asian
+  meal_slot:
+  - lunch
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_refined_flour
+    grams: 100
+  - ingredient_id: ing_chicken_thigh
+    grams: 100
+  - ingredient_id: ing_cabbage
+    grams: 60
+  - ingredient_id: ing_ginger
+    grams: 8
+  - ingredient_id: ing_soy_sauce
+    grams: 10
+  - ingredient_id: ing_sesame_oil
+    grams: 5
+- id: rec_sesame_tofu_salad
+  name: Sesame tofu salad
+  cuisine: east_asian
+  meal_slot:
+  - snack
+  - lunch
+  prep_minutes: 15
+  ingredients:
+  - ingredient_id: ing_tofu
+    grams: 150
+  - ingredient_id: ing_cucumber
+    grams: 60
+  - ingredient_id: ing_sesame_seeds
+    grams: 10
+  - ingredient_id: ing_soy_sauce
+    grams: 10
+  - ingredient_id: ing_sesame_oil
+    grams: 10
+- id: rec_thai_peanut_satay_salad
+  name: Thai peanut satay salad
+  cuisine: east_asian
+  meal_slot:
+  - lunch
+  prep_minutes: 15
+  ingredients:
+  - ingredient_id: ing_lettuce
+    grams: 120
+  - ingredient_id: ing_cucumber
+    grams: 60
+  - ingredient_id: ing_peanut_sauce
+    grams: 80
+  - ingredient_id: ing_carrot
+    grams: 40
+- id: rec_veg_tacos
+  name: Vegetarian tacos
+  cuisine: mexican
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 20
+  ingredients:
+  - ingredient_id: ing_tortilla
+    grams: 120
+  - ingredient_id: ing_rajma
+    grams: 90
+  - ingredient_id: ing_salsa
+    grams: 60
+  - ingredient_id: ing_guacamole
+    grams: 40
+  - ingredient_id: ing_lettuce
+    grams: 40
+  - ingredient_id: ing_cheese
+    grams: 30
+- id: rec_chicken_burrito
+  name: Chicken burrito
+  cuisine: mexican
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 25
+  ingredients:
+  - ingredient_id: ing_tortilla
+    grams: 100
+  - ingredient_id: ing_chicken_breast
+    grams: 150
+  - ingredient_id: ing_rice
+    grams: 100
+  - ingredient_id: ing_salsa
+    grams: 50
+  - ingredient_id: ing_cheese
+    grams: 30
+  - ingredient_id: ing_guacamole
+    grams: 30
+- id: rec_guacamole_snack
+  name: Guacamole and chips
+  cuisine: mexican
+  meal_slot:
+  - snack
+  prep_minutes: 10
+  ingredients:
+  - ingredient_id: ing_guacamole
+    grams: 80
+  - ingredient_id: ing_tortilla
+    grams: 100
+- id: rec_bean_quesadilla
+  name: Bean quesadilla
+  cuisine: mexican
+  meal_slot:
+  - snack
+  - lunch
+  prep_minutes: 15
+  ingredients:
+  - ingredient_id: ing_tortilla
+    grams: 90
+  - ingredient_id: ing_rajma
+    grams: 90
+  - ingredient_id: ing_cheese
+    grams: 50
+  - ingredient_id: ing_salsa
+    grams: 40
+- id: rec_mexican_rice
+  name: Mexican rice
+  cuisine: mexican
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 25
+  ingredients:
+  - ingredient_id: ing_rice
+    grams: 100
+  - ingredient_id: ing_tomato
+    grams: 80
+  - ingredient_id: ing_onion
+    grams: 40
+  - ingredient_id: ing_corn
+    grams: 40
+  - ingredient_id: ing_red_chilli_powder
+    grams: 2
+  - ingredient_id: ing_sunflower_oil
+    grams: 15
+- id: rec_salsa_fresca
+  name: Salsa fresca
+  cuisine: mexican
+  meal_slot:
+  - snack
+  prep_minutes: 10
+  ingredients:
+  - ingredient_id: ing_tomato
+    grams: 200
+  - ingredient_id: ing_onion
+    grams: 90
+  - ingredient_id: ing_lime
+    grams: 20
+  - ingredient_id: ing_green_chilli
+    grams: 8
+  - ingredient_id: ing_coriander_leaves
+    grams: 15
+- id: rec_chilli_con_carne
+  name: Chilli con carne
+  cuisine: mexican
+  meal_slot:
+  - dinner
+  prep_minutes: 45
+  ingredients:
+  - ingredient_id: ing_beef
+    grams: 180
+  - ingredient_id: ing_rajma
+    grams: 90
+  - ingredient_id: ing_tomato
+    grams: 120
+  - ingredient_id: ing_onion
+    grams: 60
+  - ingredient_id: ing_red_chilli_powder
+    grams: 5
+  - ingredient_id: ing_garlic
+    grams: 10
+- id: rec_mexican_corn_salad
+  name: Mexican corn salad
+  cuisine: mexican
+  meal_slot:
+  - snack
+  - lunch
+  prep_minutes: 10
+  ingredients:
+  - ingredient_id: ing_corn
+    grams: 150
+  - ingredient_id: ing_capsicum
+    grams: 40
+  - ingredient_id: ing_lime
+    grams: 15
+  - ingredient_id: ing_mayonnaise
+    grams: 20
+  - ingredient_id: ing_coriander_leaves
+    grams: 10
+- id: rec_veg_enchiladas
+  name: Vegetarian enchiladas
+  cuisine: mexican
+  meal_slot:
+  - dinner
+  prep_minutes: 35
+  ingredients:
+  - ingredient_id: ing_tortilla
+    grams: 120
+  - ingredient_id: ing_rajma
+    grams: 90
+  - ingredient_id: ing_cheese
+    grams: 60
+  - ingredient_id: ing_tomato
+    grams: 100
+  - ingredient_id: ing_salsa
+    grams: 50
+- id: rec_shrimp_tacos
+  name: Shrimp tacos
+  cuisine: mexican
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 20
+  ingredients:
+  - ingredient_id: ing_tortilla
+    grams: 120
+  - ingredient_id: ing_prawns
+    grams: 180
+  - ingredient_id: ing_salsa
+    grams: 50
+  - ingredient_id: ing_lettuce
+    grams: 40
+  - ingredient_id: ing_lime
+    grams: 10
+- id: rec_nachos
+  name: Loaded nachos
+  cuisine: mexican
+  meal_slot:
+  - snack
+  prep_minutes: 15
+  ingredients:
+  - ingredient_id: ing_tortilla
+    grams: 90
+  - ingredient_id: ing_cheese
+    grams: 60
+  - ingredient_id: ing_salsa
+    grams: 60
+  - ingredient_id: ing_guacamole
+    grams: 40
+- id: rec_mexican_egg_scramble
+  name: Mexican egg scramble
+  cuisine: mexican
+  meal_slot:
+  - breakfast
+  prep_minutes: 15
+  ingredients:
+  - ingredient_id: ing_egg
+    grams: 150
+  - ingredient_id: ing_tomato
+    grams: 60
+  - ingredient_id: ing_onion
+    grams: 40
+  - ingredient_id: ing_capsicum
+    grams: 40
+  - ingredient_id: ing_green_chilli
+    grams: 5
+- id: rec_grilled_chicken_continental
+  name: Grilled chicken continental
+  cuisine: continental
+  meal_slot:
+  - dinner
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_chicken_breast
+    grams: 180
+  - ingredient_id: ing_olive_oil
+    grams: 15
+  - ingredient_id: ing_black_pepper
+    grams: 2
+  - ingredient_id: ing_garlic
+    grams: 10
+  - ingredient_id: ing_lemon
+    grams: 10
+- id: rec_mushroom_soup
+  name: Cream of mushroom soup
+  cuisine: continental
+  meal_slot:
+  - lunch
+  prep_minutes: 25
+  ingredients:
+  - ingredient_id: ing_mushroom
+    grams: 150
+  - ingredient_id: ing_butter
+    grams: 20
+  - ingredient_id: ing_cream
+    grams: 40
+  - ingredient_id: ing_onion
+    grams: 40
+  - ingredient_id: ing_black_pepper
+    grams: 2
+- id: rec_veg_sandwich
+  name: Vegetable sandwich
+  cuisine: continental
+  meal_slot:
+  - snack
+  - breakfast
+  prep_minutes: 10
+  ingredients:
+  - ingredient_id: ing_bread
+    grams: 120
+  - ingredient_id: ing_cucumber
+    grams: 40
+  - ingredient_id: ing_tomato
+    grams: 40
+  - ingredient_id: ing_mayonnaise
+    grams: 20
+  - ingredient_id: ing_cheese
+    grams: 30
+- id: rec_club_sandwich
+  name: Club sandwich
+  cuisine: continental
+  meal_slot:
+  - lunch
+  prep_minutes: 15
+  ingredients:
+  - ingredient_id: ing_bread
+    grams: 120
+  - ingredient_id: ing_chicken_breast
+    grams: 120
+  - ingredient_id: ing_egg
+    grams: 50
+  - ingredient_id: ing_mayonnaise
+    grams: 20
+  - ingredient_id: ing_lettuce
+    grams: 30
+  - ingredient_id: ing_tomato
+    grams: 40
+- id: rec_pancakes
+  name: Breakfast pancakes
+  cuisine: continental
+  meal_slot:
+  - breakfast
+  prep_minutes: 20
+  ingredients:
+  - ingredient_id: ing_refined_flour
+    grams: 80
+  - ingredient_id: ing_milk
+    grams: 100
+  - ingredient_id: ing_egg
+    grams: 50
+  - ingredient_id: ing_sugar
+    grams: 20
+  - ingredient_id: ing_butter
+    grams: 10
+  - ingredient_id: ing_baking_powder
+    grams: 5
+- id: rec_scrambled_eggs
+  name: Scrambled eggs
+  cuisine: continental
+  meal_slot:
+  - breakfast
+  prep_minutes: 10
+  ingredients:
+  - ingredient_id: ing_egg
+    grams: 150
+  - ingredient_id: ing_butter
+    grams: 15
+  - ingredient_id: ing_milk
+    grams: 20
+  - ingredient_id: ing_black_pepper
+    grams: 1
+- id: rec_baked_beans_toast
+  name: Baked beans on toast
+  cuisine: continental
+  meal_slot:
+  - breakfast
+  prep_minutes: 15
+  ingredients:
+  - ingredient_id: ing_bread
+    grams: 80
+  - ingredient_id: ing_rajma
+    grams: 60
+  - ingredient_id: ing_tomato_ketchup
+    grams: 30
+  - ingredient_id: ing_butter
+    grams: 10
+- id: rec_caesar_salad
+  name: Chicken caesar salad
+  cuisine: continental
+  meal_slot:
+  - lunch
+  - snack
+  prep_minutes: 15
+  ingredients:
+  - ingredient_id: ing_lettuce
+    grams: 150
+  - ingredient_id: ing_chicken_breast
+    grams: 150
+  - ingredient_id: ing_cheese
+    grams: 30
+  - ingredient_id: ing_mayonnaise
+    grams: 25
+  - ingredient_id: ing_bread
+    grams: 40
+- id: rec_cream_of_tomato_soup
+  name: Cream of tomato soup
+  cuisine: continental
+  meal_slot:
+  - lunch
+  prep_minutes: 25
+  ingredients:
+  - ingredient_id: ing_tomato
+    grams: 150
+  - ingredient_id: ing_cream
+    grams: 40
+  - ingredient_id: ing_butter
+    grams: 20
+  - ingredient_id: ing_onion
+    grams: 40
+- id: rec_fruit_salad_bowl
+  name: Fruit salad bowl
+  cuisine: continental
+  meal_slot:
+  - breakfast
+  - snack
+  prep_minutes: 10
+  ingredients:
+  - ingredient_id: ing_apple
+    grams: 80
+  - ingredient_id: ing_banana
+    grams: 80
+  - ingredient_id: ing_mango
+    grams: 80
+  - ingredient_id: ing_pomegranate
+    grams: 40
+  - ingredient_id: ing_lemon
+    grams: 5
+- id: rec_grilled_cheese_sandwich
+  name: Grilled cheese sandwich
+  cuisine: continental
+  meal_slot:
+  - snack
+  prep_minutes: 10
+  ingredients:
+  - ingredient_id: ing_bread
+    grams: 80
+  - ingredient_id: ing_cheese
+    grams: 50
+  - ingredient_id: ing_butter
+    grams: 10
+- id: rec_baked_salmon_continental
+  name: Baked salmon
+  cuisine: continental
+  meal_slot:
+  - dinner
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_salmon
+    grams: 180
+  - ingredient_id: ing_olive_oil
+    grams: 15
+  - ingredient_id: ing_lemon
+    grams: 15
+  - ingredient_id: ing_black_pepper
+    grams: 2
+  - ingredient_id: ing_garlic
+    grams: 8
+- id: rec_jain_paneer_bhurji
+  name: Jain paneer bhurji
+  cuisine: north_indian
+  meal_slot:
+  - breakfast
+  - lunch
+  prep_minutes: 15
+  ingredients:
+  - ingredient_id: ing_paneer
+    grams: 120
+  - ingredient_id: ing_tomato
+    grams: 70
+  - ingredient_id: ing_capsicum
+    grams: 50
+  - ingredient_id: ing_green_chilli
+    grams: 5
+  - ingredient_id: ing_cumin
+    grams: 2
+  - ingredient_id: ing_turmeric
+    grams: 2
+  - ingredient_id: ing_coriander_leaves
+    grams: 5
+  - ingredient_id: ing_asafoetida
+    grams: 1
+  - ingredient_id: ing_sunflower_oil
+    grams: 10
+- id: rec_jain_dal_tadka
+  name: Jain dal tadka
+  cuisine: north_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_toor_dal
+    grams: 80
+  - ingredient_id: ing_tomato
+    grams: 60
+  - ingredient_id: ing_cumin
+    grams: 3
+  - ingredient_id: ing_turmeric
+    grams: 2
+  - ingredient_id: ing_asafoetida
+    grams: 1
+  - ingredient_id: ing_ghee
+    grams: 10
+  - ingredient_id: ing_coriander_leaves
+    grams: 5
+- id: rec_jain_kadhi
+  name: Jain kadhi
+  cuisine: north_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_yoghurt
+    grams: 150
+  - ingredient_id: ing_besan
+    grams: 25
+  - ingredient_id: ing_turmeric
+    grams: 2
+  - ingredient_id: ing_cumin
+    grams: 2
+  - ingredient_id: ing_curry_leaves
+    grams: 2
+  - ingredient_id: ing_green_chilli
+    grams: 5
+  - ingredient_id: ing_asafoetida
+    grams: 1
+  - ingredient_id: ing_mustard_oil
+    grams: 8
+- id: rec_jain_matar_paneer
+  name: Jain matar paneer
+  cuisine: north_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 25
+  ingredients:
+  - ingredient_id: ing_paneer
+    grams: 120
+  - ingredient_id: ing_green_peas
+    grams: 70
+  - ingredient_id: ing_tomato
+    grams: 90
+  - ingredient_id: ing_garam_masala
+    grams: 4
+  - ingredient_id: ing_asafoetida
+    grams: 1
+  - ingredient_id: ing_cream
+    grams: 15
+  - ingredient_id: ing_butter
+    grams: 8
+- id: rec_jain_bhindi_masala
+  name: Jain bhindi masala
+  cuisine: north_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 25
+  ingredients:
+  - ingredient_id: ing_okra
+    grams: 180
+  - ingredient_id: ing_tomato
+    grams: 50
+  - ingredient_id: ing_turmeric
+    grams: 2
+  - ingredient_id: ing_coriander_powder
+    grams: 4
+  - ingredient_id: ing_asafoetida
+    grams: 1
+  - ingredient_id: ing_mustard_oil
+    grams: 10
+- id: rec_jain_kaju_curry
+  name: Jain kaju curry
+  cuisine: north_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_cashew
+    grams: 60
+  - ingredient_id: ing_tomato
+    grams: 90
+  - ingredient_id: ing_cream
+    grams: 25
+  - ingredient_id: ing_garam_masala
+    grams: 4
+  - ingredient_id: ing_asafoetida
+    grams: 1
+  - ingredient_id: ing_butter
+    grams: 8
+- id: rec_jain_stuffed_capsicum
+  name: Jain stuffed capsicum
+  cuisine: north_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 35
+  ingredients:
+  - ingredient_id: ing_capsicum
+    grams: 180
+  - ingredient_id: ing_paneer
+    grams: 80
+  - ingredient_id: ing_besan
+    grams: 15
+  - ingredient_id: ing_coriander_powder
+    grams: 4
+  - ingredient_id: ing_asafoetida
+    grams: 1
+  - ingredient_id: ing_sunflower_oil
+    grams: 8
+- id: rec_jain_dosa
+  name: Jain plain dosa
+  cuisine: south_indian
+  meal_slot:
+  - breakfast
+  prep_minutes: 40
+  ingredients:
+  - ingredient_id: ing_rice
+    grams: 90
+  - ingredient_id: ing_black_gram
+    grams: 40
+  - ingredient_id: ing_sunflower_oil
+    grams: 8
+- id: rec_jain_ragi_dosa
+  name: Jain ragi dosa
+  cuisine: south_indian
+  meal_slot:
+  - breakfast
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_ragi_flour
+    grams: 70
+  - ingredient_id: ing_rice
+    grams: 25
+  - ingredient_id: ing_yoghurt
+    grams: 30
+  - ingredient_id: ing_green_chilli
+    grams: 5
+  - ingredient_id: ing_cumin
+    grams: 2
+  - ingredient_id: ing_sunflower_oil
+    grams: 8
+- id: rec_jain_avial
+  name: Jain avial
+  cuisine: south_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_drumstick
+    grams: 60
+  - ingredient_id: ing_ridge_gourd
+    grams: 60
+  - ingredient_id: ing_cucumber
+    grams: 40
+  - ingredient_id: ing_coconut
+    grams: 50
+  - ingredient_id: ing_coconut_oil
+    grams: 8
+  - ingredient_id: ing_curry_leaves
+    grams: 2
+  - ingredient_id: ing_turmeric
+    grams: 2
+- id: rec_jain_sambar
+  name: Jain sambar
+  cuisine: south_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 35
+  ingredients:
+  - ingredient_id: ing_toor_dal
+    grams: 70
+  - ingredient_id: ing_drumstick
+    grams: 50
+  - ingredient_id: ing_pumpkin
+    grams: 50
+  - ingredient_id: ing_tamarind
+    grams: 12
+  - ingredient_id: ing_curry_leaves
+    grams: 2
+  - ingredient_id: ing_mustard_seeds
+    grams: 3
+  - ingredient_id: ing_turmeric
+    grams: 2
+  - ingredient_id: ing_asafoetida
+    grams: 1
+  - ingredient_id: ing_sunflower_oil
+    grams: 8
+- id: rec_jain_rasam
+  name: Jain rasam
+  cuisine: south_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 20
+  ingredients:
+  - ingredient_id: ing_toor_dal
+    grams: 40
+  - ingredient_id: ing_tomato
+    grams: 100
+  - ingredient_id: ing_tamarind
+    grams: 8
+  - ingredient_id: ing_black_pepper
+    grams: 2
+  - ingredient_id: ing_cumin
+    grams: 2
+  - ingredient_id: ing_curry_leaves
+    grams: 2
+  - ingredient_id: ing_asafoetida
+    grams: 1
+- id: rec_jain_lauki_kofta
+  name: Jain lauki kofta
+  cuisine: north_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 40
+  ingredients:
+  - ingredient_id: ing_bottle_gourd
+    grams: 120
+  - ingredient_id: ing_besan
+    grams: 30
+  - ingredient_id: ing_tomato
+    grams: 80
+  - ingredient_id: ing_cream
+    grams: 15
+  - ingredient_id: ing_garam_masala
+    grams: 4
+  - ingredient_id: ing_asafoetida
+    grams: 1
+  - ingredient_id: ing_sunflower_oil
+    grams: 12
+- id: rec_jain_bengali_lau_ghonto
+  name: Jain lau ghonto
+  cuisine: bengali
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 25
+  ingredients:
+  - ingredient_id: ing_bottle_gourd
+    grams: 180
+  - ingredient_id: ing_coconut
+    grams: 25
+  - ingredient_id: ing_mustard_oil
+    grams: 8
+  - ingredient_id: ing_cumin
+    grams: 2
+  - ingredient_id: ing_bay_leaf
+    grams: 1
+- id: rec_jain_bengali_veg_chorchori
+  name: Jain veg chorchori
+  cuisine: bengali
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_pumpkin
+    grams: 90
+  - ingredient_id: ing_eggplant
+    grams: 70
+  - ingredient_id: ing_drumstick
+    grams: 50
+  - ingredient_id: ing_mustard_oil
+    grams: 10
+  - ingredient_id: ing_mustard_seeds
+    grams: 3
+  - ingredient_id: ing_turmeric
+    grams: 2
+- id: rec_jain_bengali_chana_ghugni
+  name: Jain chana ghugni
+  cuisine: bengali
+  meal_slot:
+  - snack
+  - lunch
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_chana_dal
+    grams: 80
+  - ingredient_id: ing_tomato
+    grams: 50
+  - ingredient_id: ing_coconut
+    grams: 15
+  - ingredient_id: ing_cumin
+    grams: 3
+  - ingredient_id: ing_asafoetida
+    grams: 1
+  - ingredient_id: ing_mustard_oil
+    grams: 8
+- id: rec_jain_veg_risotto
+  name: Jain vegetable risotto
+  cuisine: italian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 35
+  ingredients:
+  - ingredient_id: ing_rice
+    grams: 120
+  - ingredient_id: ing_mushroom
+    grams: 70
+  - ingredient_id: ing_zucchini
+    grams: 50
+  - ingredient_id: ing_olive_oil
+    grams: 12
+  - ingredient_id: ing_cheese
+    grams: 25
+  - ingredient_id: ing_black_pepper
+    grams: 2
+- id: rec_jain_tomato_mozzarella_salad
+  name: Jain tomato mozzarella salad
+  cuisine: italian
+  meal_slot:
+  - snack
+  - lunch
+  prep_minutes: 10
+  ingredients:
+  - ingredient_id: ing_tomato
+    grams: 150
+  - ingredient_id: ing_mozzarella
+    grams: 70
+  - ingredient_id: ing_olive_oil
+    grams: 8
+  - ingredient_id: ing_mint_leaves
+    grams: 5
+  - ingredient_id: ing_black_pepper
+    grams: 1
+- id: rec_jain_veg_minestrone
+  name: Jain vegetable minestrone
+  cuisine: italian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_zucchini
+    grams: 60
+  - ingredient_id: ing_cabbage
+    grams: 60
+  - ingredient_id: ing_tomato
+    grams: 90
+  - ingredient_id: ing_pasta
+    grams: 35
+  - ingredient_id: ing_olive_oil
+    grams: 8
+  - ingredient_id: ing_black_pepper
+    grams: 1
+- id: rec_jain_mediterranean_quinoa_bowl
+  name: Jain Mediterranean quinoa bowl
+  cuisine: mediterranean
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 25
+  ingredients:
+  - ingredient_id: ing_quinoa
+    grams: 80
+  - ingredient_id: ing_cucumber
+    grams: 60
+  - ingredient_id: ing_tomato
+    grams: 60
+  - ingredient_id: ing_olive_oil
+    grams: 12
+  - ingredient_id: ing_lemon
+    grams: 10
+  - ingredient_id: ing_mint_leaves
+    grams: 5
+- id: rec_jain_roasted_veg_bowl
+  name: Jain roasted vegetable bowl
+  cuisine: mediterranean
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_zucchini
+    grams: 90
+  - ingredient_id: ing_capsicum
+    grams: 90
+  - ingredient_id: ing_tomato
+    grams: 70
+  - ingredient_id: ing_olive_oil
+    grams: 12
+  - ingredient_id: ing_black_pepper
+    grams: 2
+- id: rec_jain_cucumber_yoghurt_salad
+  name: Jain cucumber yoghurt salad
+  cuisine: mediterranean
+  meal_slot:
+  - snack
+  - lunch
+  prep_minutes: 10
+  ingredients:
+  - ingredient_id: ing_cucumber
+    grams: 150
+  - ingredient_id: ing_yoghurt
+    grams: 90
+  - ingredient_id: ing_mint_leaves
+    grams: 5
+  - ingredient_id: ing_olive_oil
+    grams: 5
+- id: rec_jain_veg_hakka_noodles
+  name: Jain vegetable hakka noodles
+  cuisine: east_asian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 25
+  ingredients:
+  - ingredient_id: ing_rice_noodles
+    grams: 130
+  - ingredient_id: ing_cabbage
+    grams: 50
+  - ingredient_id: ing_capsicum
+    grams: 50
+  - ingredient_id: ing_bean_sprouts
+    grams: 40
+  - ingredient_id: ing_soy_sauce
+    grams: 8
+  - ingredient_id: ing_sesame_oil
+    grams: 6
+  - ingredient_id: ing_asafoetida
+    grams: 1
+- id: rec_jain_veg_fried_rice
+  name: Jain vegetable fried rice
+  cuisine: east_asian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 25
+  ingredients:
+  - ingredient_id: ing_rice
+    grams: 150
+  - ingredient_id: ing_capsicum
+    grams: 50
+  - ingredient_id: ing_green_peas
+    grams: 40
+  - ingredient_id: ing_corn
+    grams: 40
+  - ingredient_id: ing_soy_sauce
+    grams: 8
+  - ingredient_id: ing_sesame_oil
+    grams: 6
+  - ingredient_id: ing_asafoetida
+    grams: 1
+- id: rec_jain_tofu_stir_fry
+  name: Jain tofu stir fry
+  cuisine: east_asian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 20
+  ingredients:
+  - ingredient_id: ing_tofu
+    grams: 130
+  - ingredient_id: ing_broccoli
+    grams: 70
+  - ingredient_id: ing_capsicum
+    grams: 50
+  - ingredient_id: ing_soy_sauce
+    grams: 8
+  - ingredient_id: ing_sesame_oil
+    grams: 6
+  - ingredient_id: ing_asafoetida
+    grams: 1
+- id: rec_jain_mexican_rice_bowl
+  name: Jain Mexican rice bowl
+  cuisine: mexican
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 25
+  ingredients:
+  - ingredient_id: ing_rice
+    grams: 120
+  - ingredient_id: ing_black_eyed_peas
+    grams: 50
+  - ingredient_id: ing_corn
+    grams: 40
+  - ingredient_id: ing_tomato
+    grams: 50
+  - ingredient_id: ing_lime
+    grams: 10
+  - ingredient_id: ing_coriander_leaves
+    grams: 5
+  - ingredient_id: ing_sunflower_oil
+    grams: 8
+- id: rec_jain_corn_capsicum_taco
+  name: Jain corn capsicum taco
+  cuisine: mexican
+  meal_slot:
+  - snack
+  - lunch
+  prep_minutes: 20
+  ingredients:
+  - ingredient_id: ing_tortilla
+    grams: 80
+  - ingredient_id: ing_corn
+    grams: 50
+  - ingredient_id: ing_capsicum
+    grams: 50
+  - ingredient_id: ing_cheese
+    grams: 35
+  - ingredient_id: ing_tomato
+    grams: 40
+  - ingredient_id: ing_lime
+    grams: 10
+- id: rec_jain_mushroom_soup
+  name: Jain mushroom soup
+  cuisine: continental
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 25
+  ingredients:
+  - ingredient_id: ing_mushroom
+    grams: 150
+  - ingredient_id: ing_cream
+    grams: 30
+  - ingredient_id: ing_butter
+    grams: 10
+  - ingredient_id: ing_black_pepper
+    grams: 2
+- id: rec_jain_grilled_paneer_steak
+  name: Jain grilled paneer steak
+  cuisine: continental
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 20
+  ingredients:
+  - ingredient_id: ing_paneer
+    grams: 160
+  - ingredient_id: ing_capsicum
+    grams: 50
+  - ingredient_id: ing_olive_oil
+    grams: 12
+  - ingredient_id: ing_black_pepper
+    grams: 2
+  - ingredient_id: ing_lemon
+    grams: 10
+- id: rec_jain_veg_stew
+  name: Jain vegetable stew
+  cuisine: continental
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_pumpkin
+    grams: 70
+  - ingredient_id: ing_green_peas
+    grams: 50
+  - ingredient_id: ing_zucchini
+    grams: 50
+  - ingredient_id: ing_cream
+    grams: 25
+  - ingredient_id: ing_black_pepper
+    grams: 2
+  - ingredient_id: ing_butter
+    grams: 8
+- id: rec_jain_poha
+  name: Jain-style poha
+  cuisine: north_indian
+  meal_slot:
+  - breakfast
+  prep_minutes: 15
+  ingredients:
+  - ingredient_id: ing_poha
+    grams: 90
+  - ingredient_id: ing_peanuts
+    grams: 12
+  - ingredient_id: ing_green_chilli
+    grams: 5
+  - ingredient_id: ing_mustard_seeds
+    grams: 3
+  - ingredient_id: ing_curry_leaves
+    grams: 2
+  - ingredient_id: ing_turmeric
+    grams: 2
+  - ingredient_id: ing_lemon
+    grams: 10
+  - ingredient_id: ing_sunflower_oil
+    grams: 8
+- id: rec_jain_upma
+  name: Jain semolina upma
+  cuisine: south_indian
+  meal_slot:
+  - breakfast
+  prep_minutes: 20
+  ingredients:
+  - ingredient_id: ing_semolina
+    grams: 80
+  - ingredient_id: ing_mustard_seeds
+    grams: 3
+  - ingredient_id: ing_curry_leaves
+    grams: 2
+  - ingredient_id: ing_green_chilli
+    grams: 5
+  - ingredient_id: ing_lemon
+    grams: 10
+  - ingredient_id: ing_sunflower_oil
+    grams: 10
+- id: rec_jain_besan_chilla
+  name: Jain besan chilla
+  cuisine: north_indian
+  meal_slot:
+  - breakfast
+  - snack
+  prep_minutes: 15
+  ingredients:
+  - ingredient_id: ing_besan
+    grams: 80
+  - ingredient_id: ing_turmeric
+    grams: 2
+  - ingredient_id: ing_green_chilli
+    grams: 5
+  - ingredient_id: ing_coriander_leaves
+    grams: 5
+  - ingredient_id: ing_asafoetida
+    grams: 1
+  - ingredient_id: ing_sunflower_oil
+    grams: 8
+- id: rec_vegan_chana_masala_gf
+  name: Vegan chana masala
+  cuisine: north_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_chickpeas
+    grams: 100
+  - ingredient_id: ing_onion
+    grams: 50
+  - ingredient_id: ing_tomato
+    grams: 80
+  - ingredient_id: ing_garlic
+    grams: 6
+  - ingredient_id: ing_cumin
+    grams: 3
+  - ingredient_id: ing_coriander_powder
+    grams: 4
+  - ingredient_id: ing_garam_masala
+    grams: 4
+  - ingredient_id: ing_mustard_oil
+    grams: 10
+- id: rec_vegan_rajma_rice_bowl
+  name: Vegan rajma rice bowl
+  cuisine: north_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 40
+  ingredients:
+  - ingredient_id: ing_rajma
+    grams: 90
+  - ingredient_id: ing_rice
+    grams: 100
+  - ingredient_id: ing_onion
+    grams: 50
+  - ingredient_id: ing_tomato
+    grams: 70
+  - ingredient_id: ing_garlic
+    grams: 6
+  - ingredient_id: ing_cumin
+    grams: 3
+  - ingredient_id: ing_sunflower_oil
+    grams: 8
+- id: rec_vegan_moong_khichdi
+  name: Vegan moong dal khichdi
+  cuisine: north_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_moong_dal
+    grams: 80
+  - ingredient_id: ing_rice
+    grams: 90
+  - ingredient_id: ing_turmeric
+    grams: 2
+  - ingredient_id: ing_cumin
+    grams: 3
+  - ingredient_id: ing_green_peas
+    grams: 30
+  - ingredient_id: ing_sunflower_oil
+    grams: 8
+- id: rec_vegan_soy_bhurji
+  name: Vegan soy bhurji
+  cuisine: north_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_soybean
+    grams: 90
+  - ingredient_id: ing_onion
+    grams: 50
+  - ingredient_id: ing_tomato
+    grams: 70
+  - ingredient_id: ing_garlic
+    grams: 6
+  - ingredient_id: ing_green_peas
+    grams: 40
+  - ingredient_id: ing_garam_masala
+    grams: 4
+  - ingredient_id: ing_sunflower_oil
+    grams: 10
+- id: rec_vegan_tofu_tikka
+  name: Vegan tofu tikka
+  cuisine: north_indian
+  meal_slot:
+  - snack
+  - lunch
+  prep_minutes: 25
+  ingredients:
+  - ingredient_id: ing_tofu
+    grams: 150
+  - ingredient_id: ing_capsicum
+    grams: 50
+  - ingredient_id: ing_onion
+    grams: 40
+  - ingredient_id: ing_coconut_milk
+    grams: 25
+  - ingredient_id: ing_garam_masala
+    grams: 4
+  - ingredient_id: ing_mustard_oil
+    grams: 8
+- id: rec_vegan_black_eyed_peas_curry
+  name: Vegan black eyed peas curry
+  cuisine: north_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_black_eyed_peas
+    grams: 100
+  - ingredient_id: ing_onion
+    grams: 50
+  - ingredient_id: ing_tomato
+    grams: 70
+  - ingredient_id: ing_garlic
+    grams: 6
+  - ingredient_id: ing_coriander_powder
+    grams: 4
+  - ingredient_id: ing_sunflower_oil
+    grams: 10
+- id: rec_vegan_quinoa_chickpea_salad
+  name: Vegan quinoa chickpea salad
+  cuisine: mediterranean
+  meal_slot:
+  - lunch
+  - snack
+  prep_minutes: 20
+  ingredients:
+  - ingredient_id: ing_quinoa
+    grams: 70
+  - ingredient_id: ing_chickpeas
+    grams: 60
+  - ingredient_id: ing_cucumber
+    grams: 50
+  - ingredient_id: ing_tomato
+    grams: 50
+  - ingredient_id: ing_lemon
+    grams: 10
+  - ingredient_id: ing_olive_oil
+    grams: 8
+  - ingredient_id: ing_mint_leaves
+    grams: 5
+- id: rec_vegan_thai_veg_curry
+  name: Vegan Thai vegetable curry
+  cuisine: east_asian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_coconut_milk
+    grams: 130
+  - ingredient_id: ing_tofu
+    grams: 80
+  - ingredient_id: ing_broccoli
+    grams: 50
+  - ingredient_id: ing_capsicum
+    grams: 40
+  - ingredient_id: ing_curry_paste_base
+    grams: 15
+  - ingredient_id: ing_rice
+    grams: 90
+- id: rec_vegan_mexican_bean_bowl
+  name: Vegan Mexican bean bowl
+  cuisine: mexican
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 25
+  ingredients:
+  - ingredient_id: ing_rajma
+    grams: 80
+  - ingredient_id: ing_corn
+    grams: 50
+  - ingredient_id: ing_rice
+    grams: 80
+  - ingredient_id: ing_salsa
+    grams: 30
+  - ingredient_id: ing_lime
+    grams: 10
+  - ingredient_id: ing_coriander_leaves
+    grams: 5
+- id: rec_vegan_stir_fry_tofu_veg
+  name: Vegan stir fry tofu and vegetables
+  cuisine: east_asian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 20
+  ingredients:
+  - ingredient_id: ing_tofu
+    grams: 130
+  - ingredient_id: ing_broccoli
+    grams: 70
+  - ingredient_id: ing_capsicum
+    grams: 50
+  - ingredient_id: ing_garlic
+    grams: 6
+  - ingredient_id: ing_soy_sauce
+    grams: 10
+  - ingredient_id: ing_sesame_oil
+    grams: 6
+- id: rec_vegan_lentil_soup
+  name: Vegan lentil soup
+  cuisine: mediterranean
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_masoor_dal
+    grams: 90
+  - ingredient_id: ing_tomato
+    grams: 70
+  - ingredient_id: ing_onion
+    grams: 35
+  - ingredient_id: ing_garlic
+    grams: 6
+  - ingredient_id: ing_cumin
+    grams: 3
+  - ingredient_id: ing_olive_oil
+    grams: 8
+- id: rec_vegan_chickpea_spinach_curry
+  name: Vegan chickpea spinach curry
+  cuisine: north_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_chickpeas
+    grams: 90
+  - ingredient_id: ing_spinach
+    grams: 90
+  - ingredient_id: ing_tomato
+    grams: 60
+  - ingredient_id: ing_onion
+    grams: 40
+  - ingredient_id: ing_garlic
+    grams: 6
+  - ingredient_id: ing_garam_masala
+    grams: 4
+  - ingredient_id: ing_sunflower_oil
+    grams: 8
+- id: rec_vegan_ragi_dosa_chutney
+  name: Vegan ragi dosa with coconut chutney
+  cuisine: south_indian
+  meal_slot:
+  - breakfast
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_ragi_flour
+    grams: 70
+  - ingredient_id: ing_rice
+    grams: 25
+  - ingredient_id: ing_black_gram
+    grams: 15
+  - ingredient_id: ing_coconut
+    grams: 40
+  - ingredient_id: ing_green_chilli
+    grams: 5
+  - ingredient_id: ing_sunflower_oil
+    grams: 8
+- id: rec_vegan_oats_upma
+  name: Vegan oats upma
+  cuisine: south_indian
+  meal_slot:
+  - breakfast
+  prep_minutes: 20
+  ingredients:
+  - ingredient_id: ing_oats
+    grams: 80
+  - ingredient_id: ing_mustard_seeds
+    grams: 3
+  - ingredient_id: ing_curry_leaves
+    grams: 2
+  - ingredient_id: ing_green_chilli
+    grams: 5
+  - ingredient_id: ing_onion
+    grams: 30
+  - ingredient_id: ing_mustard_oil
+    grams: 8
+- id: rec_vegan_gf_veg_khichdi
+  name: Vegan vegetable khichdi
+  cuisine: north_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_moong_dal
+    grams: 80
+  - ingredient_id: ing_rice
+    grams: 90
+  - ingredient_id: ing_turmeric
+    grams: 2
+  - ingredient_id: ing_cumin
+    grams: 3
+  - ingredient_id: ing_carrot
+    grams: 35
+  - ingredient_id: ing_mustard_oil
+    grams: 8
+- id: rec_vegan_lauki_chana_dal
+  name: Vegan lauki chana dal
+  cuisine: north_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 35
+  ingredients:
+  - ingredient_id: ing_bottle_gourd
+    grams: 120
+  - ingredient_id: ing_chana_dal
+    grams: 80
+  - ingredient_id: ing_tomato
+    grams: 50
+  - ingredient_id: ing_cumin
+    grams: 3
+  - ingredient_id: ing_turmeric
+    grams: 2
+  - ingredient_id: ing_mustard_oil
+    grams: 8
+- id: rec_vegan_masoor_soup
+  name: Vegan masoor dal soup
+  cuisine: mediterranean
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 25
+  ingredients:
+  - ingredient_id: ing_masoor_dal
+    grams: 90
+  - ingredient_id: ing_tomato
+    grams: 70
+  - ingredient_id: ing_cumin
+    grams: 3
+  - ingredient_id: ing_turmeric
+    grams: 2
+  - ingredient_id: ing_coriander_leaves
+    grams: 5
+  - ingredient_id: ing_olive_oil
+    grams: 8
+- id: rec_vegan_coconut_veg_curry
+  name: Vegan coconut vegetable curry
+  cuisine: south_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_pumpkin
+    grams: 90
+  - ingredient_id: ing_cauliflower
+    grams: 70
+  - ingredient_id: ing_coconut_milk
+    grams: 90
+  - ingredient_id: ing_curry_leaves
+    grams: 2
+  - ingredient_id: ing_mustard_seeds
+    grams: 3
+  - ingredient_id: ing_turmeric
+    grams: 2
+  - ingredient_id: ing_mustard_oil
+    grams: 8
+- id: rec_vegan_toor_dal_spinach
+  name: Vegan toor dal with spinach
+  cuisine: north_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_toor_dal
+    grams: 80
+  - ingredient_id: ing_spinach
+    grams: 90
+  - ingredient_id: ing_tomato
+    grams: 50
+  - ingredient_id: ing_cumin
+    grams: 3
+  - ingredient_id: ing_turmeric
+    grams: 2
+  - ingredient_id: ing_mustard_oil
+    grams: 8
+- id: rec_vegan_rajma_curry_gf
+  name: Vegan rajma curry
+  cuisine: north_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 35
+  ingredients:
+  - ingredient_id: ing_rajma
+    grams: 90
+  - ingredient_id: ing_tomato
+    grams: 70
+  - ingredient_id: ing_onion
+    grams: 35
+  - ingredient_id: ing_cumin
+    grams: 3
+  - ingredient_id: ing_garam_masala
+    grams: 4
+  - ingredient_id: ing_mustard_oil
+    grams: 8
+- id: rec_vegan_black_gram_curry
+  name: Vegan black gram curry
+  cuisine: north_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 35
+  ingredients:
+  - ingredient_id: ing_black_gram
+    grams: 80
+  - ingredient_id: ing_tomato
+    grams: 60
+  - ingredient_id: ing_cumin
+    grams: 3
+  - ingredient_id: ing_turmeric
+    grams: 2
+  - ingredient_id: ing_mustard_oil
+    grams: 8
+- id: rec_vegan_south_sambar_rice
+  name: Vegan sambar rice
+  cuisine: south_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 35
+  ingredients:
+  - ingredient_id: ing_toor_dal
+    grams: 70
+  - ingredient_id: ing_rice
+    grams: 90
+  - ingredient_id: ing_pumpkin
+    grams: 50
+  - ingredient_id: ing_drumstick
+    grams: 40
+  - ingredient_id: ing_onion
+    grams: 25
+  - ingredient_id: ing_tamarind
+    grams: 12
+  - ingredient_id: ing_curry_leaves
+    grams: 2
+  - ingredient_id: ing_mustard_seeds
+    grams: 3
+  - ingredient_id: ing_sunflower_oil
+    grams: 8
+- id: rec_vegan_beetroot_poriyal
+  name: Vegan beetroot poriyal
+  cuisine: south_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 20
+  ingredients:
+  - ingredient_id: ing_beetroot
+    grams: 150
+  - ingredient_id: ing_coconut
+    grams: 25
+  - ingredient_id: ing_mustard_seeds
+    grams: 3
+  - ingredient_id: ing_curry_leaves
+    grams: 2
+  - ingredient_id: ing_coconut_oil
+    grams: 6
+- id: rec_vegan_cabbage_thoran
+  name: Vegan cabbage thoran
+  cuisine: south_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 20
+  ingredients:
+  - ingredient_id: ing_cabbage
+    grams: 160
+  - ingredient_id: ing_coconut
+    grams: 35
+  - ingredient_id: ing_mustard_seeds
+    grams: 3
+  - ingredient_id: ing_curry_leaves
+    grams: 2
+  - ingredient_id: ing_coconut_oil
+    grams: 6
+- id: rec_grilled_mackerel_south_indian
+  name: Grilled mackerel south Indian style
+  cuisine: south_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 25
+  ingredients:
+  - ingredient_id: ing_mackerel
+    grams: 160
+  - ingredient_id: ing_curry_leaves
+    grams: 3
+  - ingredient_id: ing_mustard_seeds
+    grams: 3
+  - ingredient_id: ing_turmeric
+    grams: 2
+  - ingredient_id: ing_lemon
+    grams: 10
+  - ingredient_id: ing_coconut_oil
+    grams: 8
+- id: rec_tuna_salad_mediterranean
+  name: Tuna salad Mediterranean style
+  cuisine: mediterranean
+  meal_slot:
+  - lunch
+  - snack
+  prep_minutes: 15
+  ingredients:
+  - ingredient_id: ing_tuna
+    grams: 120
+  - ingredient_id: ing_lettuce
+    grams: 70
+  - ingredient_id: ing_cucumber
+    grams: 50
+  - ingredient_id: ing_tomato
+    grams: 50
+  - ingredient_id: ing_olive_oil
+    grams: 10
+  - ingredient_id: ing_lemon
+    grams: 10
+  - ingredient_id: ing_black_pepper
+    grams: 1
+- id: rec_fish_moilee_kerala
+  name: Fish moilee
+  cuisine: south_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_pomfret
+    grams: 160
+  - ingredient_id: ing_coconut_milk
+    grams: 120
+  - ingredient_id: ing_curry_leaves
+    grams: 2
+  - ingredient_id: ing_mustard_seeds
+    grams: 2
+  - ingredient_id: ing_turmeric
+    grams: 2
+  - ingredient_id: ing_coconut_oil
+    grams: 8
+- id: rec_mackerel_curry_bengali
+  name: Bengali mackerel curry
+  cuisine: bengali
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 30
+  ingredients:
+  - ingredient_id: ing_mackerel
+    grams: 160
+  - ingredient_id: ing_mustard_oil
+    grams: 10
+  - ingredient_id: ing_mustard_seeds
+    grams: 3
+  - ingredient_id: ing_turmeric
+    grams: 3
+  - ingredient_id: ing_green_chilli
+    grams: 5
+  - ingredient_id: ing_tomato
+    grams: 50
+- id: rec_pan_seared_salmon_lemon_butter
+  name: Pan seared salmon with lemon butter
+  cuisine: continental
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 20
+  ingredients:
+  - ingredient_id: ing_salmon
+    grams: 160
+  - ingredient_id: ing_butter
+    grams: 12
+  - ingredient_id: ing_lemon
+    grams: 15
+  - ingredient_id: ing_black_pepper
+    grams: 2
+- id: rec_fish_tikka
+  name: Fish tikka
+  cuisine: north_indian
+  meal_slot:
+  - snack
+  - dinner
+  prep_minutes: 25
+  ingredients:
+  - ingredient_id: ing_fish_rohu
+    grams: 160
+  - ingredient_id: ing_yoghurt
+    grams: 50
+  - ingredient_id: ing_garam_masala
+    grams: 4
+  - ingredient_id: ing_lemon
+    grams: 10
+  - ingredient_id: ing_mustard_oil
+    grams: 8
+- id: rec_grilled_chicken_herb_continental
+  name: Herb grilled chicken
+  cuisine: continental
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 25
+  ingredients:
+  - ingredient_id: ing_chicken_breast
+    grams: 170
+  - ingredient_id: ing_olive_oil
+    grams: 10
+  - ingredient_id: ing_lemon
+    grams: 10
+  - ingredient_id: ing_garlic
+    grams: 5
+  - ingredient_id: ing_black_pepper
+    grams: 2
+- id: rec_steamed_veg_olive_oil
+  name: Steamed vegetables with olive oil
+  cuisine: mediterranean
+  meal_slot:
+  - lunch
+  - dinner
+  - snack
+  prep_minutes: 15
+  ingredients:
+  - ingredient_id: ing_broccoli
+    grams: 110
+  - ingredient_id: ing_zucchini
+    grams: 90
+  - ingredient_id: ing_capsicum
+    grams: 70
+  - ingredient_id: ing_olive_oil
+    grams: 10
+  - ingredient_id: ing_black_pepper
+    grams: 1
+- id: rec_egg_white_veg_omelette
+  name: Egg white vegetable omelette
+  cuisine: continental
+  meal_slot:
+  - breakfast
+  prep_minutes: 15
+  ingredients:
+  - ingredient_id: ing_egg
+    grams: 110
+  - ingredient_id: ing_capsicum
+    grams: 45
+  - ingredient_id: ing_spinach
+    grams: 35
+  - ingredient_id: ing_black_pepper
+    grams: 1
+  - ingredient_id: ing_olive_oil
+    grams: 5
+- id: rec_paneer_pepper_stir_fry
+  name: Paneer pepper stir fry
+  cuisine: continental
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 20
+  ingredients:
+  - ingredient_id: ing_paneer
+    grams: 140
+  - ingredient_id: ing_capsicum
+    grams: 70
+  - ingredient_id: ing_zucchini
+    grams: 50
+  - ingredient_id: ing_black_pepper
+    grams: 3
+  - ingredient_id: ing_olive_oil
+    grams: 8
+- id: rec_chicken_salad_lettuce
+  name: Grilled chicken salad
+  cuisine: continental
+  meal_slot:
+  - lunch
+  - snack
+  prep_minutes: 20
+  ingredients:
+  - ingredient_id: ing_chicken_breast
+    grams: 140
+  - ingredient_id: ing_lettuce
+    grams: 70
+  - ingredient_id: ing_cucumber
+    grams: 50
+  - ingredient_id: ing_olive_oil
+    grams: 8
+  - ingredient_id: ing_lemon
+    grams: 10
+  - ingredient_id: ing_garlic
+    grams: 5
+  - ingredient_id: ing_black_pepper
+    grams: 1
+- id: rec_tofu_veg_stir_fry_lowsalt
+  name: Low-sodium tofu vegetable stir fry
+  cuisine: east_asian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 20
+  ingredients:
+  - ingredient_id: ing_tofu
+    grams: 140
+  - ingredient_id: ing_broccoli
+    grams: 70
+  - ingredient_id: ing_capsicum
+    grams: 50
+  - ingredient_id: ing_sesame_oil
+    grams: 6
+  - ingredient_id: ing_black_pepper
+    grams: 1
+- id: rec_mutton_pepper_fry_lowcarb
+  name: Mutton pepper fry
+  cuisine: south_indian
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 40
+  ingredients:
+  - ingredient_id: ing_mutton
+    grams: 170
+  - ingredient_id: ing_black_pepper
+    grams: 4
+  - ingredient_id: ing_curry_leaves
+    grams: 3
+  - ingredient_id: ing_coconut_oil
+    grams: 10
+- id: rec_salmon_avocado_bowl
+  name: Salmon avocado bowl
+  cuisine: continental
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 20
+  ingredients:
+  - ingredient_id: ing_salmon
+    grams: 140
+  - ingredient_id: ing_avocado
+    grams: 70
+  - ingredient_id: ing_lettuce
+    grams: 50
+  - ingredient_id: ing_lemon
+    grams: 10
+  - ingredient_id: ing_olive_oil
+    grams: 6
+- id: rec_grilled_mushroom_zucchini
+  name: Grilled mushroom and zucchini
+  cuisine: italian
+  meal_slot:
+  - lunch
+  - dinner
+  - snack
+  prep_minutes: 15
+  ingredients:
+  - ingredient_id: ing_mushroom
+    grams: 140
+  - ingredient_id: ing_zucchini
+    grams: 90
+  - ingredient_id: ing_olive_oil
+    grams: 10
+  - ingredient_id: ing_black_pepper
+    grams: 1
+- id: rec_lemon_pepper_prawns_lowsalt
+  name: Lemon pepper prawns
+  cuisine: continental
+  meal_slot:
+  - lunch
+  - dinner
+  prep_minutes: 20
+  ingredients:
+  - ingredient_id: ing_prawns
+    grams: 170
+  - ingredient_id: ing_lemon
+    grams: 15
+  - ingredient_id: ing_black_pepper
+    grams: 3
+  - ingredient_id: ing_olive_oil
+    grams: 8
+- id: rec_moong_sprouts_salad
+  name: Moong sprouts salad
+  cuisine: north_indian
+  meal_slot:
+  - snack
+  - lunch
+  prep_minutes: 10
+  ingredients:
+  - ingredient_id: ing_moong_sprouts
+    grams: 140
+  - ingredient_id: ing_tomato
+    grams: 50
+  - ingredient_id: ing_cucumber
+    grams: 50
+  - ingredient_id: ing_lemon
+    grams: 10
+  - ingredient_id: ing_coriander_leaves
+    grams: 5
+  - ingredient_id: ing_olive_oil
+    grams: 5

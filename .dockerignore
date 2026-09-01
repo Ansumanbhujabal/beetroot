@@ -1,0 +1,27 @@
+# Build/dev artifacts — never needed inside the image.
+.venv
+.git
+__pycache__
+*.pyc
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.coverage
+htmlcov
+
+# Runtime state that must never ship baked into the image — a reviewer's
+# container starts with a clean catalog/checkpoint DB, not this machine's.
+beatroot.db
+beatroot.checkpoints.db
+
+# Secrets — the whole point is that the image needs none of these to boot.
+.env
+
+# Spec/planning material and generated docs — not part of the running app.
+.sdd
+docs
+
+# Generated eval output directories (not the eval source under
+# src/beatroot/eval or the golden fixtures under eval/golden).
+eval/synthetic
+eval/healing

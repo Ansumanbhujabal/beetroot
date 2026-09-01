@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>beatroot — architecture &amp; docs</title>
+<style>
+  :root{
+    --bg:#0b0f14; --panel:#121820; --panel-2:#1a222c; --border:#25313d;
+    --text:#e7edf3; --muted:#8ea0b0; --muted-2:#5c6f80;
+    --commit:#2fbf71; --negotiate:#e0a52c; --escalate:#e0523f;
+    --model:#b06ce0; --accent:#4c8de0;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+  .wrap{padding:24px;max-width:1240px;margin:0 auto}
+  h1{font-size:20px;font-weight:700;letter-spacing:.02em;margin:0 0 2px}
+  .sub{color:var(--muted);font-size:12.5px;margin-bottom:20px}
+  section{background:var(--panel);border:1px solid var(--border);border-radius:10px;
+    padding:18px 20px;margin-bottom:16px}
+  h2{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);
+    margin:0 0 14px;font-weight:600}
+  button,a.btn{font:inherit;color:var(--text);background:var(--panel-2);
+    border:1px solid var(--border);border-radius:6px;padding:6px 11px;cursor:pointer;
+    text-decoration:none;display:inline-block;font-size:12.5px}
+  button:hover,a.btn:hover{border-color:var(--muted-2)}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .spacer{flex:1}
+  .hint{color:var(--muted-2);font-size:11.5px}
+
+  /* Viewport: the SVG is dragged and wheel-zoomed inside this box. */
+  #stage{position:relative;overflow:hidden;height:640px;border:1px solid var(--border);
+    border-radius:8px;background:#ffffff;cursor:grab;touch-action:none}
+  #stage.grabbing{cursor:grabbing}
+  #canvas{position:absolute;transform-origin:0 0;will-change:transform}
+  #canvas img{display:block;max-width:none}
+  #zoomLabel{position:absolute;right:10px;bottom:10px;background:rgba(11,15,20,.82);
+    color:var(--text);border:1px solid var(--border);border-radius:6px;
+    padding:3px 8px;font-size:11.5px;pointer-events:none}
+
+  table{width:100%;border-collapse:collapse;font-size:12.5px}
+  th,td{text-align:left;padding:8px;border-bottom:1px solid var(--border);vertical-align:top}
+  th{color:var(--muted);font-weight:600;text-transform:uppercase;font-size:10.5px;letter-spacing:.05em}
+  td.what{color:var(--muted);font-size:12px}
+  code{background:var(--panel-2);border:1px solid var(--border);border-radius:4px;
+    padding:1px 5px;font-size:11.5px}
+  .note{color:var(--muted);font-size:12px;margin-top:12px;line-height:1.6}
+
+  nav.topnav{display:flex;align-items:center;gap:4px;padding:10px 24px;
+    border-bottom:1px solid var(--border);background:var(--panel)}
+  nav.topnav .brand{font-weight:800;letter-spacing:.03em;margin-right:18px;color:var(--text)}
+  nav.topnav a{color:var(--muted);text-decoration:none;font-size:13px;padding:6px 12px;
+    border-radius:6px}
+  nav.topnav a:hover{color:var(--text);background:var(--panel-2)}
+  nav.topnav a.active{color:var(--text);background:var(--panel-2);font-weight:600}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <span class="brand">beatroot</span>
+  <a href="/">Recommend</a>
+  <a href="/incidents">Incidents &amp; drift</a>
+  <a href="/evals">Evals &amp; logs</a>
+  <a href="/docs" class="active">Architecture &amp; docs</a>
+</nav>
+
+<div class="wrap">
+  <h1>Architecture &amp; docs</h1>
+  <div class="sub">
+    The diagram below is the same SVG committed at
+    <code>docs/diagrams/</code>. Drag to pan, scroll to zoom.
+  </div>
+
+  <section>
+    <h2>System architecture</h2>
+    <div class="row" style="margin-bottom:10px">
+      <button id="zoomOut" title="Zoom out">&minus;</button>
+      <button id="zoomIn" title="Zoom in">+</button>
+      <button id="fit">Fit</button>
+      <button id="reset">100%</button>
+      <span class="spacer"></span>
+      <span class="hint">drag to pan &middot; scroll to zoom</span>
+      <a class="btn" href="/docs/file/beatroot-architecture.svg" download>SVG</a>
+      <a class="btn" href="/docs/file/beatroot-architecture.drawio.png" download>PNG</a>
+      <a class="btn" href="/docs/file/beatroot-architecture.pdf" download>PDF</a>
+      <a class="btn" href="/docs/file/beatroot-architecture.drawio" download>.drawio</a>
+    </div>
+    <div id="stage">
+      <div id="canvas"><img id="diagram" src="/docs/file/beatroot-architecture.svg" alt="beatroot architecture diagram"></div>
+      <div id="zoomLabel">100%</div>
+    </div>
+    <div class="note">
+      The PNG and <code>.drawio</code> both carry the editable XML, so either
+      reopens in draw.io. The SVG and PNG drop straight onto a Miro board.
+    </div>
+  </section>
+
+  <section>
+    <h2>Documents</h2>
+    <table>
+      <thead>
+        <tr><th>Document</th><th>What it is</th><th style="width:1%"></th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>START_HERE.md</strong></td>
+          <td class="what">The index. Routes you to the right document depending on
+            whether you want to drive the system, understand it, prepare to be
+            questioned on it, or see what is measured.</td>
+          <td><a class="btn" href="/docs/file/START_HERE.md" download>Download</a></td>
+        </tr>
+        <tr>
+          <td><strong>ARCHITECTURE_DEEP.md</strong></td>
+          <td class="what">Every flow traced to <code>module:function</code>, with 8 diagrams.
+            The trust tiers, the LangGraph topology, retrieval, and why the
+            boundary is a test rather than a convention.</td>
+          <td><a class="btn" href="/docs/file/ARCHITECTURE_DEEP.md" download>Download</a></td>
+        </tr>
+        <tr>
+          <td><strong>TESTING.md</strong></td>
+          <td class="what">A reviewer's walkthrough. Every scenario in it was executed
+            against a running server, with the real observed output.</td>
+          <td><a class="btn" href="/docs/file/TESTING.md" download>Download</a></td>
+        </tr>
+        <tr>
+          <td><strong>PRODUCTION_READINESS.md</strong></td>
+          <td class="what">Requirements coverage and the honest gap list. Splits
+            "ready as a take-home" from "ready to serve real users", because
+            those are different bars.</td>
+          <td><a class="btn" href="/docs/file/PRODUCTION_READINESS.md" download>Download</a></td>
+        </tr>
+        <tr>
+          <td><strong>EVAL_HISTORY.md</strong></td>
+          <td class="what">Every eval run, each attributed to a named change —
+            including the iterations that were reverted.</td>
+          <td><a class="btn" href="/docs/file/EVAL_HISTORY.md" download>Download</a></td>
+        </tr>
+        <tr>
+          <td><strong>CUT_LIST.md</strong></td>
+          <td class="what">What was deliberately not built, and what it would cost
+            to add.</td>
+          <td><a class="btn" href="/docs/file/CUT_LIST.md" download>Download</a></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="note">
+      Served read-only from the repo, by an explicit allow-list of filenames —
+      not a directory listing. A path this page does not name is a 404, so no
+      request can walk out of the docs directory.
+    </div>
+  </section>
+</div>
+
+<script>
+// Pan/zoom with no library: a CSS transform on a wrapper div. Everything on
+// this page is same-origin (see tests/api/test_pages.py — the suite asserts no
+// external URLs anywhere in web/), so a CDN pan-zoom widget was never an option.
+(function () {
+  var stage = document.getElementById("stage");
+  var canvas = document.getElementById("canvas");
+  var img = document.getElementById("diagram");
+  var label = document.getElementById("zoomLabel");
+
+  var scale = 1, tx = 0, ty = 0;
+  var MIN = 0.1, MAX = 8;
+
+  function apply() {
+    canvas.style.transform = "translate(" + tx + "px," + ty + "px) scale(" + scale + ")";
+    label.textContent = Math.round(scale * 100) + "%";
+  }
+
+  function fit() {
+    // Natural size is only known once the SVG has decoded; callers wait on load.
+    var w = img.naturalWidth || img.clientWidth;
+    var h = img.naturalHeight || img.clientHeight;
+    if (!w || !h) return;
+    var pad = 24;
+    scale = Math.min((stage.clientWidth - pad) / w, (stage.clientHeight - pad) / h);
+    if (!isFinite(scale) || scale <= 0) scale = 1;
+    tx = (stage.clientWidth - w * scale) / 2;
+    ty = (stage.clientHeight - h * scale) / 2;
+    apply();
+  }
+
+  function zoomAt(cx, cy, factor) {
+    var next = Math.min(MAX, Math.max(MIN, scale * factor));
+    // Keep the point under the cursor fixed while scaling.
+    tx = cx - (cx - tx) * (next / scale);
+    ty = cy - (cy - ty) * (next / scale);
+    scale = next;
+    apply();
+  }
+
+  img.addEventListener("load", fit);
+  if (img.complete) fit();
+
+  stage.addEventListener("wheel", function (e) {
+    e.preventDefault();
+    var r = stage.getBoundingClientRect();
+    zoomAt(e.clientX - r.left, e.clientY - r.top, e.deltaY < 0 ? 1.12 : 1 / 1.12);
+  }, { passive: false });
+
+  var dragging = false, lastX = 0, lastY = 0;
+  stage.addEventListener("pointerdown", function (e) {
+    dragging = true; lastX = e.clientX; lastY = e.clientY;
+    stage.classList.add("grabbing");
+    stage.setPointerCapture(e.pointerId);
+  });
+  stage.addEventListener("pointermove", function (e) {
+    if (!dragging) return;
+    tx += e.clientX - lastX; ty += e.clientY - lastY;
+    lastX = e.clientX; lastY = e.clientY;
+    apply();
+  });
+  function endDrag(e) {
+    dragging = false;
+    stage.classList.remove("grabbing");
+    if (e && e.pointerId !== undefined && stage.hasPointerCapture(e.pointerId)) {
+      stage.releasePointerCapture(e.pointerId);
+    }
+  }
+  stage.addEventListener("pointerup", endDrag);
+  stage.addEventListener("pointercancel", endDrag);
+
+  function centreZoom(factor) {
+    zoomAt(stage.clientWidth / 2, stage.clientHeight / 2, factor);
+  }
+  document.getElementById("zoomIn").onclick = function () { centreZoom(1.25); };
+  document.getElementById("zoomOut").onclick = function () { centreZoom(1 / 1.25); };
+  document.getElementById("fit").onclick = fit;
+  document.getElementById("reset").onclick = function () {
+    scale = 1; tx = 0; ty = 0; apply();
+  };
+  window.addEventListener("resize", fit);
+})();
+</script>
+</body>
+</html>

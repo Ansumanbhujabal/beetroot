@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="beatroot-architecture">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="1300" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="beatroot &#8212; trust-tiered meal planning agent" style="text;html=1;align=left;verticalAlign=middle;fontSize=22;fontStyle=1;fontColor=#1f2933;" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="900" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" value="LangGraph StateGraph over a SqliteSaver checkpointer. Every terminal state writes an audit record. interrupt_before=[&quot;commit&quot;] is the confirmation boundary." style="text;html=1;align=left;verticalAlign=middle;fontSize=12;fontColor=#52606d;" vertex="1" parent="1">
+          <mxGeometry x="40" y="56" width="1200" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- ============ ENTRY ============ -->
+        <mxCell id="clients" value="Interfaces" style="swimlane;startSize=28;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=12;pointerEvents=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="100" width="220" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="web" value="Web UI&#xa;/ · /incidents · /evals · /docs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="clients">
+          <mxGeometry x="20" y="40" width="180" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="api" value="FastAPI&#xa;POST /recommend" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="clients">
+          <mxGeometry x="20" y="90" width="180" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="cli" value="CLI (typer)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="clients">
+          <mxGeometry x="20" y="135" width="180" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- ============ T0 TIER ============ -->
+        <mxCell id="t0" value="T0 &#8212; INVARIANTS · deterministic, never modelled" style="swimlane;startSize=30;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=12;pointerEvents=0;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="320" y="100" width="620" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="n_compile" value="COMPILE&#xa;&#xa;open-vocabulary interpreter&#xa;model proposes category &#8594; CODE maps to Severity&#xa;identity kinds floored at DIETARY" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontSize=10;align=left;spacingLeft=8;" vertex="1" parent="t0">
+          <mxGeometry x="20" y="45" width="270" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="n_feas" value="FEASIBILITY&#xa;&#xa;bitmask over inverted tag index&#xa;O(constraints), not O(catalog)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontSize=10;align=left;spacingLeft=8;" vertex="1" parent="t0">
+          <mxGeometry x="320" y="45" width="270" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="n_verify" value="VERIFY&#xa;&#xa;re-checks the recipe (no model)&#xa;diffs every stated number vs catalog truth" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontSize=10;align=left;spacingLeft=8;" vertex="1" parent="t0">
+          <mxGeometry x="20" y="140" width="270" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="n_nut" value="NUTRITION MATH&#xa;&#xa;provenance = &quot;computed&quot;&#xa;the type system forbids a model value" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontSize=10;align=left;spacingLeft=8;" vertex="1" parent="t0">
+          <mxGeometry x="320" y="140" width="270" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- ============ T1 TIER ============ -->
+        <mxCell id="t1" value="T1 &#8212; HYBRID JUDGMENT · model ranks inside a filter it cannot see past" style="swimlane;startSize=30;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=12;pointerEvents=0;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="320" y="370" width="620" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="n_retr" value="RETRIEVE &#8212; hybrid, two passes" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=11;fontStyle=1;" vertex="1" parent="t1">
+          <mxGeometry x="20" y="45" width="270" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="r_lex" value="FTS5 lexical (BM25)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff8e1;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="t1">
+          <mxGeometry x="20" y="85" width="130" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="r_dense" value="dense vectors" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff8e1;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="t1">
+          <mxGeometry x="160" y="85" width="130" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="r_rrf" value="Reciprocal Rank Fusion&#xa;then: pass 1 prefers soft-satisfying · pass 2 tops up with merely-legal" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff8e1;strokeColor=#d6b656;fontSize=10;align=left;spacingLeft=8;" vertex="1" parent="t1">
+          <mxGeometry x="20" y="129" width="270" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="r_note" value="constraint filter pushed DOWN into every store &#8212;&#xa;is_legal() gates hard constraints before ranking" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fontColor=#7a6000;fontStyle=2;" vertex="1" parent="t1">
+          <mxGeometry x="20" y="185" width="270" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="n_score" value="SCORE&#xa;&#xa;LLM rerank over ALREADY-LEGAL candidates&#xa;cannot make anything unsafe" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=10;align=left;spacingLeft=8;" vertex="1" parent="t1">
+          <mxGeometry x="320" y="45" width="270" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="n_trust" value="TRUST&#xa;&#xa;composite = 0.45 catalog_coverage&#xa;+ 0.30 constraint_completeness&#xa;+ 0.25 model_self_assessment&#xa;conjunctive gate: low composite OR any weak signal &#8594; escalate" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=10;align=left;spacingLeft=8;" vertex="1" parent="t1">
+          <mxGeometry x="320" y="129" width="270" height="96" as="geometry" />
+        </mxCell>
+
+        <!-- ============ T2 TIER ============ -->
+        <mxCell id="t2" value="T2 &#8212; GENERATIVE · prose only, off the critical path" style="swimlane;startSize=30;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=12;pointerEvents=0;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="370" width="330" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="n_explain" value="EXPLAIN&#xa;&#xa;queues prose, returns immediately" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;fontSize=10;align=left;spacingLeft=8;" vertex="1" parent="t2">
+          <mxGeometry x="20" y="45" width="290" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="q_queue" value="ExplanationQueue&#xa;(swap for Celery / RQ unchanged)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3ecf8;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="t2">
+          <mxGeometry x="20" y="110" width="290" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="q_drift" value="detect_drift() before serving&#xa;numbers bind grammatically to their cue&#xa;drift &#8594; status FAILED, prose never shown" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=left;spacingLeft=8;" vertex="1" parent="t2">
+          <mxGeometry x="20" y="162" width="290" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ============ T3 TIER ============ -->
+        <mxCell id="t3" value="T3 &#8212; CONFIRMATION · irreversible, human-gated" style="swimlane;startSize=30;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=12;pointerEvents=0;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="100" width="330" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="n_commit" value="COMMIT&#xa;&#xa;interrupt_before=[&quot;commit&quot;]&#xa;graph PAUSES here on a medical profile&#xa;in the grey band &#8594; PENDING_REVIEW" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d79b00;fontSize=10;align=left;spacingLeft=8;" vertex="1" parent="t3">
+          <mxGeometry x="20" y="45" width="290" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="n_audit" value="Audit log &#8212; every terminal state,&#xa;including a thread paused and never resumed" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;boundedLbl=1;" vertex="1" parent="t3">
+          <mxGeometry x="20" y="135" width="290" height="72" as="geometry" />
+        </mxCell>
+
+        <mxCell id="asyncnote" value="under async, VERIFY sees explanation=&quot;&quot; &#8212; so the grounding check moves INTO the queue" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fontColor=#7a5fa0;fontStyle=2;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="626" width="330" height="36" as="geometry" />
+        </mxCell>
+        <!-- ============ TRUSTED DATA ============ -->
+        <mxCell id="data" value="Trusted data" style="swimlane;startSize=28;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=12;pointerEvents=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="370" width="220" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="d_cat" value="SQLite catalog&#xa;174 recipes · 137 ingredients" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;fontSize=10;boundedLbl=1;" vertex="1" parent="data">
+          <mxGeometry x="20" y="40" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="d_qdrant" value="Qdrant (prod)&#xa;NumPy fallback (dev)" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;fontSize=10;boundedLbl=1;" vertex="1" parent="data">
+          <mxGeometry x="20" y="110" width="180" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="d_tags" value="tags DERIVED at seed time,&#xa;never hand-set on a recipe" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fontColor=#52606d;fontStyle=2;" vertex="1" parent="data">
+          <mxGeometry x="20" y="175" width="190" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ============ TERMINALS ============ -->
+        <mxCell id="term" value="Terminal states &#8594; END" style="swimlane;startSize=28;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=12;pointerEvents=0;" vertex="1" parent="1">
+          <mxGeometry x="320" y="670" width="620" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="t_commit" value="COMMIT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontStyle=1;" vertex="1" parent="term">
+          <mxGeometry x="20" y="45" width="170" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="t_neg" value="NEGOTIATE&#xa;relaxation ladder; hard constraints locked" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="term">
+          <mxGeometry x="215" y="45" width="180" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="t_esc" value="ESCALATE&#xa;incl. reason=out_of_scope" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="term">
+          <mxGeometry x="420" y="45" width="180" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ============ HEALING ============ -->
+        <mxCell id="heal" value="Self-healing loop" style="swimlane;startSize=28;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=12;pointerEvents=0;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="670" width="330" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="h_flow" value="incidents &#8594; clustered &#8594; proposals&#xa;&#xa;eval cases auto-applied · rule changes HUMAN-GATED" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;fontSize=10;align=left;spacingLeft=8;" vertex="1" parent="heal">
+          <mxGeometry x="20" y="42" width="290" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ============ BOUNDARY NOTE ============ -->
+        <mxCell id="boundary" value="ENFORCED BOUNDARY &#8212; tests/test_boundaries.py walks the import graph (AST, transitive BFS).&#xa;t0_invariants/ · trusted/ · store/ may NEVER import reasoning/. The tier map is a test, not a convention." style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e8f4ea;strokeColor=#82b366;fontSize=11;align=left;spacingLeft=10;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="320" y="830" width="620" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ============ LEGEND ============ -->
+        <mxCell id="legend" value="Trust tiers" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#666666;verticalAlign=top;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="40" y="670" width="220" height="126" as="geometry" />
+        </mxCell>
+        <mxCell id="lg1" value="" style="rounded=0;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="30" width="26" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="lg1t" value="T0 deterministic" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;" vertex="1" parent="legend">
+          <mxGeometry x="44" y="28" width="166" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="lg2" value="" style="rounded=0;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="54" width="26" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="lg2t" value="T1 hybrid judgment" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;" vertex="1" parent="legend">
+          <mxGeometry x="44" y="52" width="166" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="lg3" value="" style="rounded=0;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="78" width="26" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="lg3t" value="T2 generative" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;" vertex="1" parent="legend">
+          <mxGeometry x="44" y="76" width="166" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="lg4" value="" style="rounded=0;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="102" width="26" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="lg4t" value="T3 confirmation" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;" vertex="1" parent="legend">
+          <mxGeometry x="44" y="100" width="166" height="18" as="geometry" />
+        </mxCell>
+
+        <!-- ============ EDGES ============ -->
+        <mxCell id="e1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#4a5568;exitX=1;exitY=0.5;entryX=0;entryY=0.4;" edge="1" parent="1" source="clients" target="t0">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="feasible" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#4a5568;fontSize=10;labelBackgroundColor=#ffffff;exitX=0.25;exitY=1;entryX=0.25;entryY=0;" edge="1" parent="1" source="t0" target="t1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="trusted &#8594; T1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7a8794;dashed=1;fontSize=10;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="data" target="t1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="gate PASS" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#4a5568;fontSize=10;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="t1" target="t2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="verified &#8594; commit" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#4a5568;fontSize=10;labelBackgroundColor=#ffffff;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" edge="1" parent="1" source="t2" target="t3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#4a5568;exitX=0.25;exitY=1;entryX=0.25;entryY=0;" edge="1" parent="1" source="t1" target="term">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" value="incidents" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#b85450;fontSize=10;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="term" target="heal">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" value="proposals (gated)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#b85450;dashed=1;fontSize=10;labelBackgroundColor=#ffffff;exitX=1;exitY=0.15;entryX=1;entryY=0.85;" edge="1" parent="1" source="heal" target="t3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1400" y="690" />
+              <mxPoint x="1400" y="296" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e9" value="async" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#9673a6;dashed=1;fontSize=9;labelBackgroundColor=#ffffff;exitX=1;exitY=0.75;entryX=0;entryY=0.75;" edge="1" parent="1" source="t0" target="t2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="960" y="290" />
+              <mxPoint x="960" y="557" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,22 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.sdd/
+beatroot.db
+beatroot.checkpoints.db
+.env
+eval/synthetic/
+eval/healing/
+eval/last_run.json
+eval/history/
+*.egg-info/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Local-only preparation material. Never pushed: these are personal notes
+# for rehearsing the submission, not part of the deliverable.
+docs/INTERVIEW_PREP.md
+docs/VIDEO_SCRIPT.md

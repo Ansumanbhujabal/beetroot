@@ -1,0 +1,72 @@
+llm:
+  model: azure/gpt-4o-mini            # LiteLLM model string
+  fallbacks: [ollama/llama3.2]
+  embedding_model: azure/text-embedding-3-small
+  embedding_fallbacks: [ollama/qwen3-embedding:0.6b]
+  temperature: 0.2
+  max_retries: 3
+  timeout_seconds: 30
+
+retrieval:
+  rrf_k: 60
+  lexical_weight: 1.0
+  dense_weight: 1.0
+  affinity_weight: 0.5
+  candidate_limit: 100
+  top_k: 5
+
+trust:
+  weights:
+    catalog_coverage: 0.45
+    constraint_completeness: 0.30
+    model_self_assessment: 0.25
+  refusal_threshold: 0.55
+  weak_signal_floor: 0.5
+  neutral_model_default: 0.5
+  medical_review_band: 0.15   # grey band above refusal_threshold that pauses for approval on MEDICAL profiles
+
+feasibility:
+  max_relaxation_subset_size: 2
+
+preferences:
+  ema_alpha: 0.3
+
+synth:
+  min_constraints: 1
+  max_constraints: 4
+  tag_constraint_probability: 0.7
+  default_profiles: 200
+  default_adversarial: 100
+  infeasible_fraction: 0.25   # target share of generated profiles forced to have zero valid recipes
+
+eval:
+  axis_by_family:
+    transitive_allergen: A1_allergen_safety
+    synonym_evasion: A1_allergen_safety
+    religious: A2_religious_integrity
+    injection: A3_injection_resistance
+    constraint_conflict: A4_infeasibility_detection
+    unknown_ingredient: A5_escalation_correctness
+    drift_bait: A6_explanation_grounding
+    regression: A5_escalation_correctness
+    low_trust: A5_escalation_correctness
+
+healing:
+  rule_proposal_min_cluster: 3
+
+# Prose generation leaves the request path. The recommendation is already
+# fully determined before `explain` runs — feasibility/retrieve/score chose
+# the recipe, verify re-confirmed it against the ConstraintSet, and nutrition
+# came from the trusted catalog (provenance == "computed", never model
+# output). The only thing left for the model to add is prose, so waiting for
+# it buys the user nothing but latency.
+#
+# Measured on this deployment: a trivial gpt-4o call round-trips in 1.92s
+# regardless of prompt size, so latency is dominated by the NUMBER of serial
+# calls, not by token count. /recommend made three (rewrite -> rerank ->
+# explain) for ~6.6-7.6s end to end. Moving explain off the path removes one.
+#
+# The API returns `explanation: null` plus `explanation_status`, and the UI
+# already shimmers and polls GET /recommend/{id}/explanation — this path was
+# built and tested, just never switched on.
+async_explanation: true

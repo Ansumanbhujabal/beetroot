@@ -1,0 +1,357 @@
+# Preset dietary profiles — Spec: "PRESET PROFILES" task.
+#
+# Every profile here is plain data in the exact `Constraint` shape the API
+# already accepts (`kind`, `severity`, `value`, optional `nutrient`) — the
+# dropdown built on top of this file loads a profile's constraints into the
+# SAME builder a reviewer would otherwise hand-fill, never a shortcut that
+# hides the underlying model. `severity` still means what it always meant:
+# `medical`/`religious` are never relaxable, `goal`/`preference` are.
+#
+# Every profile below was run through the real, offline agent
+# (`BEATROOT_OFFLINE=1`) against the real 100-recipe catalog before this
+# file was committed, across several different free-text queries
+# ("dinner", "lunch", "", "something to eat") to confirm the terminal state
+# is STABLE, not a lucky draw. The terminal named in each `description` is
+# what actually happened, not what was hoped for — see
+# `.sdd/briefs/profiles-ui-report.md` for the verification transcript.
+#
+# Two profiles are deliberately impossible / deliberately unverifiable —
+# `deliberately_impossible` and `unverifiable_allergen`. They exist to make
+# NEGOTIATE and ESCALATE visible on demand. They are not bugs.
+
+- id: jain
+  name: "Jain"
+  description: >-
+    Religious: strictly vegetarian, no root vegetables (onion, garlic,
+    potato, ...), no allium. All locked, never relaxable.
+  constraints:
+    # Jainism is strictly vegetarian, and that was MISSING. The profile
+    # locked root_vegetable and allium at religious severity — so it looked
+    # correctly enforced, and passed a "does this profile have any hard
+    # constraint?" check — while admitting Chicken caesar salad, Chicken
+    # burrito and Chicken satay, none of which carry either tag. Having the
+    # right severity on the wrong constraints is its own failure mode.
+    - id: req_vegetarian
+      kind: require_tag
+      severity: religious
+      value: vegetarian
+    - id: excl_egg
+      kind: exclude_tag
+      severity: religious
+      value: egg
+    - id: excl_root_vegetable
+      kind: exclude_tag
+      severity: religious
+      value: root_vegetable
+    - id: excl_allium
+      kind: exclude_tag
+      severity: religious
+      value: allium
+
+- id: vegan
+  name: "Vegan"
+  description: >-
+    No animal products at all, enforced as a positive requirement on the
+    catalog's own `vegan` tag at DIETARY severity — a hard constraint, so
+    `is_legal()` filters on it rather than merely ranking by it.
+  constraints:
+    # Was: seven exclude_tag denylist entries at PREFERENCE severity, which
+    # served chicken to a vegan. This catalog has no poultry tag, so Chicken
+    # satay (peanut) and Chicken hakka noodles (gluten, root_vegetable,
+    # sesame, soy) matched none of the seven; Butter chicken was caught only
+    # incidentally, for dairy. A denylist over an open world fails OPEN.
+    - id: req_vegan
+      kind: require_tag
+      severity: dietary
+      value: vegan
+
+- id: eggetarian
+  name: "Eggetarian"
+  description: >-
+    Vegetarian who still eats egg and dairy: excludes fish, shellfish,
+    beef, red meat and gelatin as soft preferences, but egg and dairy are
+    never excluded. COMMITs.
+  constraints:
+    # Eggetarian = vegetarian, plus egg and dairy are fine. The vegetarian
+    # half is the hard part and is now a positive requirement; the previous
+    # denylist admitted chicken for the same reason the vegan one did.
+    - id: req_vegetarian
+      kind: require_tag
+      severity: dietary
+      value: vegetarian
+    - id: excl_gelatin
+      kind: exclude_tag
+      severity: dietary
+      value: gelatin
+
+- id: pescetarian_peanut_allergy
+  name: "Pescetarian, peanut allergy"
+  description: >-
+    Vegetarian food or fish, nothing else — and no egg. Plus a genuine
+    peanut allergy (medical, never relaxable).
+  constraints:
+    # A true disjunction: vegetarian OR fish. In this catalog those sets are
+    # strictly disjoint (no recipe carries both tags), so no single
+    # require_tag can express it. The previous encoding excluded beef and
+    # red_meat at PREFERENCE severity and therefore admitted chicken.
+    - id: req_veg_or_fish
+      kind: require_any_tag
+      severity: dietary
+      value: [vegetarian, fish]
+    - id: excl_egg
+      kind: exclude_tag
+      severity: dietary
+      value: egg
+    - id: excl_peanut
+      kind: exclude_tag
+      severity: medical
+      value: peanut
+
+- id: hindu_nonvegetarian
+  name: "Hindu non-vegetarian"
+  description: >-
+    Eats chicken, mutton, fish and egg freely — beef is the one absolute,
+    excluded at RELIGIOUS severity and never relaxable. The mirror image of
+    the Hindu vegetarian preset: same religious line, opposite default.
+  constraints:
+    # Only beef is locked. Everything else is permitted, so this profile is
+    # deliberately permissive — it exists to show that a hard constraint is a
+    # PRECISE instrument, not a blunt one. A religious rule that also blocked
+    # chicken would misrepresent the user just as badly as one that let beef
+    # through.
+    - id: excl_beef_religious
+      kind: exclude_tag
+      severity: religious
+      value: beef
+    - id: excl_red_meat_religious
+      kind: exclude_tag
+      severity: religious
+      value: red_meat
+
+- id: nonveg_dislikes_brinjal_fish
+  name: "Non-vegetarian, dislikes brinjal and fish"
+  description: >-
+    Eats meat, just doesn't like eggplant (brinjal) or fish — two soft
+    PREFERENCE exclusions, one by ingredient, one by tag. COMMITs.
+  constraints:
+    - id: excl_eggplant
+      kind: exclude_ingredient
+      severity: preference
+      value: ing_eggplant
+    - id: excl_fish
+      kind: exclude_tag
+      severity: preference
+      value: fish
+
+- id: nonveg_dislikes_paneer
+  name: "Non-vegetarian, dislikes paneer"
+  description: >-
+    Eats everything except paneer — one soft PREFERENCE
+    `exclude_ingredient`. COMMITs.
+  constraints:
+    - id: excl_paneer
+      kind: exclude_ingredient
+      severity: preference
+      value: ing_paneer
+
+- id: vegetarian_lactose_intolerant
+  name: "Vegetarian, lactose intolerant"
+  description: >-
+    Vegetarian by soft preference (no fish, shellfish, beef, red meat)
+    plus a real medical dairy intolerance (never relaxable). COMMITs.
+  constraints:
+    # The vegetarian half was PREFERENCE and therefore unenforced, so this
+    # profile blocked dairy (medical) while admitting chicken. Both halves are
+    # hard now, at the severity that actually describes each.
+    - id: req_vegetarian
+      kind: require_tag
+      severity: dietary
+      value: vegetarian
+    # Indian convention: vegetarian excludes egg. The `vegetarian` tag alone
+    # does not — two catalog recipes carry both `vegetarian` and `egg`
+    # (Mexican corn salad, Vegetable sandwich) — so the exclusion is explicit.
+    # Eggetarian is the profile that deliberately permits egg.
+    - id: excl_egg
+      kind: exclude_tag
+      severity: dietary
+      value: egg
+    - id: excl_dairy_medical
+      kind: exclude_tag
+      severity: medical
+      value: dairy
+
+- id: nonveg_coeliac
+  name: "Non-vegetarian, coeliac"
+  description: >-
+    Eats meat freely; the only rule is coeliac disease — no gluten,
+    medical, never relaxable. COMMITs — Kimchi fried rice carries no
+    gluten tag.
+  constraints:
+    - id: excl_gluten
+      kind: exclude_tag
+      severity: medical
+      value: gluten
+
+- id: diabetic
+  name: "Diabetic"
+  description: >-
+    A carbohydrate ceiling (0-60g per meal) as a medical `nutrient_range`,
+    never relaxable. COMMITs to Pesarattu (57.6g carbs).
+  constraints:
+    - id: carb_ceiling
+      kind: nutrient_range
+      severity: medical
+      value: [0, 60]
+      nutrient: carbs_g
+
+- id: gym_high_protein
+  name: "Gym / high protein"
+  description: >-
+    A protein floor (>=12g per meal) as a relaxable GOAL, not a hard
+    filter — retrieval does not rank by nutrition, so a goal this strict
+    can push the top-ranked candidate into ESCALATE at verify; 12g is the
+    highest floor that reliably COMMITs against this catalog's default
+    ranking. Demonstrates that goal constraints are real checks, not
+    decoration: they are re-verified after the model has already spoken.
+  constraints:
+    - id: protein_floor
+      kind: nutrient_range
+      severity: goal
+      value: [12, 999]
+      nutrient: protein_g
+
+- id: hypertension_low_sodium
+  name: "Hypertension, low sodium"
+  description: >-
+    A sodium ceiling (0-400mg per meal) as a medical `nutrient_range`,
+    never relaxable. COMMITs.
+  constraints:
+    - id: sodium_ceiling
+      kind: nutrient_range
+      severity: medical
+      value: [0, 400]
+      nutrient: sodium_mg
+
+- id: severe_nut_allergy
+  name: "Severe nut allergy"
+  description: >-
+    Both peanut and tree nut excluded, medical, never relaxable —
+    two separate allergens, not one. COMMITs.
+  constraints:
+    - id: excl_peanut
+      kind: exclude_tag
+      severity: medical
+      value: peanut
+    - id: excl_tree_nut
+      kind: exclude_tag
+      severity: medical
+      value: tree_nut
+
+- id: shellfish_allergy
+  name: "Shellfish allergy"
+  description: "Medical exclusion of shellfish, never relaxable. COMMITs."
+  constraints:
+    - id: excl_shellfish
+      kind: exclude_tag
+      severity: medical
+      value: shellfish
+
+- id: soy_allergy
+  name: "Soy allergy"
+  description: "Medical exclusion of soy, never relaxable. COMMITs."
+  constraints:
+    - id: excl_soy
+      kind: exclude_tag
+      severity: medical
+      value: soy
+
+- id: sesame_allergy
+  name: "Sesame allergy"
+  description: "Medical exclusion of sesame, never relaxable. COMMITs."
+  constraints:
+    - id: excl_sesame
+      kind: exclude_tag
+      severity: medical
+      value: sesame
+
+- id: hindu_vegetarian_no_beef
+  name: "Hindu vegetarian, no beef"
+  description: >-
+    Vegetarian by soft preference (no fish, shellfish, red meat) plus beef
+    specifically as a RELIGIOUS exclusion (the sacred-cow rule), never
+    relaxable even though the rest of the meat exclusion is only a
+    preference. COMMITs.
+  constraints:
+    # Beef was RELIGIOUS and enforced; the vegetarian part was PREFERENCE and
+    # was not — so this profile admitted nine chicken dishes while correctly
+    # refusing beef. Partial enforcement of one identity is the same bug in a
+    # smaller costume. The beef exclusion is kept explicitly: it is religious,
+    # not merely dietary, and that distinction is worth preserving in the
+    # audit trail even though require_tag already implies it.
+    - id: req_vegetarian
+      kind: require_tag
+      severity: dietary
+      value: vegetarian
+    - id: excl_egg
+      kind: exclude_tag
+      severity: dietary
+      value: egg
+    - id: excl_beef_religious
+      kind: exclude_tag
+      severity: religious
+      value: beef
+
+- id: quick_weeknight
+  name: "Quick weeknight"
+  description: >-
+    No dietary rule at all — just a 20-minute prep ceiling as a relaxable
+    PREFERENCE. COMMITs.
+  constraints:
+    - id: prep_ceiling
+      kind: max_prep_minutes
+      severity: preference
+      value: 20
+
+- id: student_budget
+  name: "Student budget"
+  description: >-
+    No dietary rule — a ₹25 budget ceiling per meal as a relaxable
+    PREFERENCE. COMMITs.
+  constraints:
+    - id: budget_ceiling
+      kind: budget_max
+      severity: preference
+      value: 25
+
+- id: deliberately_impossible
+  name: "Deliberately impossible (demonstrates NEGOTIATE)"
+  description: >-
+    NOT A BUG. A genuine peanut allergy (medical, locked) combined with a
+    1-minute prep ceiling (preference) that no recipe in this catalog can
+    satisfy. NEGOTIATEs: offers "allow more than 1 minute of prep" (93
+    meals unlocked) and keeps the peanut rule struck through under
+    Locked — never offered as something to give up, even though dropping
+    it would also unlock meals.
+  constraints:
+    - id: excl_peanut
+      kind: exclude_tag
+      severity: medical
+      value: peanut
+    - id: prep_ceiling
+      kind: max_prep_minutes
+      severity: preference
+      value: 1
+
+- id: unverifiable_allergen
+  name: "Unverifiable allergen (demonstrates ESCALATE)"
+  description: >-
+    NOT A BUG. "Sulfite" is a real allergen, but this 100-recipe catalog
+    has no data about it — the tag exists nowhere in its vocabulary.
+    ESCALATEs rather than silently treating "no data" as "no sulfites
+    present": a constraint that cannot be verified is never reported as
+    satisfied.
+  constraints:
+    - id: excl_sulfite
+      kind: exclude_tag
+      severity: medical
+      value: sulfite

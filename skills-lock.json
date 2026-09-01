@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "assess_trust": "400820815f517fdc6c03cab154b844541fcef35b7e4729e010111d19f5b560d7",
+    "check_feasibility": "88e32ffe21833ccbd144d06145f3392cb1e487001f1b65fa475785c467128dbc",
+    "compile_constraints": "6a237447295c3330dce9e5540f95464d77bbf6e72724d82d41c5a974987eec01",
+    "compute_nutrition": "b9fb69333c5d58adafaa298564b3048dc0cb52c8e0eb17c2f54cc49c03979414",
+    "explain_choice": "790177dcf62d34d6a160da4a245a4c6099c56c4883929091b8a61569b827bfa6",
+    "retrieve_candidates": "0c8815cb1292315437d5766b5f379463073cdf209ec6b78ef658a7b4156d6fa2"
+  }
+}

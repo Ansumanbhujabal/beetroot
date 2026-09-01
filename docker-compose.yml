@@ -1,0 +1,65 @@
+services:
+  beatroot:
+    build: .
+    ports:
+      - "7860:7860"
+    # Optional: a fresh clone has no `.env` (see .env.example), and Task 20's
+    # whole point is that the app boots keyless without one — `required:
+    # false` keeps `docker compose up` from refusing to start over a file
+    # that is only ever a convenience override, never a requirement.
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      # The containerised run is the production-shaped one: Qdrant, not the
+      # NumPy dev fallback. QDRANT_URL being set is what selects it — see
+      # beatroot.retrieval.dense.get_vector_store.
+      QDRANT_URL: http://qdrant:6333
+      # Belt-and-braces default (Dockerfile's `ENV BEATROOT_OFFLINE=1` sets
+      # the same thing at the image level; this is redundant on purpose,
+      # not the only thing making it true). `${BEATROOT_OFFLINE:-1}` is
+      # compose's own variable substitution — sourced from the shell env
+      # and from a `.env` file at the PROJECT ROOT, a distinct mechanism
+      # from the `env_file:` key above — so a reviewer who sets
+      # `BEATROOT_OFFLINE=0` in `.env` still overrides this; one who sets
+      # nothing gets offline.
+      BEATROOT_OFFLINE: ${BEATROOT_OFFLINE:-1}
+    depends_on:
+      qdrant:
+        # Cold volume + no healthcheck used to let the app lose the race:
+        # `QdrantVectorStore.__init__` calls `get_collections()`
+        # synchronously during the SAME eager startup that build_container()
+        # does, before qdrant's HTTP server is necessarily accepting
+        # connections yet. `service_healthy` makes compose wait for the
+        # qdrant service's own healthcheck below rather than merely
+        # "container started". Belt-and-braces with the bounded retry in
+        # `QdrantVectorStore.__init__` itself — this alone would still leave
+        # a race on a slow first boot.
+        condition: service_healthy
+    volumes:
+      - ./data:/app/data:ro
+
+  # Production vector store. Not behind a profile: the containerised run is
+  # the production-shaped one, so Qdrant is a normal service here, not opt-in.
+  # A bare `uv run` outside compose still has QDRANT_URL unset and falls back
+  # to the NumPy dev index with no services required.
+  qdrant:
+    image: qdrant/qdrant:v1.12.0
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant_storage:/qdrant/storage
+    healthcheck:
+      # The qdrant image is debian-slim-based with no curl/wget guaranteed
+      # present; bash's /dev/tcp redirection needs nothing but the shell
+      # bash already ships. This only proves the port is accepting TCP
+      # connections (not full HTTP-level readiness) — enough to close the
+      # startup race the healthcheck exists for.
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/127.0.0.1/6333' || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+
+volumes:
+  qdrant_storage:
