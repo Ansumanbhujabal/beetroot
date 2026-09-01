@@ -15,7 +15,7 @@ for itself.
 
 import threading
 
-from pydantic import BaseModel, Field, PrivateAttr
+from pydantic import BaseModel, Field
 
 from beatroot.contracts.trust import CostRecord
 
@@ -29,6 +29,19 @@ from beatroot.contracts.trust import CostRecord
 # the result as an estimate (see `api.main`'s `/metrics` response), never
 # as a measured spend.
 CHARS_PER_TOKEN = 4.0
+
+# Guards every mutation of every `CostLedger`. Module-level, not per
+# instance, for a specific reason: a `PrivateAttr` lock breaks equality and
+# round-tripping, because Pydantic includes private attributes in `__eq__`
+# and two `threading.Lock` objects are never equal — a ledger would stop
+# comparing equal to a JSON round-trip of itself, which
+# `test_ledger_round_trips_through_json` catches.
+#
+# Sharing one lock across instances costs nothing here: a process holds one
+# ledger, the critical section is a dict update and two integer adds, and
+# correctness under the explanation queue's background writer is the only
+# thing being bought.
+_LEDGER_LOCK = threading.Lock()
 
 
 def estimate_tokens(text: str) -> int:
@@ -57,23 +70,21 @@ class CostLedger(BaseModel):
     tokens_saved: int = 0
     plans: int = 0
 
-    _lock: threading.Lock = PrivateAttr(default_factory=threading.Lock)
-
     def add(self, stage: str, usd: float, tokens: int = 0) -> None:
         """Record spend for one stage of one plan."""
-        with self._lock:
+        with _LEDGER_LOCK:
             self.per_stage[stage] = round(self.per_stage.get(stage, 0.0) + usd, 8)
             self.tokens += tokens
 
     def record_short_circuit(self, estimated_tokens: int) -> None:
         """Record tokens that a short-circuit (infeasibility, cache hit)
         avoided spending entirely."""
-        with self._lock:
+        with _LEDGER_LOCK:
             self.tokens_saved += estimated_tokens
 
     def record_plan(self) -> None:
         """Mark one plan as complete, so `per_plan_usd` has a denominator."""
-        with self._lock:
+        with _LEDGER_LOCK:
             self.plans += 1
 
     def fold(self, cost: "CostRecord") -> None:
@@ -91,7 +102,7 @@ class CostLedger(BaseModel):
             self.add(stage, usd)
         total_tokens = cost.prompt_tokens + cost.completion_tokens
         if total_tokens:
-            with self._lock:
+            with _LEDGER_LOCK:
                 self.tokens += total_tokens
 
     @property

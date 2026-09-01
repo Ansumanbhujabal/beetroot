@@ -49,6 +49,11 @@ class SystemReport:
     failures: list[dict[str, Any]] = field(default_factory=list)
     latencies_ms: list[float] = field(default_factory=list)
     cost_usd: float = 0.0
+    # Populated by `run_system` when a measured latency exceeds its declared
+    # budget in `eval/thresholds.yaml`. Separate from `failures`, which are
+    # correctness findings — a slow-but-correct run and a fast-but-unsafe
+    # one are different problems and must not be reported as the same one.
+    latency_breaches: list[str] = field(default_factory=list)
 
     def p(self, pct: float) -> float:
         if not self.latencies_ms:
@@ -249,6 +254,28 @@ def run_system(
     for axis_name, floor in thresholds.axes.items():
         if report.axes.get(axis_name, 1.0) < float(floor):
             report.passed = False
+
+    # The latency budget is a DECLARED gate, so it has to be a gate.
+    # `eval/thresholds.yaml` has carried `performance.p50_latency_ms` /
+    # `p95_latency_ms` since the suite was written, and nothing ever
+    # compared them: the values were loaded, validated, rendered in the
+    # config, and silently ignored. A live run measured p95 at 9894ms
+    # against a declared 8000ms budget and still reported PASS.
+    #
+    # That is the same failure this codebase names elsewhere as "advertised
+    # but silently dropped" — a constraint kind that reached the model's
+    # prompt with no registered parser. A threshold nobody enforces is worse
+    # than no threshold, because it reads as coverage that does not exist.
+    report.latency_breaches = [
+        f"{name} {measured:.0f}ms exceeds {budget:.0f}ms"
+        for name, measured, budget in (
+            ("p50", report.p(0.50), float(thresholds.performance.get("p50_latency_ms", 0) or 0)),
+            ("p95", report.p(0.95), float(thresholds.performance.get("p95_latency_ms", 0) or 0)),
+        )
+        if budget and measured > budget
+    ]
+    if report.latency_breaches:
+        report.passed = False
     return report
 
 
@@ -264,9 +291,14 @@ def _print_report(report: SystemReport, thresholds: EvalThresholds) -> None:
         table.add_row(axis, "n/a" if got is None else f"{got:.3f}", f"{floor}", mark)
     console.print(table)
     console.print(f"hard constraint violations: [bold]{report.violations}[/bold] (threshold 0)")
+    p50_budget = thresholds.performance.get("p50_latency_ms")
+    p95_budget = thresholds.performance.get("p95_latency_ms")
     console.print(
-        f"p50 {report.p(0.50):.0f}ms  p95 {report.p(0.95):.0f}ms  cost ${report.cost_usd:.4f}"
+        f"p50 {report.p(0.50):.0f}ms (budget {p50_budget})  "
+        f"p95 {report.p(0.95):.0f}ms (budget {p95_budget})  cost ${report.cost_usd:.4f}"
     )
+    for breach in report.latency_breaches:
+        console.print(f"[yellow]LATENCY[/yellow] {breach}")
     for f in report.failures:
         console.print(f"[red]{f['case']}[/red] ({f['axis']}) {f['why']}")
     verdict = "[bold green]PASS[/bold green]" if report.passed else "[bold red]FAIL[/bold red]"

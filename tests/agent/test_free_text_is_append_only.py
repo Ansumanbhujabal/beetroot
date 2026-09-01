@@ -1,6 +1,6 @@
 """Free text may ADD constraints. It may never edit or remove one.
 
-`docs/ARCHITECTURE_DEEP.md` used to justify this by saying compiled free text
+`ARCHITECTURE.md` used to justify this by saying compiled free text
 could only ever produce PREFERENCE-severity constraints, so it was
 "structurally incapable of lifting a MEDICAL exclusion". That reasoning stopped
 being true at commit e75c9a7: the open-vocabulary compiler can now emit

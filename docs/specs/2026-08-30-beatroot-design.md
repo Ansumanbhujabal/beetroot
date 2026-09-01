@@ -1,3 +1,5 @@
+> **Original design intent, kept as written.** Several decisions here were reversed during the build — the state machine, tracing, and more; see `CUT_LIST.md` for what changed and why.
+
 # beatroot — Design Spec
 
 **AI Meal Planning & Validation Assistant**

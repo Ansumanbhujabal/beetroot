@@ -323,12 +323,13 @@ def docs_page() -> FileResponse:
 # Keeping them out of the dict is what makes "local-only" true of the
 # running system, not just of the repository.
 _DOC_FILES: dict[str, tuple[Path, str]] = {
-    "ARCHITECTURE_DEEP.md": (ROOT / "docs" / "ARCHITECTURE_DEEP.md", "text/markdown"),
-    "PRODUCTION_READINESS.md": (ROOT / "docs" / "PRODUCTION_READINESS.md", "text/markdown"),
-    "TESTING.md": (ROOT / "TESTING.md", "text/markdown"),
-    "EVAL_HISTORY.md": (ROOT / "EVAL_HISTORY.md", "text/markdown"),
+    "README.md": (ROOT / "README.md", "text/markdown"),
+    "ARCHITECTURE.md": (ROOT / "ARCHITECTURE.md", "text/markdown"),
+    "EVAL_RESULTS.md": (ROOT / "EVAL_RESULTS.md", "text/markdown"),
     "CUT_LIST.md": (ROOT / "CUT_LIST.md", "text/markdown"),
-    "START_HERE.md": (ROOT / "START_HERE.md", "text/markdown"),
+    "WALKTHROUGH.md": (ROOT / "docs" / "WALKTHROUGH.md", "text/markdown"),
+    "PRODUCTION_READINESS.md": (ROOT / "docs" / "PRODUCTION_READINESS.md", "text/markdown"),
+    "EVAL_HISTORY.md": (ROOT / "EVAL_HISTORY.md", "text/markdown"),
     "beatroot-architecture.svg": (
         ROOT / "docs" / "diagrams" / "beatroot-architecture.svg",
         "image/svg+xml",

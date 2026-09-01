@@ -34,7 +34,7 @@ regression:
 #
 # Most of these families never call the LLM at all: contradictory and
 # boundary_values reach NEGOTIATE purely off t0_invariants.feasibility
-# (the same "impossible profile costs zero tokens" path TESTING.md
+# (the same "impossible profile costs zero tokens" path docs/WALKTHROUGH.md
 # describes); case_and_whitespace/homoglyph/unknown_vocabulary escalate off
 # t0_invariants.vocabulary before feasibility ever runs. Those five are
 # floored at the full measured 1.0 — a live-provider run cannot legitimately

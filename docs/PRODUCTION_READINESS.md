@@ -1,319 +1,152 @@
-# Production Readiness Audit — beatroot
+# Production readiness
 
-**Branch:** `build` · **HEAD:** `3e91ad1` · **Audited:** 2026-08-31
-**Method:** static reading of every module cited below, `git log`/`git show` on the
-real diffs (not commit messages alone), a live `pytest`/`ruff`/`mypy`/`coverage`
-run against this exact HEAD (offline, no LLM calls, no server restart — the
-in-progress Azure eval was left untouched), and cross-checking every claim in
-README.md / ARCHITECTURE.md / EVAL_RESULTS.md / CUT_LIST.md / `.sdd/progress.md`
-against the code that supposedly backs it.
-
-**Verified gate numbers on this exact HEAD, this run** (differ slightly from the
-numbers printed in README.md/EVAL_RESULTS.md, which were measured on earlier
-commits — see §6):
-
-```
-pytest:    577 tests, 0 failed, 0 errors, 5 skipped   (42.4s, offline)
-ruff:      all checks passed
-mypy --strict src:  no issues, 73 source files
-coverage:  94% (3463 stmts, 208 missed; gate is 80%)
-```
-
-The 5 skipped are all Qdrant-dependent (`tests/retrieval/test_qdrant_store.py`,
-`tests/retrieval/test_qdrant_retry.py`, one in `tests/api/test_routes.py`) —
-confirmed by grep, not assumed.
+Two questions that get answered as one and should not be. "Is this a strong
+take-home?" and "would I let this tell a peanut-allergic person what to eat?"
+are different bars, and the honest answer differs. Part 3 is the split.
 
 ---
 
 ## Part 1 — Requirements coverage
 
-The take-home brief itself is not in the repo as a standalone file; the closest
-artifact is `docs/specs/2026-08-30-beatroot-design.md`, which quotes it directly
-("We care about the boundaries between model reasoning, deterministic
-validation, trusted data, and actions that should require confirmation") and is
-treated throughout `.sdd/` as the transcription of record. Requirements below
-are drawn from that spec plus the brief's four closing questions as restated in
-README.md ("where are the boundaries, what would you build, what would you cut,
-how would this scale").
+Against the take-home brief, which ships in the repo root as a PDF.
 
-| # | Requirement | Verdict | Evidence (file : function) |
-|---|---|---|---|
-| 1 | Take a user profile with dietary constraints and recommend a meal | **Met** | `src/beatroot/agent/graph.py` (StateGraph), `cli/main.py:recommend`, `api/main.py:POST /recommend` |
-| 2 | Validate the recommendation deterministically | **Met** | `t0_invariants/constraints.py:check_recipe`/`is_legal`, re-verified post-generation by `agent/nodes.py:verify_node` |
-| 3 | Explain the recommendation, grounded in trusted data | **Partially met** | `reasoning/` + `agent/nodes.py:explain_node` generates prose; grounding is enforced by `eval/verifiers/nutrition_drift.py:detect_drift`, but A6 (explanation_grounding) is **vacuous under the offline stub** used for every eval run in this repo (§3) — the guarantee is proven only for the drift *detector*, not for real model prose, and is **was** un-enforced on the async-explanation path, which became the DEFAULT in `e75c9a7` when async explanation was switched on for latency — silently disabling this requirement on the only surface a diner reads. Fixed in `d7910d4`: `ExplanationQueue._work` now runs `detect_drift` against the same nutrition facts and threshold `verify_node` uses, and lands a drift finding as `failed` rather than serving ungrounded prose. Note the failure mode of the original disclosure: it was accurate, but its safety rested on the parenthetical "(off by default)" — a caveat conditional on a config value will outlive the config |
-| 4 | Identify and enforce the boundary between model reasoning, deterministic validation, trusted data, and confirmation-gated actions | **Met** | `tests/test_boundaries.py` — AST import-graph BFS forbidding `t0_invariants/`, `trusted/`, `store/` → `reasoning/`; `tests/agent/test_skills_registry.py` + skill frontmatter (`tier`, `llm_permitted`) checked for reachability, not just declared |
-| 5 | State what you would build with more time; what you would cut | **Met** | `CUT_LIST.md` — reversals (LangGraph, LiteLLM, pydantic-settings), non-goals with named cost-to-add, and an honestly-labelled "standing limitations" section (not just a wishlist) |
-| 6 | Explain how the system evolves at scale | **Met** | ARCHITECTURE.md §5 / spec §17 — bottleneck analysis (T0 feasibility scan → bitmask index, `trusted/index.py:TagIndex`), Qdrant path (§2 below), async explanation (`agent/async_explain.py`) |
-| 7 | Lightweight tool-calling flow / state machine / agent framework | **Met, but changed mid-build** | Design spec called for a hand-rolled ~80-line machine; the shipped system uses LangGraph `StateGraph` + `SqliteSaver` instead (`agent/graph.py`) — a deliberate, disclosed reversal (`CUT_LIST.md`), not a silent substitution |
-| 8 | Grounded in a trusted nutrition/ingredient dataset; no fabricated numbers | **Met** | `contracts/nutrition.py:NutritionFacts.provenance: Literal["computed"]` — the type system, not a convention, forbids a model-authored value; `t0_invariants/nutrition_math.py:compute` |
-| 9 | Free-text preferences as an untrusted input / injection surface | **Partially met, closed late** | `.sdd/progress.md` records that `compile_constraints` was **entirely unwired** for most of the build (a graded skill/prompt describing a capability that didn't exist); wired in commit `fbf038b` (`agent/nodes.py:compile_node`), **superseded**: parsed text can now produce HARD constraints too. The model states an open `category` (medical/religious/dietary/goal/preference) and CODE alone maps it to a `Severity` (`agent/nodes.py:_CATEGORY_SEVERITY`), with a ratchet flooring the identity kinds `require_tag`/`require_any_tag` at DIETARY regardless of what the model claimed. That is stricter, not looser: the old PREFERENCE-only rule meant a stated allergy compiled to something `is_legal()` does not enforce — the same class of bug that let the vegan preset serve chicken (commit `d773717`). Verify this specific commit is genuinely on `build` before treating the requirement as closed — it is present in `git log` on this branch. |
-| 10 | Escalate/refuse when the system lacks trustworthy information | **Met, after one real safety gap was found and fixed** | `confirm/escalation.py`, `confirm/trust_score.py:gate` (conjunctive veto). `.sdd/progress.md` (Task 13) documents A5 originally scoring **0.000** — an unknown tag/ingredient was silently treated as satisfied rather than escalated — fixed across FOUR independent implementations that each had to be separately patched (production enforcer, oracle, verifier, docs) because they shared the same unstated assumption. This pattern (independent code, shared blind spot) recurred three times in this build — see §3. |
-| 11 | Component + system eval harness, some LLM-free | **Met** | `eval/runners/components.py`, `eval/runners/system.py`, `beatroot eval --offline` equivalent (`BEATROOT_OFFLINE=1`); "free oracle" (`eval/synth/profiles.py`) — but see §3 for its own tautology-and-fix history |
-| 12 | Deployable (Docker / HF Space) | **Met — verified 2026-09-01** | `Dockerfile`, `docker-compose.yml`, HF frontmatter in `README.md` all present and internally consistent (`docker compose config` validated) — and all three now **have** executed. `docker build` succeeded on its first real run (14/14 steps, `beatroot:local`, 1.89GB); `docker run` came up healthy in 11s serving all pages and a real recommendation; `docker compose up` brought up app+Qdrant with `/health` reporting `vector_store: "qdrant"` — the production path, end to end. The blocker was never the config: two orphaned `limactl usernet` processes held the colima disk lock (`failed to attach disk "colima", in use by instance "colima"`), which is why two earlier attempts failed. |
-| 13 | Observability (tracing, cost) | **Met** | `obs/logging.py` (structured JSON, correlation ids, recursive redaction — see §2 for its own fix history), Langfuse via `litellm.success_callback` (no-op without keys, `obs/__init__.py`), `CostLedger` wired into `/metrics` (was built-but-dead for a full review round — see progress.md Task 19) |
+| Requirement | Verdict | Where |
+|---|---|---|
+| Backend API plus a frontend, CLI, or dashboard | Met | `api/main.py`, four served pages (`/`, `/incidents`, `/evals`, `/docs`), and a full CLI (`recommend`, `resume`, `serve`, `incidents`, `heal`, `eval`, `synth`, `prompts`, `obs`) |
+| Small local dataset of ingredients, recipes, nutrition facts | Met | `data/` — 174 recipes, 137 ingredients, 21 preset profiles |
+| Create a profile with several dietary/preference constraints | Met | 9 constraint kinds × 5 severities; presets loadable and then freely editable |
+| Generate or select a recommendation from the profile | Met | `agent/graph.py`, hard filter → hybrid retrieval → LLM rerank |
+| Show enough structured information to understand why it was chosen | Met | Ingredients with grams, computed nutrition, human-readable satisfied constraints, a three-part trust breakdown, and the full node trace |
+| Persist useful state locally | Met | SQLite: audit log, incident log, feasibility and embedding caches, preference memory, LangGraph checkpoints |
+| Keep it local — no cloud, no production-scale infra required | Met, and exceeded optionally | Default run is zero services. Docker, Qdrant and hosted tracing are opt-in paths, not requirements |
+| One agent with ≥2 clearly defined skills | Met | 6 skills with `tier` / `llm_permitted` frontmatter, hash-locked, and checked for *reachability* rather than mere declaration |
+| A lightweight tool-calling flow, state machine, or agent framework | Met | LangGraph `StateGraph` — a documented reversal of the spec's hand-rolled design (`CUT_LIST.md`) |
+| Boundaries between model reasoning, deterministic validation, trusted data, and confirmation-gated actions | Met | An AST import-graph test forbids `t0_invariants/`, `trusted/` and `store/` from reaching `reasoning/`. The boundary is a failing build, not a convention |
+| Grounded in trusted data; no fabricated numbers | Met | `NutritionFacts.provenance: Literal["computed"]` — the type system refuses to represent a model-authored nutrition value |
+| One validation/eval mechanism, with a named failure mode | Met, and then some | Six adversarial axes plus a component suite with a computed oracle; the guarded failure mode is stated as "a hard constraint violated on a COMMIT", gated as a count of 0 |
+| Two features of your choosing | Met | Feature 1: infeasibility negotiation with a ranked relaxation ladder that never offers a medical or religious constraint. Feature 2: trust-gated escalation with a conjunctive veto and a human approval gate on the medical grey band |
+| Conflicting constraints, unsupported requests, wrong nutrition, low-confidence output | Met | NEGOTIATE, ESCALATE (`out_of_scope` / `unknown_ingredient`), the drift ledger, and PENDING_REVIEW respectively |
+| Evolution at scale | Met | Spec §17 and `ARCHITECTURE.md` — T0 feasibility scan as first bottleneck, bitmask over inverted indices, Qdrant + payload filters, async explanation |
 
-**Rollup:** 10 met, 3 partially met, 0 flatly unmet — but three of the "met" verdicts (rows 4, 8, 10) only reached that state after a documented near-miss where the *first* shipped version silently failed the exact property being graded. That history is itself evidence about production readiness, not just development trivia — see Part 3.
-
----
-
-## Part 2 — Production bar
-
-### Correctness and safety invariants — **Strong, with one class of residual risk**
-T0 (`t0_invariants/`) is genuinely model-free — enforced by an AST reachability
-test, not a docstring. The allergen-safety metric is a **count**, not a rate
-(`eval/thresholds.yaml: hard_constraint_violations: 0`), which is the right
-unit for irreversible harm. But the project's own history shows the invariant
-layer has been *conceptually* wrong three separate times (unknown-vocabulary
-silent-pass, oracle tautology, ingredient-synonym enforcement gap) while every
-test stayed green, because independently-written implementations shared an
-unstated assumption rather than a bug. There is no structural guard against a
-*fourth* instance of this pattern — the only defense that has worked so far is
-someone writing an additional test they "assumed would be redundant."
-
-### Test coverage, and whether tests would catch a regression — **Coverage is high; catching power was empirically checked and found wanting until fixed**
-94% line coverage, 577 tests, 0 failing on this exact HEAD (verified live, not
-taken from a doc). The more important number: `git show 1ac5327` is a real
-mutation-testing pass — six safety properties were each disabled one at a time
-and the suite was watched. **Before that commit, only 2 of 6 mutations were
-caught**: disabling the entire trust gate (`confirm/trust_score.py:gate`) was
-invisible because every golden case had full catalog coverage; disabling drift
-detection was invisible because the offline stub's prose never states a
-number. Both are now fixed with targeted cases/probes
-(`eval/golden/seed_cases.yaml: g31-g33`, `eval/runners/components.py:_drift_detection_recall`).
-This is the single strongest piece of evidence in the repo that testing here
-is honest rather than decorative — but it also means, by the project's own
-admission, that a majority of its safety mutations were undetected as recently
-as one commit before HEAD, and there is no reason to believe all failure modes
-have now been mutation-tested (only 6 were tried).
-
-Separately, `.sdd/progress.md` documents at least four "decorative tests" found
-during the build — regression tests that passed against the exact broken code
-they claimed to catch. All were found and fixed, but only because a specific
-review discipline (run the pre-fix code, observe the failure, don't just
-reason about it) was applied by hand each time; it is not automated.
-
-### Observability — **Real, with an honest gap on nested config leaks now closed**
-Structured JSON logging with correlation-id contextvars (`obs/logging.py`).
-Langfuse tracing via `litellm.success_callback`/`failure_callback` — genuinely
-no-op without both keys present (`ObsConfig.langfuse_enabled`), so a keyless
-reviewer never hits a credential wall. Redaction history is worth knowing: the
-first shipped version matched only 5 literal key names and missed nested
-dicts entirely (`Api-Key`, `x-api-key`, `openai_api_key` all leaked in
-plaintext in the pre-fix version per `.sdd/progress.md` Task 19 review) — now
-fixed to normalized substring matching + recursive dict/list walk, depth-capped
-at 6 (`obs/logging.py:_redact`, `_MAX_REDACT_DEPTH`). **Documented, not fixed,
-residual: a secret interpolated directly into a log message string (not passed
-via `extra=`) bypasses redaction unconditionally** — this is stated in code
-comments as a known limitation, not silently true.
-
-### Configuration and secrets — **Sound design, one real operational hazard**
-Single source of truth (`settings.py`), enforced by an AST-walk test (not a
-grep — the grep version was proven to both false-positive on a docstring and
-false-negative on `from os import environ`, both fixed). `.env` is
-git-ignored and confirmed absent from git tracking (`git ls-files` scope; the
-repo *is* a real git repo despite the environment banner claiming otherwise —
-verified with `git rev-parse --is-inside-work-tree` → `true`). **This working
-directory's `.env` currently holds live Azure API credentials** (verified by
-key presence, values not printed here) alongside an actively-running eval
-process. Gitignore protects against `git add`/`git commit`, but **nothing in
-this repo protects against a naive `zip -r submission.zip .`** picking up
-`.env` regardless of gitignore — there is no packaging script, Makefile
-target, or `.gitattributes`-driven `git archive` step that a submitter is
-forced through. This is a real, live risk right now, not a hypothetical one.
-
-### Failure modes — **Handled for the cases tested, one now-obsolete crash fixed**
-- **No API key / no embedding deployment:** `settings.py:_provider_credentials_present`
-  + a `local` embedding provider (added in `d5b2db0`) let a real chat model run
-  without requiring an embedding deployment on the same Azure resource —
-  directly relevant to the live eval this session was told not to disturb.
-  Falls back to `offline=True` at settings-load time, logged at WARNING, not a
-  runtime crash. This *was* broken earlier in the build (`lifespan` eagerly
-  embedded the whole catalog before `/health` was reachable, crashing on a
-  genuinely blank environment) — CUT_LIST.md documents the fix and, notably,
-  that the *first* "it works keyless" verification was itself contaminated by
-  leftover local cache state and gave a false negative.
-- **Malformed model output:** `reasoning/llm.py:Completion` bounds/guards
-  self-assessment; `t0_invariants` evaluators degrade to `"uncheckable"`
-  rather than crash on non-numeric/bool/malformed constraint values
-  (Task 24 fix, per progress.md).
-- **Provider outage/rate limiting:** delegated entirely to LiteLLM's
-  `num_retries`/`fallbacks` — never independently tested against a real
-  outage; the `constraint_flooding` adversarial threshold is deliberately
-  floored at **0.99, not 1.0**, explicitly to leave headroom for "a transient
-  infra failure that is not a defect in this codebase" (`eval/thresholds.yaml`
-  comment) — an honest acknowledgment that this failure mode is *reasoned
-  about*, not *observed*, since every measured run has been offline.
-
-### Concurrency and data integrity — **A real bug found and partially fixed; one gap left open by design, not oversight**
-`store/db.py` uses one shared `sqlite3.Connection` with `check_same_thread=False`
-across a threadpool (FastAPI sync routes). A real corruption bug was found and
-fixed: two threads' `execute()`+`commit()` pairs could interleave and merge an
-unrelated write into another thread's still-open transaction — reproduced
-standalone, then fixed with one shared `threading.Lock` held across each
-write's execute+commit (`container.py`'s `db_lock`, shared by `AuditLog`,
-`IncidentLog`, `FeasibilityCache`, `EmbeddingCache`). **What remains explicitly
-unfixed and documented in code**: a concurrent *read* on the shared connection
-can still observe another thread's write after `execute()` but before the
-lock-holder's `commit()` releases — Python's sqlite3 module makes an
-uncommitted write visible to other cursors on the same connection immediately.
-Fixing this needs per-thread connections or a WAL-backed reader connection,
-neither built. This is the "Read-can-observe-uncommitted-write concurrency
-residual" the task named — confirmed still present in current code, not
-historical.
-
-### Persistence, checkpointing, resumability — **Real, after a bug that would have made the headline feature nonfunctional**
-LangGraph `SqliteSaver`, file-backed (`<db>.checkpoints.db`, confirmed present
-as untracked files in this working tree right now — consistent with the live
-eval in progress). A real bug was caught late: the agent originally defaulted
-to an **in-memory** checkpointer, so `beatroot resume` run as a separate CLI
-invocation after `beatroot recommend` could never find its own paused thread —
-the `interrupt_before` medical-grey-band approval gate, a headline feature,
-would have passed every test (which reuse one process) and been completely
-non-functional for the actual multi-process use case. Fixed
-(`container.py:_build_checkpointer`); durability now proven by a test that
-forces a real process-boundary-equivalent (a distinct `:memory:` connection
-fails the same test, confirmed as a live differential check).
-
-### Deployment — **Config is internally consistent; the actual boot has never been observed**
-Dockerfile and docker-compose.yml are coherent with each other (Qdrant extras
-installed, `env_file: {required: false}` so a fresh clone with no `.env`
-doesn't refuse to start, a `service_healthy` dependency to avoid a startup
-race against Qdrant). None of `docker build`, `docker run`, or
-`docker compose up` has ever been executed anywhere in this project's
-development — reconfirmed in this audit (no Docker daemon available here
-either). The keyless-boot claim was **verified false once** mid-build (a
-contaminated local-state false positive, see above) before being fixed and
-re-verified at the application layer only (`uvicorn` boot, not a container
-boot). CI (`.github/workflows/ci.yml`) exists and would run these gates plus
-the offline safety evals on push — but this repo has **no git remote
-configured** (`git remote -v` empty), so that workflow has never actually
-executed on GitHub Actions or anywhere else; it is unexercised YAML, not a
-running gate.
-
-### Performance and cost — **Reasonable for the stated scale, entirely unmeasured under a live provider**
-p50/p95 latency (9ms/14ms offline) and $0.00 cost are real numbers for the
-offline path but say nothing about a live model's latency or LiteLLM retry
-behavior under load. `CostLedger`/`/metrics` are wired (after a full review
-round where they were built-but-dead) and would report real numbers the
-moment a live provider runs — but no live-provider load test exists in this
-repo, offline or otherwise.
-
-### Security: prompt injection, credential leakage, PII — **Injection resistance is structurally real but narrower than advertised; leakage is fixed; PII handling is essentially absent**
-- **Injection:** free text can only ever produce `PREFERENCE`-severity
-  constraints (`agent/nodes.py:compile_node`, enforced by
-  `tests/agent/test_compile.py`), and the safety property for the four
-  adversarial families that do reach an LLM on a COMMIT path is independently
-  re-verified by `eval/verifiers/hard_constraint.py`, not trusted to the
-  model's behavior. This is real. It is *narrower* than the README's framing
-  suggests in one respect: for most of the build, `compile_constraints` was
-  entirely unwired, so "injection resistance" was trivially true because free
-  text never reached the constraint layer at all — a materially weaker claim
-  than the one the shipped skill file made. This was found and fixed
-  (`fbf038b`), but it is exactly the kind of gap this audit is designed to
-  surface: verify it holds on `build`, don't take the skill doc's word.
-- **Credential leakage:** fixed after a real defect (plaintext secrets in
-  logs, see Observability above); the interpolated-string bypass remains, by
-  design/documentation not oversight.
-- **PII:** there is no PII-specific handling anywhere in this codebase —
-  profiles carry dietary/medical data (allergies, medical conditions) which
-  is sensitive but is stored in plain SQLite with no encryption at rest, no
-  access control, no data-retention policy, and no anonymization in the
-  incident/audit log (`store/db.py`, `store/incidents.py`). This is
-  appropriate for a local take-home prototype and would not be appropriate
-  for a system serving real users' medical/allergy data. Not addressed
-  anywhere in CUT_LIST.md as a named limitation — an omission worth flagging
-  on its own.
+Free-text input reaches the constraint layer, which makes it an injection
+surface rather than a decorative field. The safety rule is in code, not in the
+prompt: the model proposes an open *category*, code alone maps category to
+`Severity`, the merge is a pure append, and no path can remove, relax or
+downgrade a constraint that arrived through the trusted structured channel.
 
 ---
 
-## Part 3 — The honest gap list
+## Part 2 — Where it stands against a production bar
 
-| Gap | Why it exists | Blast radius | Cost to close |
-|---|---|---|---|
-| **Qdrant path — RESOLVED 2026-09-01** | Was: no Docker daemon in any build environment. Root cause of the daemon failure was two orphaned `limactl usernet` processes holding the colima disk lock, not the config. | **All 7 Qdrant tests now pass against a real server** (`QDRANT_URL=http://localhost:6533`, qdrant/qdrant:v1.12.0), and they demonstrably exercised it rather than passing vacuously: the run left 5 collections (`beatroot_test`, `beatroot_test_filter`, `beatroot_test_no_wipe`, `beatroot_test_agree`, `beatroot_recipes`) and 57 server operations. Separately, the compose stack served a live recommendation with `/health` reporting `vector_store: "qdrant"`. The claim no longer rests on static typing. | Closed. Re-run with `QDRANT_URL=... uv run pytest tests/retrieval/` whenever the client version moves. |
-| **`docker build`/`run`/`compose up` — RESOLVED 2026-09-01** | Same root cause, same fix. | Build succeeded first try (14/14 steps, 1.89GB). `docker run` healthy in 11s; all pages 200; a recommendation returned with ingredients and readable constraints. `docker compose up` brought up app+Qdrant, warm request latency 5.0-5.9s against real Azure (vs 4.1s locally on the NumPy store). Verified on non-default host ports so the developer's OTHER project's containers, already bound to 6333, were never touched. | Closed. |
-| **A6 (explanation_grounding) is vacuous offline** | Offline stub prose never states a nutrition number, so the drift ledger has nothing to catch on that axis in the system eval | The system-eval A6=1.000 is honest about what it measures (confirmed: the eval script and README both disclose this) but proves nothing about a live model confidently stating a wrong number in prose. The unit-level `tests/eval/test_drift.py` and the new `_drift_detection_recall` probe do test the detector directly — but never through a real generated explanation. | Run the golden `drift_bait` cases against a live provider once (exactly what the in-progress Azure eval may be doing right now) and confirm the system-level A6 stays 1.0 there too, not just offline. |
-| **`exclude_tag` vs `exclude_ingredient` case/whitespace asymmetry** | `_exclude_ingredient` canonicalises through `resolve_ingredient_id`; `_exclude_tag` compares the raw string against catalog-canonical tags with no normalisation, because tags are asserted to have "no synonym layer" | Confirmed still present in `t0_invariants/constraints.py`. Both sides are *safe* (a mismatch never reads as satisfied — a tag-case mismatch escalates rather than silently passing), so this is a UX/precision gap, not a safety hole: a case-inconsistent `exclude_tag` from an upstream caller degrades to an unnecessary refusal rather than being resolved. | `_exclude_tag` could normalise through the same `trusted.canonical` machinery; named as a known follow-up in EVAL_RESULTS.md already, not fixed. Small — under an hour, plus a regression test. |
-| **`constraint_flooding` threshold floored at 0.99, not 1.0** | Deliberate headroom for network I/O flakiness under a live provider; the measured offline rate is 1.000 | Means a single flaky call in a future live run would not fail CI even though the code is unchanged — correct engineering judgment, but it is a threshold set by *reasoning about* a live failure mode that has never actually been observed, since every recorded run is offline. | No action needed; re-validate the 0.99 choice once real live-provider run data exists. |
-| **Read-can-observe-uncommitted-write concurrency residual** | Single shared sqlite3 connection; writes are now lock-serialized but reads are deliberately left unlocked for hot-path cost reasons | A concurrent read (e.g. `/metrics`, a second `/recommend`) can observe a write mid-flight, before its transaction commits. Documented in code and in `.sdd/progress.md`, not hidden — but still live in current code, confirmed by reading `store/db.py`. | Per-thread connections (`threading.local()`) or a WAL-backed reader connection. Non-trivial — a half-day-plus change touching every store class. |
-| **Dense retrieval is a token-hashing stub; no embedding deployment on the live Azure resource** | The live Azure resource configured in `.env` has a chat deployment but no embedding deployment; `settings.py`'s `local` provider was added specifically so a real chat model can run without one | Even against the currently-running live eval, the "hybrid retrieval" dense signal is **not semantic** — it is a deterministic hashing-trick bag-of-words vector, same as offline. Recall@5 (0.665-0.687 depending on which commit) is honestly disclosed as measuring the stub, not real embeddings. This materially weakens the "hybrid retrieval" claim under the exact live conditions this session is operating under. | Provision an embedding deployment on the Azure resource (or point `embedding_model` at Ollama's `qwen3-embedding`), flip `local` off. Infra change, not a code change — hours, not minutes, and outside this session's control per the hard constraints. |
-| **`.env` holds a live key; nothing prevents it shipping in a naive zip** | `.gitignore` covers `git`-mediated packaging, not filesystem-level zipping | If the submission process is "zip the working directory" rather than `git archive`, a live Azure key ships. Confirmed live and present in this exact working tree right now. | Delete/blank `.env` (or `cp .env.example .env`) immediately before packaging, or add a `make submission-zip` target that uses `git archive HEAD` (which correctly excludes gitignored files). Under an hour. |
+| Area | Assessment |
+|---|---|
+| **Safety invariants** | Strongest part of the system. T0 is model-free by enforced import graph; the allergen gate is a violation *count*, not a rate. Residual risk is process, not code — see below |
+| **Test catching power** | Coverage is high and the gate is 80%, but the load-bearing evidence is that the suite was mutation-tested and initially failed (`EVAL_RESULTS.md`). Six mutations is a start, not a proof |
+| **Observability** | Structured JSON logs with correlation ids and recursive redaction; one generation span per model call carrying prompt name, version, tokens and cost; trace costs reconcile with `/metrics` exactly. Known and documented residual: a secret interpolated directly into a log message string, rather than passed as structured data, bypasses redaction |
+| **Config and secrets** | Single source of truth, enforced by an AST-walk test. `.env` is gitignored and untracked. `.env.example` — a tracked file — previously contained real tracing keys and a variable name no SDK reads; it has been scrubbed to placeholders. Rotate anything that was ever committed, and prefer `git archive` over zipping a working directory, since gitignore does not constrain a filesystem-level zip |
+| **Failure modes** | Missing credentials resolve to the offline provider as a first-class logged decision at settings load, not a runtime crash. Malformed model output is bounded; unevaluable constraints degrade to "uncheckable" and escalate rather than raising. Provider outage and rate limiting are delegated to LiteLLM and have never been tested against a real outage |
+| **Concurrency** | One shared SQLite connection across a threadpool. Writes are serialized by a shared lock after a real interleaving corruption bug was reproduced and fixed. **Unfixed and documented:** a concurrent read can observe another thread's write between `execute()` and `commit()`. The store at risk is the audit log |
+| **Persistence** | File-backed LangGraph checkpoints. Caught late: the agent originally defaulted to an *in-memory* checkpointer, so `resume` in a second process could never find its own paused thread — the approval gate would have passed every same-process test while being non-functional for its only real use case |
+| **Deployment** | Verified running, not merely configured: image builds, container comes up healthy, compose brings up app plus Qdrant, `/health` reports the Qdrant path, and a live request returns a recommendation. Host port is overridable, because a hardcoded one fails outright when anything else holds it |
+| **CI** | `.github/workflows/ci.yml` would run the gates and the offline safety evals on push. The repo has no remote configured, so it has never executed. Unexercised YAML, not a running gate |
+| **Cost and latency** | Per-request cost is measured, attributed per stage, and reconciles between the ledger and the traces. There is no load test, at any concurrency, offline or live |
+| **PII** | Absent as a posture. Profiles carry allergy and medical-condition data, stored in plain SQLite with no encryption at rest, no access control, no retention policy, and no anonymisation in the incident log |
+
+### The residual risk that matters most
+
+Three safety-relevant defects in this project shared one shape, and it is the
+shape most likely to produce a fourth:
+
+**Independence of implementation is not independence of assumption.**
+
+1. The first component oracle computed ground truth by calling the function
+   under test, then "verified" itself by calling it again.
+2. The independent hard-constraint verifier was written deliberately *not* to
+   call `is_legal()` — and independently reproduced the exact same
+   unknown-vocabulary blind spot, because both implementations shared an
+   unstated premise (a constraint value absent from the vocabulary is
+   vacuously satisfiable), not any code.
+3. The allergen synonym bug hit the same wall a third time. A `MEDICAL`
+   exclusion on "groundnut oil" — the common name for peanut oil, and a
+   synonym recorded against `ing_peanut_oil` in this project's own data — was
+   **accepted** by validation, which canonicalises to confirm the term names a
+   real ingredient, and then **never enforced**, because enforcement compared
+   the raw string against canonical ingredient ids. The system told the user
+   their allergy was understood and then served the allergen: worse than a
+   missing check, because of the false assurance. The identical gap shipped in
+   four separately-written places at once — the production enforcer, the
+   independent verifier, the oracle, and the golden `synonym_evasion` family,
+   which was named for the case it did not test.
+
+Two implementations that share no code can still share a blind spot if they
+share a mental model. Call-graph independence defends against a dispatch or
+comparison bug local to one implementation; it does nothing for a premise
+everyone who wrote these modules held at once. The only countermeasure that
+worked was writing it independently **and then deliberately breaking one side
+to watch the other catch it** — several regression tests in this project
+initially passed against the exact pre-fix code they claimed to catch, and a
+decorative test is worse than no test, because it reports safety that was never
+checked. That discipline is applied by hand. It is not automated, and nothing
+structural prevents a fourth instance.
 
 ---
 
-## Part 4 — The verdict
+## Part 3 — The verdict, split
 
-**Production-ready as a take-home demonstration: yes, and unusually so.** The
-codebase does something most take-homes don't: it caught and fixed several of
-its own real safety defects mid-build (the A5 unknown-vocabulary silent-pass,
-the allergen-synonym enforcement gap, the trust-gate mutation blind spot, the
-oracle tautology, the credential-leak logging bug), documented each honestly
-rather than papering over it, and left a legible trail (`.sdd/progress.md`,
-`CUT_LIST.md`, EVAL_RESULTS.md's "what these numbers do NOT prove" section) that
-makes the audit above possible at all. The gates are genuinely green on this
-exact HEAD (verified live in this session, not copied from a doc), and the
-mutation-testing commit is real evidence the test suite has teeth, not just
-coverage percentage.
+**As a take-home submission: yes, and unusually so.** The system does the thing
+most submissions do not — it caught and fixed several of its own real safety
+defects, documented each rather than papering over it, and left evidence that
+makes an audit like this one possible. The gates are green, the safety
+invariants are enforced by tests rather than by convention, the eval suite has
+been mutation-tested against itself, and every headline number in
+`EVAL_RESULTS.md` carries the caveat that limits it. Deployment, the Qdrant
+path, live-provider evals and end-to-end tracing are all verified running, not
+described.
 
-**Production-ready to serve real users with real dietary-safety consequences: no.**
-Specifically, not because the safety *logic* is weak — it is the strongest part
-of this codebase — but because:
+**To serve real users with real allergy consequences: no.** Not because the
+safety logic is weak — it is the strongest part of the codebase — but because:
 
-1. The thing standing between "allergen enforcement works" and "allergen
-   enforcement works in production" has failed *conceptually*, identically,
-   in independently-written code, three separate times in this project's own
-   history. There is no reason to believe a fourth instance doesn't exist
-   today; the only defense that has worked is one more test someone thought
-   to write. That is a process risk, not a code risk, and it does not go away
-   at HEAD.
-2. The concurrency model has a documented, live, unfixed data-race (reads
-   observing uncommitted writes) in the exact store that holds the audit
-   trail this system's whole safety story depends on for liability purposes.
-3. The one "production" retrieval path (Qdrant) has never executed, anywhere,
-   and a real bug in it was found only by a type checker, not by running it —
-   because nothing has ever run it.
-4. The container deployment path — the actual thing "production" means for a
-   service — has never booted, anywhere, in this project's history.
-5. There is no PII/medical-data handling posture at all: plaintext storage, no
-   access control, no retention policy, for a system whose profiles carry
+1. The gap between "allergen enforcement works" and "allergen enforcement works
+   in production" has been crossed by a *conceptual* failure, identically, in
+   independently-written code, three times in this project's own history.
+   There is no reason to believe a fourth does not exist today. The only
+   defense that has ever worked is one more test someone thought to write.
+2. There is a documented, unfixed read-uncommitted-write race in the exact
+   store that holds the audit trail the safety story depends on for liability.
+3. There is no PII or medical-data posture at all — plaintext at rest, no
+   access control, no retention policy — for a system whose profiles carry
    allergy and medical-condition data.
-6. A live credential sits in this exact working directory with no packaging
-   guardrail against it shipping.
+4. Dense retrieval is a hashing stub in every configuration, live included, so
+   "hybrid retrieval" is architecturally true and semantically not.
+5. The free-text compiler over-classifies severity. It errs safe, but a
+   preference silently promoted to `medical` becomes non-relaxable, and the
+   user is not told why.
+6. Nothing has been load-tested at any concurrency, and CI has never run.
 
-None of these are subtle or hidden — the codebase's own documentation is more
-honest about most of them than a typical production readiness review would be.
-But "honestly documented as not done" and "done" are different states, and the
-question asked was the latter.
+None of this is hidden — the project's own documentation is more candid about
+most of it than a typical readiness review would be. But "honestly documented
+as not done" and "done" are different states, and the second question asks for
+the second one.
 
 ---
 
-## Part 5 — Prioritised remediation (risk reduction per unit effort)
+## Part 4 — Remediation, by risk reduction per unit effort
 
-1. **< 1 hour — Remove the live key from the packaging surface.** Blank
-   `.env` or add a `git archive`-based zip target before any submission.
-   Highest risk-reduction-per-minute item in this entire audit: a leaked live
-   Azure key is an immediate, concrete, external-facing incident, unlike
-   every other gap here which is an internal-quality risk.
-2. **< 1 hour — Normalise `_exclude_tag` the same way `_exclude_ingredient`
-   is normalised.** Small, well-scoped, already diagnosed in EVAL_RESULTS.md;
-   closes the one specifically-named asymmetry cleanly.
-3. **1-2 hours — Verify `docker build && docker compose up` on any machine
-   with a Docker daemon.** This project has already found one showstopper bug
-   (`QdrantVectorStore.search()` calling a removed API method) purely from
-   `mypy`, without ever running the code it was checking. There is no reason
-   to believe the container path is clean until someone actually boots it —
-   this is the single highest-value unblocked verification step left, and it
-   was blocked only by environment, not difficulty.
-4. **Half a day — Actually run the Qdrant tests against a live Qdrant
-   container.** Same shape as #3: a concrete, bounded, already-written test
-   suite that has simply never executed. High confidence payoff for
-   moderate effort.
-5. **Half a day+ — Fix the read-uncommitted-write race** with per-thread
-   connections or WAL. Matters specifically because the thing at risk is the
-   audit log this system's liability story depends on.
-6. **Not fixable within this engagement, but worth stating precisely for
-   whoever owns the next phase:** a PII/medical-data handling review (at-rest
-   encryption, access control, retention policy for allergy/medical-condition
-   data) before this ever touches a real user, and provisioning a real
-   embedding deployment before "hybrid retrieval" is a true claim under live
-   conditions.
+1. **Under an hour.** Rotate any credential that was ever committed to
+   `.env.example`, and package with `git archive` rather than zipping the
+   working directory — gitignore does not constrain a zip.
+2. **Under an hour.** Normalise `exclude_tag` through the same canonicalisation
+   `exclude_ingredient` uses, closing the one named asymmetry.
+3. **Half a day.** Per-thread connections or a WAL reader to close the
+   read-uncommitted-write race. Prioritised by *what* is at risk — the audit
+   log — not by likelihood.
+4. **Half a day.** Mutation-test the remaining safety properties, and automate
+   the pass so the next conceptual gap is found by CI rather than by intuition.
+   This is the single item that addresses the residual risk in Part 2 rather
+   than one instance of it.
+5. **Days, and mostly not code.** Provision an embedding deployment before
+   "hybrid retrieval" is a true claim under live conditions; cap the free-text
+   severity ratchet or surface the promotion to the user; add a load test.
+6. **A precondition, not a task.** A PII and medical-data handling review —
+   encryption at rest, access control, retention — before this touches a real
+   user's allergy data.
