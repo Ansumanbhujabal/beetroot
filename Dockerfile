@@ -39,17 +39,23 @@ RUN apt-get update \
 
 WORKDIR /app
 
-# Dependency layer first so source edits do not invalidate it. `--extra
-# qdrant` matters here, not just for parity: docker-compose.yml (Task 22)
-# sets QDRANT_URL for the containerised run, and beatroot.retrieval.dense
-# switches to the real QdrantVectorStore whenever that's set — so the
-# qdrant-client package has to be present in this image for `docker compose
-# up` to actually work, not just for a bare `docker run`.
+# Dependency layer first so source edits do not invalidate it. Both extras
+# matter here, not just for parity:
+#
+#   --extra qdrant  docker-compose.yml sets QDRANT_URL for the containerised
+#                   run, and beatroot.retrieval.dense switches to the real
+#                   QdrantVectorStore whenever that's set — so qdrant-client
+#                   has to be in this image for `docker compose up` to work.
+#   --extra obs     the Langfuse SDK. Without it, prompts silently fall back
+#                   to the local files and tracing is a no-op — the container
+#                   keeps serving, which is exactly what makes the omission
+#                   easy to miss. `beatroot prompts status` names the source,
+#                   so the fallback is visible rather than assumed.
 COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen --no-install-project --no-dev --extra qdrant
+RUN uv sync --frozen --no-install-project --no-dev --extra qdrant --extra obs
 
 COPY . .
-RUN uv sync --frozen --no-dev --extra qdrant
+RUN uv sync --frozen --no-dev --extra qdrant --extra obs
 
 # HF Spaces runs as a non-root user and expects port 7860.
 RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app

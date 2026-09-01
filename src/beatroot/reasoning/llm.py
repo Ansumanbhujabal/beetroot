@@ -18,6 +18,7 @@ from pydantic import BaseModel
 
 from beatroot.contracts.trust import Completion, CostRecord
 from beatroot.obs.logging import current_request_id
+from beatroot.obs.tracing import observe_generation, record_generation_result
 from beatroot.reasoning.prompts import Prompt
 from beatroot.settings import get_settings
 
@@ -251,45 +252,63 @@ class LLMClient:
         if self._offline:
             return self._offline_completion(prompt, stage)
 
-        response = litellm.completion(
-            model=self.model,
-            messages=[{"role": "user", "content": prompt}],
-            temperature=self.cfg.temperature,
-            timeout=self.cfg.timeout_seconds,
-            num_retries=self.cfg.max_retries,
-            fallbacks=self.fallbacks,
-            response_format={"type": "json_object"} if schema else None,
-            metadata=self._trace_metadata(stage, prompt_ref),
-        )
-        text = response.choices[0].message.content or ""
+        with observe_generation(stage, prompt, self.model, prompt_ref) as generation:
+            response = litellm.completion(
+                model=self.model,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=self.cfg.temperature,
+                timeout=self.cfg.timeout_seconds,
+                num_retries=self.cfg.max_retries,
+                fallbacks=self.fallbacks,
+                response_format={"type": "json_object"} if schema else None,
+                metadata=self._trace_metadata(stage, prompt_ref),
+            )
+            text = response.choices[0].message.content or ""
 
-        # A model returning prose where JSON was demanded is an ordinary
-        # Tuesday, not a crash: always attempt the parse (callers may read
-        # `self_assessment` off any completion, not only schema-bound ones),
-        # and fall back to `parsed=None` with `text` preserved on failure.
-        parsed = _parse_llm_json(text)
-        if parsed is None and schema is not None:
-            # Only a stage that actually asked for JSON (passed `schema=`)
-            # gets this warning. `explain` (and any other prose-by-design
-            # stage) never passes `schema` and returning prose there is
-            # correct behaviour, not a parse failure worth flagging — see
-            # every `complete()` call site for which stages pass `schema`.
-            log.warning("stage=%s returned non-JSON; treating as unparsed", stage)
+            # A model returning prose where JSON was demanded is an ordinary
+            # Tuesday, not a crash: always attempt the parse (callers may read
+            # `self_assessment` off any completion, not only schema-bound ones),
+            # and fall back to `parsed=None` with `text` preserved on failure.
+            parsed = _parse_llm_json(text)
+            if parsed is None and schema is not None:
+                # Only a stage that actually asked for JSON (passed `schema=`)
+                # gets this warning. `explain` (and any other prose-by-design
+                # stage) never passes `schema` and returning prose there is
+                # correct behaviour, not a parse failure worth flagging — see
+                # every `complete()` call site for which stages pass `schema`.
+                log.warning("stage=%s returned non-JSON; treating as unparsed", stage)
 
-        try:
-            usd = float(litellm.completion_cost(completion_response=response))
-        except Exception as exc:
-            log.warning("stage=%s completion_cost failed (%s); using 0.0", stage, exc)
-            usd = 0.0
+            try:
+                usd = float(litellm.completion_cost(completion_response=response))
+            except Exception as exc:
+                log.warning("stage=%s completion_cost failed (%s); using 0.0", stage, exc)
+                usd = 0.0
 
-        usage = getattr(response, "usage", None)
+            usage = getattr(response, "usage", None)
+            prompt_tokens = getattr(usage, "prompt_tokens", 0)
+            completion_tokens = getattr(usage, "completion_tokens", 0)
+            # Report the cost and token counts we ALREADY computed rather
+            # than letting the tracing backend re-derive them from a model
+            # name it may price differently — `/metrics` and the Langfuse
+            # trace then agree by construction, not by coincidence. This
+            # must happen INSIDE the `with`: leaving the block ends the
+            # observation, and an update after that point is writing to a
+            # span that has already been handed to the exporter.
+            record_generation_result(
+                generation,
+                output=text,
+                prompt_tokens=prompt_tokens,
+                completion_tokens=completion_tokens,
+                usd=usd,
+            )
+
         return Completion(
             text=text,
             parsed=parsed,
             self_assessment=(parsed or {}).get("self_assessment"),
             cost=CostRecord(
-                prompt_tokens=getattr(usage, "prompt_tokens", 0),
-                completion_tokens=getattr(usage, "completion_tokens", 0),
+                prompt_tokens=prompt_tokens,
+                completion_tokens=completion_tokens,
                 usd=usd,
                 per_stage={stage: usd} if stage else {},
             ),

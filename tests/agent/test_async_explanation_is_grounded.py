@@ -16,8 +16,13 @@ from beatroot.agent.async_explain import ExplanationQueue
 from beatroot.contracts.nutrition import NutritionFacts
 
 N = NutritionFacts(
-    kcal=520.0, protein_g=28.0, carbs_g=40.0, fat_g=22.0,
-    sodium_mg=610.0, fibre_g=6.0, coverage=1.0,
+    kcal=520.0,
+    protein_g=28.0,
+    carbs_g=40.0,
+    fat_g=22.0,
+    sodium_mg=610.0,
+    fibre_g=6.0,
+    coverage=1.0,
 )
 
 
@@ -26,7 +31,9 @@ class _StubLLM:
         self.text = text
         self.model = "stub"
 
-    def complete(self, prompt: str, *, schema: object = None, stage: str = "", prompt_ref: object = None):
+    def complete(
+        self, prompt: str, *, schema: object = None, stage: str = "", prompt_ref: object = None
+    ):
         from beatroot.contracts.trust import Completion, CostRecord
 
         return Completion(text=self.text, parsed=None, cost=CostRecord())
@@ -38,6 +45,7 @@ def _run(text: str) -> ExplanationQueue:
     q.drain() if hasattr(q, "drain") else None
     # block until the worker finishes
     import time
+
     for _ in range(200):
         if q.status("t1") != "pending":
             break

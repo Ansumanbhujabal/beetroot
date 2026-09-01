@@ -437,7 +437,7 @@ def obs_check() -> None:
     common Langfuse misconfiguration — right keys, wrong host. This hits
     `/api/public/projects` and names the project that came back.
     """
-    from beatroot.obs.tracing import CALLBACK, verify_langfuse_auth
+    from beatroot.obs.tracing import INSTRUMENTATION, verify_langfuse_auth
 
     result = verify_langfuse_auth()
     if not result["configured"]:
@@ -450,7 +450,7 @@ def obs_check() -> None:
     console.print(f"detail:   {result['detail']}")
     if result["projects"]:
         console.print(f"projects: {', '.join(result['projects'])}")
-    console.print(f"callback: {CALLBACK}")
+    console.print(f"tracing:  {INSTRUMENTATION}")
     if not result["ok"]:
         raise typer.Exit(1)
 

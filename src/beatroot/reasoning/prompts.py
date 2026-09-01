@@ -76,6 +76,21 @@ PRODUCTION_LABEL = "production"
 
 PromptSource = Literal["local", "langfuse"]
 
+# The raw Langfuse prompt client for each fetched prompt, keyed by name.
+# Kept OUT of the `Prompt` model on purpose: `Prompt` is a Pydantic model
+# that crosses into rendering and tests, and an SDK object with a live
+# client on it has no business being serialised alongside template text.
+# `reasoning.llm` reads this to link a generation to the exact prompt
+# version natively, which is what makes Langfuse's own "which prompt
+# produced this output" view work rather than just a metadata string.
+_REMOTE_CLIENTS: dict[str, Any] = {}
+
+
+def remote_client(name: str) -> Any | None:
+    """The Langfuse prompt object `name` was fetched from, or `None` if it
+    resolved locally. Used only for trace linkage — never for rendering."""
+    return _REMOTE_CLIENTS.get(name)
+
 
 class Prompt(BaseModel):
     """One prompt, resolved from wherever it actually came from.
@@ -165,7 +180,9 @@ def langfuse_client() -> Any | None:
     try:
         from langfuse import Langfuse
     except ImportError:
-        log.warning("langfuse credentials are set but the SDK is not installed; using local prompts")
+        log.warning(
+            "langfuse credentials are set but the SDK is not installed; using local prompts"
+        )
         return None
     try:
         return Langfuse(
@@ -218,6 +235,7 @@ def _fetch_remote(name: str, local: Prompt) -> Prompt | None:
         )
         return None
 
+    _REMOTE_CLIENTS[name] = fetched
     return local.model_copy(
         update={
             "template": template,
@@ -277,7 +295,10 @@ def push_prompts(directory: Path | None = None) -> list[dict[str, Any]]:
             {
                 "name": "-",
                 "ok": False,
-                "detail": "Langfuse is not configured (set LANGFUSE_PUBLIC_KEY / LANGFUSE_SECRET_KEY).",
+                "detail": (
+                    "Langfuse is not configured "
+                    "(set LANGFUSE_PUBLIC_KEY / LANGFUSE_SECRET_KEY)."
+                ),
             }
         ]
 

@@ -2,7 +2,13 @@ services:
   beatroot:
     build: .
     ports:
-      - "7860:7860"
+      # Host port is overridable; the container port stays 7860 (what the
+      # Dockerfile EXPOSEs and what HF Spaces expects). A fixed host port
+      # makes `docker compose up` fail outright — "port is already
+      # allocated" — whenever anything else on the machine happens to hold
+      # 7860, which for a demo port is not unlikely. `BEATROOT_PORT=7861
+      # docker compose up` sidesteps that without editing this file.
+      - "${BEATROOT_PORT:-7860}:7860"
     # Optional: a fresh clone has no `.env` (see .env.example), and Task 20's
     # whole point is that the app boots keyless without one — `required:
     # false` keeps `docker compose up` from refusing to start over a file
@@ -24,6 +30,19 @@ services:
       # `BEATROOT_OFFLINE=0` in `.env` still overrides this; one who sets
       # nothing gets offline.
       BEATROOT_OFFLINE: ${BEATROOT_OFFLINE:-1}
+      # Langfuse — tracing AND versioned prompt fetch. All three are passed
+      # through from the host (shell env or the project-root .env) rather
+      # than baked in, so an image built here carries no credentials.
+      #
+      # LANGFUSE_HOST is forwarded explicitly, and that is not decoration:
+      # LiteLLM defaults an unset host to the US cloud, so EU keys
+      # authenticate against nothing and every trace disappears silently,
+      # because ingestion is fire-and-forget. Empty by default keeps the
+      # keyless path a clean no-op. `beatroot obs check` proves which way it
+      # actually resolved.
+      LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY:-}
+      LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY:-}
+      LANGFUSE_HOST: ${LANGFUSE_HOST:-}
     depends_on:
       qdrant:
         # Cold volume + no healthcheck used to let the app lose the race:

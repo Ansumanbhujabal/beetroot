@@ -230,11 +230,21 @@ class Container:
         number against a retuned config would be actively misleading, so
         the frontend has no excuse to hardcode what this already exposes.
         """
+        from beatroot.obs.tracing import INSTRUMENTATION
         from beatroot.settings import get_settings
 
         drift = verify_lock_drift(self.skills)
-        trust = get_settings().trust
+        settings = get_settings()
+        trust = settings.trust
         return {
+            "tracing": {
+                # Whether credentials resolved at all — NOT whether spans are
+                # arriving. Those are different claims and conflating them is
+                # how tracing stays dark while every check reads healthy.
+                "langfuse_configured": settings.obs.langfuse_enabled,
+                "host": settings.obs.langfuse_host or None,
+                "instrumentation": INSTRUMENTATION,
+            },
             "status": "ok",
             "provider": _provider_name(self.llm),
             "llm_model": getattr(self.llm, "model", "offline"),

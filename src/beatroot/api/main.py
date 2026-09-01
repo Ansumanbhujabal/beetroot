@@ -31,6 +31,7 @@ from beatroot.contracts.core import Constraint, ConstraintSet
 from beatroot.contracts.result import Escalation, Negotiation, Recommendation
 from beatroot.obs.cost import CostLedger
 from beatroot.obs.logging import RING_BUFFER_SIZE, bind_request, recent_logs
+from beatroot.obs.tracing import start_trace_flusher
 
 log = logging.getLogger("beatroot.api")
 
@@ -79,10 +80,24 @@ def _load_profiles() -> list[dict[str, Any]]:
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     container = build_container()
     app.state.container = container
-    log.info("startup", extra={"health": container.health()})
+    # Spans reach Langfuse on a timer, not per request. LiteLLM creates the
+    # span AFTER the response is sent, so flushing from response middleware
+    # flushes an empty provider; and OpenTelemetry only force-flushes at
+    # process exit, which a server never reaches. Together those two facts
+    # meant a fully "configured" server exported nothing at all. See
+    # `obs.tracing._PeriodicFlusher`. `None` when Langfuse is unconfigured.
+    flusher = start_trace_flusher()
+    log.info(
+        "startup",
+        extra={"health": container.health(), "trace_flusher": flusher is not None},
+    )
     try:
         yield
     finally:
+        if flusher is not None:
+            # Flushes once more on the way out, so the last few seconds of
+            # traffic are not lost to a restart.
+            flusher.stop()
         container.close()
 
 
