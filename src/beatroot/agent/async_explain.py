@@ -48,6 +48,7 @@ from __future__ import annotations
 import contextvars
 import logging
 import threading
+from collections.abc import Callable
 from concurrent.futures import Future, ThreadPoolExecutor
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Literal
@@ -106,12 +107,42 @@ class ExplanationQueue:
     an error.
     """
 
-    def __init__(self, llm: LLMClient, max_workers: int = _DEFAULT_MAX_WORKERS) -> None:
+    def __init__(
+        self,
+        llm: LLMClient,
+        max_workers: int = _DEFAULT_MAX_WORKERS,
+        on_complete: Callable[[CostRecord], None] | None = None,
+    ) -> None:
+        """`on_complete` is called with the job's `CostRecord` once it
+        finishes, successfully or not.
+
+        It exists because this queue spends real money AFTER the response
+        has been sent, at which point no request handler is left to account
+        for it. Without it, `/metrics` under-reported every COMMIT by the
+        entire explanation call — the money was spent, the tokens were
+        counted on the entry, and no metric ever saw either. The container
+        wires this to the process `CostLedger`.
+
+        A failed job still reports its cost: a provider call that produced
+        an ungrounded explanation was still paid for, and hiding that would
+        make the drift check look free.
+        """
         self._llm = llm
         self._executor = ThreadPoolExecutor(max_workers=max_workers, thread_name_prefix="explain")
         self._lock = threading.Lock()
         self._entries: dict[str, _Entry] = {}
         self._futures: dict[str, Future[None]] = {}
+        self._on_complete = on_complete
+
+    def _report_cost(self, cost: CostRecord) -> None:
+        """Hand a finished job's spend to whoever is accounting for it.
+        Never raises: a metrics failure must not strand the entry."""
+        if self._on_complete is None:
+            return
+        try:
+            self._on_complete(cost)
+        except Exception as exc:  # pragma: no cover - defensive
+            log.warning("could not report explanation cost: %s", exc)
 
     def submit(
         self,
@@ -208,11 +239,13 @@ class ExplanationQueue:
                         error=f"explanation contradicted catalog nutrition ({detail})",
                         cost=completion.cost,
                     )
+                self._report_cost(completion.cost)
                 return
         with self._lock:
             self._entries[rec_id] = _Entry(
                 status="ready", text=completion.text, cost=completion.cost
             )
+        self._report_cost(completion.cost)
 
     def status(self, rec_id: str) -> Status:
         with self._lock:

@@ -53,3 +53,55 @@ def test_nutrition_provenance_cannot_be_forged():
             coverage=1.0,
             provenance="model_generated",
         )
+
+
+def test_fingerprint_separates_nutrient_ranges_on_different_nutrients():
+    """Two ranges with identical bounds on DIFFERENT nutrients must not
+    share a feasibility-cache entry.
+
+    `nutrient_range` splits its meaning across two fields — the bounds in
+    `value`, which nutrient they constrain in `nutrient`. Hashing only the
+    first made "20-60 g of protein" and "20-60 mg of sodium" the same key,
+    so the second profile silently received the first's surviving-recipe
+    list. A wrong answer delivered by a cache hit, with nothing failing
+    anywhere to reveal it.
+    """
+    from beatroot.contracts.core import Constraint, ConstraintSet
+
+    def profile(nutrient: str) -> ConstraintSet:
+        return ConstraintSet(
+            profile_id="p",
+            constraints=[
+                Constraint(
+                    id="c0",
+                    kind="nutrient_range",
+                    severity=Severity.GOAL,
+                    value=(20.0, 60.0),
+                    nutrient=nutrient,
+                )
+            ],
+        )
+
+    assert profile("protein_g").fingerprint() != profile("sodium_mg").fingerprint()
+
+
+def test_fingerprint_still_shares_between_equivalent_constraint_sets():
+    """The flip side, and the reason the cache is keyed on shape at all:
+    two profiles whose constraints differ only in `id` and `profile_id`
+    admit exactly the same meals, so they SHOULD share an entry."""
+    from beatroot.contracts.core import Constraint, ConstraintSet
+
+    a = ConstraintSet(
+        profile_id="alice",
+        constraints=[
+            Constraint(id="a0", kind="exclude_tag", severity=Severity.MEDICAL, value="peanut")
+        ],
+    )
+    b = ConstraintSet(
+        profile_id="bob",
+        constraints=[
+            Constraint(id="b0", kind="exclude_tag", severity=Severity.MEDICAL, value="peanut")
+        ],
+    )
+    assert a.fingerprint() == b.fingerprint()
+

@@ -20,3 +20,7 @@ htmlcov/
 # for rehearsing the submission, not part of the deliverable.
 docs/INTERVIEW_PREP.md
 docs/VIDEO_SCRIPT.md
+
+# Agent-facing build script, not documentation. Kept on disk, out of the
+# shipped tree.
+docs/plans/

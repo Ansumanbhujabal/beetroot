@@ -154,14 +154,17 @@
       <div class="field"><label>kind</label>
         <select id="cKind">
           <option>exclude_tag</option><option>exclude_ingredient</option>
+          <option>require_tag</option><option>require_any_tag</option>
+          <option>exclude_cuisine</option><option>cuisine_affinity</option>
           <option>nutrient_range</option><option>budget_max</option>
-          <option>cuisine_affinity</option><option>max_prep_minutes</option>
+          <option>max_prep_minutes</option>
         </select>
       </div>
       <div class="field"><label>severity</label>
         <select id="cSeverity">
           <option value="medical">medical (never relaxable)</option>
           <option value="religious">religious (never relaxable)</option>
+          <option value="dietary">dietary (never relaxable)</option>
           <option value="goal">goal (relaxable)</option>
           <option value="preference" selected>preference (relaxable)</option>
         </select>
@@ -256,7 +259,11 @@
 
 <script>
 "use strict";
-const HARD = new Set(["medical", "religious"]);
+// Must mirror `contracts.core.HARD_SEVERITIES` exactly. `dietary` was
+// missing here, which is the same omission — one layer up — as the bug that
+// caused `dietary` to exist at all: a vegan constraint that the engine
+// enforces as hard was drawn in the builder as if it were soft.
+const HARD = new Set(["medical", "religious", "dietary"]);
 let constraints = [];
 let cIdSeq = 0;
 let lastProfileId = null;

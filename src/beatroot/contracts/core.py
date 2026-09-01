@@ -66,8 +66,27 @@ class ConstraintSet(BaseModel):
         return [c for c in self.constraints if not c.is_hard]
 
     def fingerprint(self) -> str:
-        """Stable hash for feasibility caching. Spec §17."""
+        """Stable hash for feasibility caching. Spec §17.
+
+        `nutrient` is part of the identity, not decoration. It was omitted
+        once, and the effect was a genuine cache collision: `nutrient_range`
+        carries its bounds in `value` and WHICH nutrient they constrain in
+        `nutrient`, so a profile asking for 20-60 g of protein and one asking
+        for 20-60 mg of sodium hashed identically and shared a
+        `FeasibilityCache` entry. The second profile silently received the
+        first's surviving-recipe list — a wrong answer produced by a cache
+        hit, which is the hardest kind to notice, because nothing fails.
+
+        Every field that changes which recipes survive must appear here.
+        `id` and `source` deliberately do not: two constraint sets that
+        differ only in how their constraints were labelled or where they came
+        from admit exactly the same meals, and cache SHARING between them is
+        the point (see `store.cache.FeasibilityCache` — many users share
+        constraint shapes with different profile ids).
+        """
         import hashlib
 
-        payload = "|".join(sorted(f"{c.kind}:{c.severity}:{c.value}" for c in self.constraints))
+        payload = "|".join(
+            sorted(f"{c.kind}:{c.severity}:{c.nutrient}:{c.value}" for c in self.constraints)
+        )
         return hashlib.sha256(payload.encode()).hexdigest()[:16]

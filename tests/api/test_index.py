@@ -101,3 +101,39 @@ def test_index_offers_the_preset_profile_dropdown():
     body = client.get("/").text
     assert 'api("/profiles")' in body
     assert "presetSelect" in body
+
+
+def test_builder_offers_every_registered_constraint_kind():
+    """The dashboard must be able to express what the engine can enforce.
+
+    Three kinds were missing — `require_tag`, `require_any_tag` and
+    `exclude_cuisine` — and they are not incidental ones: the first two are
+    the allowlist primitives that exist because a denylist served chicken to
+    a vegan, and the third exists because a missing "not this cuisine"
+    primitive made the compiler emit an affinity TOWARD the disliked cuisine.
+    A UI that cannot express the fixes is a UI that cannot demonstrate them.
+    """
+    from beatroot.t0_invariants.constraints import registered_kinds
+
+    body = client.get("/").text
+    missing = [k for k in registered_kinds() if f">{k}<" not in body]
+    assert not missing, f"constraint kinds the builder cannot express: {missing}"
+
+
+def test_builder_severity_options_match_the_contract():
+    """Every `Severity` must be selectable, and the page's own hard-severity
+    set must mirror `HARD_SEVERITIES`.
+
+    `dietary` was absent from both, which drew a constraint the engine
+    enforces as hard as though it were soft — the same class of mismatch,
+    one layer up, as the bug that caused `dietary` to be introduced.
+    """
+    from beatroot.contracts.core import HARD_SEVERITIES, Severity
+
+    body = client.get("/").text
+    missing = [s.value for s in Severity if f'value="{s.value}"' not in body]
+    assert not missing, f"severities the builder cannot select: {missing}"
+
+    hard_line = next(line for line in body.splitlines() if "const HARD" in line)
+    for severity in HARD_SEVERITIES:
+        assert severity.value in hard_line, f"{severity.value} missing from the page's HARD set"

@@ -7,6 +7,7 @@ and every failure mode of generating it (slow, broken, still cooking)
 must leave the recommendation itself untouched.
 """
 
+import time
 from dataclasses import replace
 
 import pytest
@@ -14,6 +15,7 @@ import pytest
 from beatroot.agent.async_explain import ExplanationQueue
 from beatroot.agent.nodes import make_nodes
 from beatroot.contracts.core import ConstraintSet
+from beatroot.contracts.trust import Completion
 from beatroot.reasoning.llm import LLMClient
 from beatroot.settings import get_settings
 from beatroot.t0_invariants.constraints import CheckResult
@@ -202,3 +204,78 @@ def _clean_settings_cache():
     `get_settings()` cached from a monkeypatched env var here."""
     yield
     get_settings.cache_clear()
+
+
+def test_a_finished_job_reports_its_cost_to_whoever_is_accounting(tmp_path):
+    """The explanation is paid for AFTER the response has been sent, so no
+    request handler is left to account for it.
+
+    Without this hand-off `/metrics` under-reported every COMMIT by the
+    entire explanation call: the money was spent, the tokens were recorded
+    on the queue entry, and `per_plan_usd` never saw either. `plans` must
+    NOT move — this is additional spend on a plan that was already counted,
+    not a new plan.
+    """
+    from beatroot.contracts.trust import CostRecord
+    from beatroot.obs.cost import CostLedger
+
+    class _Priced:
+        def complete(self, prompt, *, schema=None, stage="", prompt_ref=None):
+            return Completion(
+                text="This meal provides 500.0 kcal.",
+                cost=CostRecord(
+                    usd=0.0008,
+                    prompt_tokens=100,
+                    completion_tokens=40,
+                    per_stage={"explain": 0.0008},
+                ),
+            )
+
+    ledger = CostLedger()
+    ledger.record_plan()
+    queue = ExplanationQueue(_Priced(), on_complete=ledger.fold)
+    try:
+        queue.submit("rec-cost", recipe=None, nutrition=None, check=None, prompt="prompt")
+        queue.get("rec-cost", timeout=5.0)
+        assert ledger.per_stage["explain"] == pytest.approx(0.0008)
+        assert ledger.tokens == 140
+        assert ledger.plans == 1, "an async explanation is not a new plan"
+    finally:
+        queue.shutdown(wait=True)
+
+
+def test_a_failed_job_still_reports_the_money_it_spent():
+    """A provider call that produced ungrounded prose was still paid for.
+    Reporting zero there would make the drift check look free."""
+    from beatroot.contracts.nutrition import NutritionFacts
+    from beatroot.contracts.trust import CostRecord
+    from beatroot.obs.cost import CostLedger
+
+    class _Lying:
+        def complete(self, prompt, *, schema=None, stage="", prompt_ref=None):
+            return Completion(
+                text="This meal provides 9000 kcal.",
+                cost=CostRecord(usd=0.0009, per_stage={"explain": 0.0009}),
+            )
+
+    truth = NutritionFacts(
+        kcal=500.0,
+        protein_g=20.0,
+        carbs_g=60.0,
+        fat_g=10.0,
+        sodium_mg=300.0,
+        fibre_g=5.0,
+        coverage=1.0,
+    )
+    ledger = CostLedger()
+    queue = ExplanationQueue(_Lying(), on_complete=ledger.fold)
+    try:
+        queue.submit("rec-fail", recipe=None, nutrition=truth, check=None, prompt="prompt")
+        for _ in range(100):
+            if queue.status("rec-fail") == "failed":
+                break
+            time.sleep(0.05)
+        assert queue.status("rec-fail") == "failed", "drift must fail the job"
+        assert ledger.per_stage["explain"] == pytest.approx(0.0009)
+    finally:
+        queue.shutdown(wait=True)

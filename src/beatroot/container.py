@@ -367,7 +367,12 @@ def build_container(
     # (`tests/test_settings.py`). Poking `os.environ` from a runner to force
     # this was the first attempt and that test correctly rejected it.
     use_async = get_settings().async_explanation if async_explanation is None else async_explanation
-    explanation_queue = ExplanationQueue(llm) if use_async else None
+    # One ledger, shared by the request handlers and by the explanation
+    # queue's worker — the queue spends after the response has been sent, so
+    # without this hand-off `/metrics` under-reports every COMMIT by the
+    # whole explanation call.
+    cost_ledger = CostLedger()
+    explanation_queue = ExplanationQueue(llm, on_complete=cost_ledger.fold) if use_async else None
 
     deps = Deps(
         catalog=catalog,
@@ -396,7 +401,7 @@ def build_container(
         skills=skills,
         thresholds=load_thresholds(THRESHOLDS_PATH),
         agent=MealPlanningAgent(deps, checkpointer=_build_checkpointer(resolved_db_path)),
-        cost_ledger=CostLedger(),
+        cost_ledger=cost_ledger,
         explanation_queue=explanation_queue,
     )
 

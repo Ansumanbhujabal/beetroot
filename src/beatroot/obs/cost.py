@@ -13,7 +13,11 @@ never had to spend is recorded here as evidence that the short-circuit paid
 for itself.
 """
 
-from pydantic import BaseModel, Field
+import threading
+
+from pydantic import BaseModel, Field, PrivateAttr
+
+from beatroot.contracts.trust import CostRecord
 
 # ~4 characters per token is the standard rule-of-thumb for English text
 # under BPE-style tokenizers (OpenAI's own cookbook guidance: "a helpful
@@ -39,26 +43,56 @@ def estimate_tokens(text: str) -> int:
 
 
 class CostLedger(BaseModel):
-    """Running total of spend per stage, and of tokens never spent."""
+    """Running total of spend per stage, and of tokens never spent.
+
+    Mutated from more than one thread: request handlers fold in a terminal
+    result's cost, and `agent.async_explain.ExplanationQueue`'s worker folds
+    in the explanation's cost whenever that job finishes — which is after
+    the response has already been sent. `self.per_stage[k] = ... + usd` is a
+    read-modify-write, so the lock is not decoration.
+    """
 
     per_stage: dict[str, float] = Field(default_factory=dict)
     tokens: int = 0
     tokens_saved: int = 0
     plans: int = 0
 
+    _lock: threading.Lock = PrivateAttr(default_factory=threading.Lock)
+
     def add(self, stage: str, usd: float, tokens: int = 0) -> None:
         """Record spend for one stage of one plan."""
-        self.per_stage[stage] = round(self.per_stage.get(stage, 0.0) + usd, 8)
-        self.tokens += tokens
+        with self._lock:
+            self.per_stage[stage] = round(self.per_stage.get(stage, 0.0) + usd, 8)
+            self.tokens += tokens
 
     def record_short_circuit(self, estimated_tokens: int) -> None:
         """Record tokens that a short-circuit (infeasibility, cache hit)
         avoided spending entirely."""
-        self.tokens_saved += estimated_tokens
+        with self._lock:
+            self.tokens_saved += estimated_tokens
 
     def record_plan(self) -> None:
         """Mark one plan as complete, so `per_plan_usd` has a denominator."""
-        self.plans += 1
+        with self._lock:
+            self.plans += 1
+
+    def fold(self, cost: "CostRecord") -> None:
+        """Add one `CostRecord`'s spend to this ledger, WITHOUT counting a
+        new plan.
+
+        Exists for cost that arrives after its plan already finished — the
+        async explanation is generated once the response is out the door, so
+        its spend has no terminal-route handler left to account for it. Until
+        this, `per_plan_usd` silently under-reported every COMMIT by the
+        whole explanation call: real money spent, on the request path's own
+        behalf, that no metric ever saw.
+        """
+        for stage, usd in cost.per_stage.items():
+            self.add(stage, usd)
+        total_tokens = cost.prompt_tokens + cost.completion_tokens
+        if total_tokens:
+            with self._lock:
+                self.tokens += total_tokens
 
     @property
     def total_usd(self) -> float:
