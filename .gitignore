@@ -5,6 +5,12 @@ __pycache__/
 .sdd/
 beatroot.db
 beatroot.checkpoints.db
+# SQLite writes -wal and -shm sidecars next to the database in WAL mode.
+# Ignoring only the .db leaves those two untracked, and a `git add -A` then
+# commits several MB of binary checkpoint state — which is exactly what
+# happened once.
+beatroot.db-*
+beatroot.checkpoints.db-*
 .env
 eval/synthetic/
 eval/healing/
@@ -20,6 +26,7 @@ htmlcov/
 # not part of the deliverable.
 docs/NOTES.md
 docs/VIDEO_SCRIPT.md
+docs/RUN_ANALYSIS.md
 
 # Agent-facing build script, not documentation. Kept on disk, out of the
 # shipped tree.
