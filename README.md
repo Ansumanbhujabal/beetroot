@@ -317,8 +317,11 @@ QDRANT_URL=http://localhost:6333 uv run pytest tests/retrieval/test_qdrant_store
 ``` The suite is hermetic — a session fixture hides
 the repo `.env` and strips provider credentials, so it cannot silently run
 against a live provider on a machine holding real keys. The same system suite
-also passes against live Azure: 6/6 axes 1.000, 0 violations, p50 7932ms, p95
-9894ms, $0.0836 for the run. Eval design, oracle construction, and what these
+also passes against live Azure: 6/6 axes 1.000, 0 violations, p50 ~7.5-9s, p95
+~11-13s, about $0.085 for the run. Latency is gated per execution mode —
+2s/8s offline, 15s/25s live — because a live case makes two or three serial
+model calls at roughly two seconds each, so one shared budget would either
+fail every live run or let an offline regression through unnoticed. Eval design, oracle construction, and what these
 numbers do *not* prove: [`EVAL_RESULTS.md`](EVAL_RESULTS.md).
 
 ## Documentation

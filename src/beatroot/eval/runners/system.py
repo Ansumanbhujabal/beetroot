@@ -54,12 +54,41 @@ class SystemReport:
     # correctness findings — a slow-but-correct run and a fast-but-unsafe
     # one are different problems and must not be reported as the same one.
     latency_breaches: list[str] = field(default_factory=list)
+    # Which budget pair was applied — "offline" or "live". Reported, because
+    # a latency verdict is meaningless without saying what it was measured
+    # against: the same 7.5s p50 is a pass live and a catastrophe offline.
+    latency_mode: str = "offline"
 
     def p(self, pct: float) -> float:
         if not self.latencies_ms:
             return 0.0
         ordered = sorted(self.latencies_ms)
         return ordered[min(int(len(ordered) * pct), len(ordered) - 1)]
+
+
+def latency_budget(thresholds: EvalThresholds, *, offline: bool) -> tuple[float, float, str]:
+    """The (p50, p95, mode-name) latency budget for this execution mode.
+
+    Offline, no network is on the path and a case finishes in tens of
+    milliseconds. Live, each case makes two or three SERIAL model calls at
+    roughly two seconds each, so a ~7-8s p50 is the healthy number — which
+    means a single shared budget cannot describe both. Applying the offline
+    budget to a live run failed every live run on latency alone while all six
+    safety axes read 1.000; applying a live-sized budget to an offline run
+    would let p50 grow a hundredfold unnoticed.
+
+    Falls back to the offline keys when the live ones are absent, so an older
+    `thresholds.yaml` still gates rather than silently stopping.
+    """
+    p50 = float(thresholds.performance.get("p50_latency_ms", 0) or 0)
+    p95 = float(thresholds.performance.get("p95_latency_ms", 0) or 0)
+    if offline:
+        return p50, p95, "offline"
+    return (
+        float(thresholds.performance.get("live_p50_latency_ms", 0) or p50),
+        float(thresholds.performance.get("live_p95_latency_ms", 0) or p95),
+        "live",
+    )
 
 
 def load_cases(path: Path) -> list[dict[str, Any]]:
@@ -266,11 +295,14 @@ def run_system(
     # but silently dropped" — a constraint kind that reached the model's
     # prompt with no registered parser. A threshold nobody enforces is worse
     # than no threshold, because it reads as coverage that does not exist.
+    p50_budget, p95_budget, report.latency_mode = latency_budget(
+        thresholds, offline=settings.offline
+    )
     report.latency_breaches = [
-        f"{name} {measured:.0f}ms exceeds {budget:.0f}ms"
+        f"{name} {measured:.0f}ms exceeds the {report.latency_mode} budget of {budget:.0f}ms"
         for name, measured, budget in (
-            ("p50", report.p(0.50), float(thresholds.performance.get("p50_latency_ms", 0) or 0)),
-            ("p95", report.p(0.95), float(thresholds.performance.get("p95_latency_ms", 0) or 0)),
+            ("p50", report.p(0.50), p50_budget),
+            ("p95", report.p(0.95), p95_budget),
         )
         if budget and measured > budget
     ]
@@ -291,11 +323,12 @@ def _print_report(report: SystemReport, thresholds: EvalThresholds) -> None:
         table.add_row(axis, "n/a" if got is None else f"{got:.3f}", f"{floor}", mark)
     console.print(table)
     console.print(f"hard constraint violations: [bold]{report.violations}[/bold] (threshold 0)")
-    p50_budget = thresholds.performance.get("p50_latency_ms")
-    p95_budget = thresholds.performance.get("p95_latency_ms")
+    p50_budget, p95_budget, mode = latency_budget(
+        thresholds, offline=(report.latency_mode == "offline")
+    )
     console.print(
-        f"p50 {report.p(0.50):.0f}ms (budget {p50_budget})  "
-        f"p95 {report.p(0.95):.0f}ms (budget {p95_budget})  cost ${report.cost_usd:.4f}"
+        f"p50 {report.p(0.50):.0f}ms  p95 {report.p(0.95):.0f}ms  "
+        f"({mode} budget {p50_budget:.0f}/{p95_budget:.0f}ms)  cost ${report.cost_usd:.4f}"
     )
     for breach in report.latency_breaches:
         console.print(f"[yellow]LATENCY[/yellow] {breach}")

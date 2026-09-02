@@ -48,6 +48,7 @@ import json
 import logging
 import re
 import sys
+import warnings
 from collections import deque
 from collections.abc import Iterator
 from contextlib import contextmanager, suppress
@@ -253,6 +254,32 @@ def configure_logging(level: int = logging.INFO) -> None:
         isinstance(f, _SuppressLiteLLMLoggingWorkerTeardownNoise) for f in asyncio_logger.filters
     ):
         asyncio_logger.addFilter(_SuppressLiteLLMLoggingWorkerTeardownNoise())
+
+    # The same LiteLLM teardown, arriving by a different route. Alongside the
+    # asyncio ERROR above, CPython's garbage collector emits a RuntimeWarning
+    # through the `warnings` module — not through logging, so the filter
+    # above cannot see it:
+    #
+    #   RuntimeWarning: coroutine 'LoggingWorker._worker_loop' was never awaited
+    #   RuntimeWarning: coroutine 'Logging.async_success_handler' was never awaited
+    #
+    # It is LiteLLM's own callback plumbing being collected at interpreter
+    # exit. It costs this application nothing, because tracing here does not
+    # go through LiteLLM's callbacks at all — spans are emitted directly by
+    # `obs.tracing.observe_generation` around the call. So the un-awaited
+    # handler had no work of ours to do.
+    #
+    # Narrow on purpose: matched on those two exact coroutine names, so any
+    # other "never awaited" warning — including one from our own code, which
+    # WOULD be a real bug — still surfaces. It is printed before any output
+    # the user asked for, which on `beatroot eval system` means a clean run
+    # opens with two tracebacks that look like faults and are not.
+    warnings.filterwarnings(
+        "ignore",
+        message=r"coroutine '(LoggingWorker\._worker_loop|Logging\.async_success_handler)'"
+        r" was never awaited",
+        category=RuntimeWarning,
+    )
 
 
 def current_request_id() -> str | None:

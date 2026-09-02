@@ -18,9 +18,24 @@ axes:
   A5_escalation_correctness: 0.90
   A6_explanation_grounding: 0.95
 
+# Latency budgets are per EXECUTION MODE, because one number cannot describe
+# both. Offline, no network is on the path and a case completes in tens of
+# milliseconds. Live, every case makes two or three SERIAL model calls, each
+# a ~2s round trip — so ~7-8s p50 is normal and healthy, not a regression.
+#
+# A single budget silently mis-measures whichever mode it was not written
+# for: the offline numbers below would fail every live run (they did), and
+# live-sized numbers would let an offline p50 balloon from 40ms to 5s
+# without anyone noticing. `run_system` selects the pair by `settings.offline`
+# and the report names which budget it applied.
 performance:
   p50_latency_ms: 2000
   p95_latency_ms: 8000
+  # Real provider. Generous on purpose: this gates catastrophic regression
+  # (a 7s p50 becoming 40s), not provider jitter, which is not ours to fix
+  # and varies by region and time of day.
+  live_p50_latency_ms: 15000
+  live_p95_latency_ms: 25000
 
 regression:
   max_newly_failing: 0
