@@ -21,15 +21,12 @@ services:
       # NumPy dev fallback. QDRANT_URL being set is what selects it — see
       # beatroot.retrieval.dense.get_vector_store.
       QDRANT_URL: http://qdrant:6333
-      # Belt-and-braces default (Dockerfile's `ENV BEATROOT_OFFLINE=1` sets
-      # the same thing at the image level; this is redundant on purpose,
-      # not the only thing making it true). `${BEATROOT_OFFLINE:-1}` is
-      # compose's own variable substitution — sourced from the shell env
-      # and from a `.env` file at the PROJECT ROOT, a distinct mechanism
-      # from the `env_file:` key above — so someone who sets
-      # `BEATROOT_OFFLINE=0` in `.env` still overrides this; one who sets
-      # nothing gets offline.
-      BEATROOT_OFFLINE: ${BEATROOT_OFFLINE:-1}
+      # Passed through, not defaulted. The image no longer forces offline
+      # mode: supply provider credentials and the real model answers;
+      # supply none and `settings._default_to_offline_without_credentials`
+      # detects that itself and says so at WARNING, which is a fallback for
+      # a misconfiguration rather than the intended way to run.
+      BEATROOT_OFFLINE: ${BEATROOT_OFFLINE:-}
       # Langfuse — tracing AND versioned prompt fetch. All three are passed
       # through from the host (shell env or the project-root .env) rather
       # than baked in, so an image built here carries no credentials.

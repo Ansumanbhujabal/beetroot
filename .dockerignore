@@ -17,9 +17,15 @@ beatroot.checkpoints.db
 # Secrets — the whole point is that the image needs none of these to boot.
 .env
 
-# Spec/planning material and generated docs — not part of the running app.
+# Planning material and internal working notes. The `docs/diagrams` and the
+# two documents the `/docs` page serves are copied EXPLICITLY in the
+# Dockerfile — excluding `docs` wholesale is what left that page rendering a
+# broken diagram and dead download links in every containerised run.
 .sdd
-docs
+docs/plans
+docs/specs
+docs/NOTES.md
+docs/VIDEO_SCRIPT.md
 
 # Generated eval output directories (not the eval source under
 # src/beatroot/eval or the golden fixtures under eval/golden).

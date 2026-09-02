@@ -1,69 +1,118 @@
 # syntax=docker/dockerfile:1
 #
-# beatroot — packaged for HF Spaces (Docker SDK, port 7860) and for a plain
-# `docker run`/`docker compose up` on a developer's machine.
+# beatroot — a two-stage build producing a runtime image that carries the
+# virtualenv and the application's data, and nothing that was only needed to
+# assemble them.
 #
-# The whole project's premise is that this boots with NO credentials.
-# That guarantee lives in TWO places, deliberately redundant:
+# WHY TWO STAGES, AND WHAT THE SINGLE-STAGE VERSION COST
+# ------------------------------------------------------
+# The previous single-stage image was 1.32 GB against a 348 MB virtualenv.
+# Almost all of the excess came from one line:
 #
-#   1. `beatroot.settings.Settings` (the real fix — see its
-#      `_default_to_offline_without_credentials` validator): if neither the
-#      configured completion model nor the embedding model has credentials
-#      in the environment, `offline` flips to True itself, logged at
-#      WARNING. This is what actually matters, because a bare `uvicorn`
-#      run outside Docker has the identical problem and gets the identical
-#      fix — `build_container()` eagerly embeds the whole catalog to build
-#      the vector store, before `/health` is even reachable, so a
-#      credential-less real `LLMClient` used to take the whole process
-#      down at startup, not on first request.
-#   2. `BEATROOT_OFFLINE=1` below, belt-and-braces: makes the containerised
-#      path explicitly offline unless someone supplies real provider
-#      credentials and sets `BEATROOT_OFFLINE=0` (`docker run -e ...`, or
-#      the same via `.env`/compose — see README.md). Redundant with (1) on
-#      purpose — this must never be the ONLY thing keeping it keyless.
-FROM python:3.12-slim
+#     RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
+#
+# `chown -R` rewrites the ownership metadata of every file under /app, and a
+# Docker layer records a changed file as a whole new copy — so that single
+# RUN added a 408 MB layer that duplicated the entire application and its
+# virtualenv. The image carried both copies forever, because a later layer
+# can never shrink an earlier one. Creating the user FIRST and copying with
+# `--chown` sets the ownership as the files land, so there is nothing to
+# rewrite afterwards.
+#
+# The build stage also drops out entirely: `uv` itself, the apt lists, and
+# any intermediate build state exist only in the builder and are never part
+# of what ships.
 
-ENV PYTHONUNBUFFERED=1 \
-    UV_COMPILE_BYTECODE=1 \
+# ---------------------------------------------------------------- builder --
+FROM python:3.12-slim AS builder
+
+ENV UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
-    BEATROOT_OFFLINE=1
+    UV_PYTHON_DOWNLOADS=never
 
 COPY --from=ghcr.io/astral-sh/uv:0.7.19 /uv /usr/local/bin/uv
-
-# HEALTHCHECK below shells out to curl rather than depending on the app's
-# own venv/interpreter path, so it stays correct regardless of how `uv`
-# lays out the virtualenv.
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends curl \
-    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
 # Dependency layer first so source edits do not invalidate it. Both extras
-# matter here, not just for parity:
+# matter, not just for parity with local development:
 #
-#   --extra qdrant  docker-compose.yml sets QDRANT_URL for the containerised
-#                   run, and beatroot.retrieval.dense switches to the real
-#                   QdrantVectorStore whenever that's set — so qdrant-client
-#                   has to be in this image for `docker compose up` to work.
-#   --extra obs     the Langfuse SDK. Without it, prompts silently fall back
-#                   to the local files and tracing is a no-op — the container
-#                   keeps serving, which is exactly what makes the omission
-#                   easy to miss. `beatroot prompts status` names the source,
-#                   so the fallback is visible rather than assumed.
-COPY pyproject.toml uv.lock ./
+#   --extra qdrant  docker-compose.yml sets QDRANT_URL, and
+#                   beatroot.retrieval.dense switches to the real
+#                   QdrantVectorStore whenever that is set — so qdrant-client
+#                   has to be present for `docker compose up` to work.
+#   --extra obs     the Langfuse SDK, for prompt fetching and tracing.
+#                   Without it prompts silently fall back to the local files
+#                   and tracing is a no-op; the container keeps serving,
+#                   which is exactly what makes the omission easy to miss.
+#                   `beatroot prompts status` names the source either way.
+COPY pyproject.toml uv.lock README.md ./
 RUN uv sync --frozen --no-install-project --no-dev --extra qdrant --extra obs
 
-COPY . .
+# The project is installed as an editable pointer to /app/src, so the source
+# has to be present for the install to resolve — and the runtime stage has to
+# keep /app/src at the same path for that pointer to stay valid.
+COPY src ./src
 RUN uv sync --frozen --no-dev --extra qdrant --extra obs
 
-# HF Spaces runs as a non-root user and expects port 7860.
-RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
+# ---------------------------------------------------------------- runtime --
+FROM python:3.12-slim AS runtime
+
+# Put the virtualenv on PATH so `uvicorn` and `beatroot` are called directly.
+# The old image shelled out through `uv run`, which meant shipping the uv
+# binary and paying a dependency-resolution check on every container start,
+# to launch an environment that was already fully built.
+ENV PYTHONUNBUFFERED=1 \
+    PATH="/app/.venv/bin:$PATH"
+
+# Created BEFORE anything is copied, so every COPY --chown below lands with
+# the right ownership and no recursive rewrite is ever needed.
+#
+# `/app` itself is chowned too, and that is not incidental: the application
+# creates `beatroot.db` and `beatroot.checkpoints.db` in this directory at
+# startup, so the DIRECTORY has to be writable by the runtime user or the
+# container dies in `lifespan` with `sqlite3.OperationalError: unable to
+# open database file`. This is one inode, not a recursive rewrite — the
+# contents arrive already-owned via `COPY --chown`, which is the whole
+# point of the split.
+RUN useradd -m -u 1000 appuser \
+    && mkdir -p /app \
+    && chown appuser:appuser /app
+
+WORKDIR /app
+
+COPY --from=builder --chown=appuser:appuser /app/.venv ./.venv
+COPY --chown=appuser:appuser src ./src
+COPY --chown=appuser:appuser pyproject.toml ./
+
+# Runtime data the application reads from disk, by path, at startup. Each of
+# these resolves relative to the repository root (see `container.ROOT` and
+# `settings.ROOT`), so the layout here has to mirror the repository's.
+COPY --chown=appuser:appuser data ./data
+COPY --chown=appuser:appuser config ./config
+COPY --chown=appuser:appuser prompts ./prompts
+COPY --chown=appuser:appuser skills ./skills
+COPY --chown=appuser:appuser skills-lock.json ./
+COPY --chown=appuser:appuser eval ./eval
+
+# Documents and diagrams the `/docs` page serves. These were excluded from
+# the old image by `.dockerignore`, which meant the page rendered with a
+# broken diagram and dead download links in every containerised run — the
+# one deployment a person actually looks at.
+COPY --chown=appuser:appuser docs/diagrams ./docs/diagrams
+COPY --chown=appuser:appuser docs/WALKTHROUGH.md docs/PRODUCTION_READINESS.md ./docs/
+COPY --chown=appuser:appuser README.md ARCHITECTURE.md CUT_LIST.md EVAL_RESULTS.md EVAL_HISTORY.md ./
+
 USER appuser
 
 EXPOSE 7860
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-    CMD curl -fsS http://localhost:7860/health || exit 1
+# Uses the interpreter that is already in the image rather than installing
+# curl, which cost an apt layer and its lists purely to make one HTTP
+# request. `urllib` raises a non-zero exit on any non-2xx, which is exactly
+# the semantics a healthcheck needs.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+    CMD python -c "import urllib.request as u; u.urlopen('http://localhost:7860/health', timeout=4)" \
+        || exit 1
 
-CMD ["uv", "run", "uvicorn", "beatroot.api.main:app", "--host", "0.0.0.0", "--port", "7860"]
+CMD ["uvicorn", "beatroot.api.main:app", "--host", "0.0.0.0", "--port", "7860"]
