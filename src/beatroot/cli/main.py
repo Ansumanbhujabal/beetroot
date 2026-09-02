@@ -229,6 +229,35 @@ def serve(
     """Run the FastAPI app with uvicorn."""
     import uvicorn
 
+    # Print the URLs ourselves rather than relying on uvicorn's own startup
+    # line. Two reasons. Uvicorn binds 0.0.0.0 by default, and it reports
+    # exactly that — but `http://0.0.0.0:7860` is not a URL a browser will
+    # open, so the line a person most wants to click is the one thing it does
+    # not give them. And its banner has been observed printing the raw format
+    # string, `Uvicorn running on %s://%s:%d`, rather than the interpolated
+    # address; that is uvicorn's formatter, not ours, and this sidesteps it
+    # entirely instead of depending on it.
+    #
+    # Listing the four pages matters more than it looks: two of them
+    # (`/evals`, `/incidents`) are EMPTY until the eval suite has been run,
+    # and someone who does not know they exist reads that emptiness as the
+    # feature being missing rather than as un-generated.
+    shown = "localhost" if host in ("0.0.0.0", "::", "") else host  # noqa: S104
+    base = f"http://{shown}:{port}"
+    console.print(f"\n  beatroot on [bold]{base}[/bold]\n")
+    for path, label in (
+        ("/", "recommend"),
+        ("/incidents", "incidents + drift ledger"),
+        ("/evals", "eval scores"),
+        ("/docs", "architecture + documents"),
+        ("/api-docs", "OpenAPI explorer"),
+    ):
+        console.print(f"    {base}{path:<12}  [dim]{label}[/dim]")
+    console.print(
+        "\n  [dim]/evals and /incidents are empty until you run "
+        "`beatroot eval system`.[/dim]\n"
+    )
+
     uvicorn.run("beatroot.api.main:app", host=host, port=port, reload=reload)
 
 

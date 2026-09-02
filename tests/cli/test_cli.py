@@ -118,7 +118,7 @@ def test_synth_adversarial_subcommand_runs():
 
 
 def test_prompts_status_reports_where_each_prompt_resolved_from():
-    """"We use prompt management" is only honest if the fallback is visible.
+    """ "We use prompt management" is only honest if the fallback is visible.
 
     With no credentials every prompt resolves from the local file, and that
     is a supported, expected state — not a degraded one to hide. This
@@ -228,3 +228,48 @@ def test_render_escalate_names_the_failing_signal():
     assert "low_trust" in out
     assert "catalog_coverage" in out  # the named failing signal
     assert "0.40" in out
+
+
+def test_serve_prints_a_clickable_url_and_the_page_list(monkeypatch):
+    """`serve` must print an address a browser will actually open.
+
+    Uvicorn binds 0.0.0.0 and reports exactly that, but `http://0.0.0.0:7860`
+    is not something you can click — the one line a person most wants is the
+    one it does not give them. Its banner has also been observed printing the
+    raw format string (`Uvicorn running on %s://%s:%d`) instead of the
+    interpolated address, so relying on it is relying on someone else's
+    formatter.
+
+    The page list matters too: `/evals` and `/incidents` are empty until the
+    eval suite runs, and someone who does not know they exist reads that
+    emptiness as a missing feature rather than an un-generated one.
+    """
+    import uvicorn
+
+    calls = {}
+
+    def _fake_run(app, host, port, reload):
+        calls["host"], calls["port"] = host, port
+
+    monkeypatch.setattr(uvicorn, "run", _fake_run)
+    result = runner.invoke(app, ["serve", "--port", "7860"])
+    assert result.exit_code == 0, result.output
+    assert "http://localhost:7860" in result.output, "0.0.0.0 must render as a clickable host"
+    assert "0.0.0.0:7860" not in result.output
+    for path in ("/incidents", "/evals", "/docs", "/api-docs"):
+        assert f"http://localhost:7860{path}" in result.output, f"{path} not advertised"
+    assert "eval system" in result.output, "must say how to populate the empty pages"
+    bind_all = "0.0.0.0"  # noqa: S104 — asserting the bind address, not opening one
+    assert calls["host"] == bind_all and calls["port"] == 7860, "must still bind all interfaces"
+
+
+def test_serve_respects_an_explicit_host(monkeypatch):
+    """Only the bind-all addresses are rewritten for display; an explicit
+    host is shown as given, because that is what the operator chose."""
+    import uvicorn
+
+    monkeypatch.setattr(uvicorn, "run", lambda *a, **k: None)
+    result = runner.invoke(app, ["serve", "--host", "127.0.0.1", "--port", "7860"])
+    assert result.exit_code == 0, result.output
+    assert "http://127.0.0.1:7860" in result.output
+    assert "localhost" not in result.output.split("beatroot on")[1].split("\n")[0]
