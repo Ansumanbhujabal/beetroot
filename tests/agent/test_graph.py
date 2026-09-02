@@ -1,5 +1,8 @@
 import json
 import sqlite3
+from dataclasses import replace
+
+import pytest
 
 from beatroot.agent.graph import MealPlanningAgent, build_graph
 from beatroot.agent.nodes import make_nodes
@@ -530,3 +533,72 @@ def test_explain_escalates_when_chosen_recipe_vanishes_from_the_catalog(agent_de
     out = nodes["explain"](state)
     assert out["terminal"] == "ESCALATE"
     assert "no longer resolves in the catalog" in out["escalation"]["detail"]
+
+
+def test_a_short_circuit_reports_what_compile_actually_spent(agent_deps):
+    """A FEASIBILITY short-circuit must carry forward the cost already spent.
+
+    The three short-circuit sites built a fresh `CostRecord(tokens_saved=...)`,
+    which discarded everything `compile` had spent. A profile whose free text
+    compiled and then turned out infeasible therefore reported `$0.000000`
+    while having genuinely paid for a model call — the same shape as the
+    async-explanation leak, in a different place.
+
+    It also quietly overstated the headline claim: "an impossible profile
+    costs zero tokens" is true for a structured-only profile, and was never
+    true for one that reached `compile` first.
+    """
+    from beatroot.contracts.trust import Completion, CostRecord
+
+    class _CompilingLLM:
+        """Emits one constraint, and charges for it."""
+
+        def complete(self, prompt, *, schema=None, stage="", prompt_ref=None):
+            return Completion(
+                text="{}",
+                parsed={"in_scope": True, "constraints": []},
+                cost=CostRecord(
+                    usd=0.004,
+                    prompt_tokens=1200,
+                    completion_tokens=60,
+                    per_stage={stage: 0.004} if stage else {},
+                ),
+            )
+
+        def embed(self, texts):
+            return [[0.0] * 8 for _ in texts]
+
+    agent = MealPlanningAgent(replace(agent_deps, llm=_CompilingLLM()))
+    # A profile nothing can satisfy, so FEASIBILITY short-circuits.
+    cs = ConstraintSet(
+        profile_id="short-circuit-cost",
+        constraints=[
+            Constraint(id="t0", kind="max_prep_minutes", severity=Severity.PREFERENCE, value=0)
+        ],
+    )
+    result = agent.run(cs, query="", preferences="anything at all")
+
+    assert isinstance(result, Negotiation), "an impossible profile must NEGOTIATE"
+    assert result.cost.usd == pytest.approx(0.004), (
+        "the compile call was paid for; reporting $0 hides real spend"
+    )
+    assert result.cost.per_stage.get("compile") == pytest.approx(0.004)
+    assert result.cost.prompt_tokens == 1200
+    assert result.cost.tokens_saved > 0, "the skipped-stage estimate must survive too"
+
+
+def test_a_short_circuit_with_no_free_text_really_is_free(agent_deps):
+    """The flip side, and the claim that must stay true: with no free text
+    there is nothing to carry forward, so the run genuinely costs nothing."""
+    agent = MealPlanningAgent(agent_deps)
+    cs = ConstraintSet(
+        profile_id="genuinely-free",
+        constraints=[
+            Constraint(id="t0", kind="max_prep_minutes", severity=Severity.PREFERENCE, value=0)
+        ],
+    )
+    result = agent.run(cs, query="", preferences="")
+    assert isinstance(result, Negotiation)
+    assert result.cost.usd == 0.0
+    assert result.cost.per_stage == {}
+    assert result.cost.tokens_saved > 0

@@ -324,6 +324,27 @@ def _estimate_skipped_tokens(deps: Deps, cfg: Settings) -> int:
     return estimate_tokens(rerank_text) + estimate_tokens(explain_text)
 
 
+def _short_circuit_cost(state: PlanState, deps: "Deps", cfg: Settings) -> CostRecord:
+    """The cost to report on a FEASIBILITY short-circuit.
+
+    Carries forward whatever has ALREADY been spent — which on a free-text
+    request is a real `compile` call — and adds the estimate of what the
+    skipped stages would have cost.
+
+    Constructing a fresh `CostRecord(tokens_saved=...)` here instead, as this
+    did, discards the compile spend entirely: a profile whose free text
+    compiled and then turned out to be infeasible reported `$0.000000` while
+    having genuinely paid for a model call. That also quietly overstated the
+    headline claim — "an impossible profile costs zero tokens" is true for a
+    structured-only profile, and was never true for one that reached
+    `compile` first.
+    """
+    spent = CostRecord.model_validate(state.get("cost") or {})
+    return spent.model_copy(
+        update={"tokens_saved": spent.tokens_saved + _estimate_skipped_tokens(deps, cfg)}
+    )
+
+
 def _internal_error_escalation(stage: str, exc: Exception) -> Escalation:
     """Shape an unhandled exception into a valid `Escalation`.
 
@@ -664,10 +685,11 @@ def make_nodes(deps: Deps) -> dict[str, Callable[[PlanState], PlanState]]:
                 reason="unknown_ingredient",
                 failing_signal=ids,
                 detail=f"cannot verify constraint(s) against the catalog vocabulary: {detail}",
-                # GAP 2: RETRIEVE/SCORE/EXPLAIN never ran — this is a
+                # RETRIEVE/SCORE/EXPLAIN never ran — `tokens_saved` is a
                 # defensible ESTIMATE of what they would have cost, not a
-                # measured spend. See `_estimate_skipped_tokens`.
-                cost=CostRecord(tokens_saved=_estimate_skipped_tokens(deps, cfg)),
+                # measured spend. `usd`/token counts carry forward whatever
+                # `compile` actually spent. See `_short_circuit_cost`.
+                cost=_short_circuit_cost(state, deps, cfg),
             )
             return {
                 "trace": ["FEASIBILITY"],
@@ -695,10 +717,10 @@ def make_nodes(deps: Deps) -> dict[str, Callable[[PlanState], PlanState]]:
                     cs, recipes, deps.tag_index, cfg.feasibility.max_relaxation_subset_size
                 ),
                 locked=[c.id for c in cs.hard()],
-                # GAP 2: a cache-hit infeasible short-circuit skips
+                # A cache-hit infeasible short-circuit skips
                 # RETRIEVE/SCORE/EXPLAIN just as surely as a freshly
-                # computed one — see `_estimate_skipped_tokens`.
-                cost=CostRecord(tokens_saved=_estimate_skipped_tokens(deps, cfg)),
+                # computed one — see `_short_circuit_cost`.
+                cost=_short_circuit_cost(state, deps, cfg),
             )
         else:
             result = assess(cs, recipes, deps.tag_index, cfg.feasibility.max_relaxation_subset_size)
@@ -722,7 +744,7 @@ def make_nodes(deps: Deps) -> dict[str, Callable[[PlanState], PlanState]]:
             # defensible estimate of what that would have cost" reads as
             # an asserted fact in code, not an absence.
             negotiation = negotiation.model_copy(
-                update={"cost": CostRecord(tokens_saved=_estimate_skipped_tokens(deps, cfg))}
+                update={"cost": _short_circuit_cost(state, deps, cfg)}
             )
 
         deps.incidents.record(
@@ -1037,8 +1059,16 @@ def make_nodes(deps: Deps) -> dict[str, Callable[[PlanState], PlanState]]:
 
     def negotiate_node(state: PlanState) -> PlanState:
         cs = ConstraintSet.model_validate(state["constraint_set"])
+        # NOT hardcoded 0.0. A NEGOTIATE reached after `compile` ran has
+        # genuinely spent money, and an audit row claiming otherwise is the
+        # one place that spend would never be accounted for.
+        negotiation = Negotiation.model_validate(state["negotiation"])
         aid = deps.audit.record(
-            cs.profile_id, "NEGOTIATE", state["negotiation"], skill_versions(deps), 0.0
+            cs.profile_id,
+            "NEGOTIATE",
+            state["negotiation"],
+            skill_versions(deps),
+            negotiation.cost.usd,
         )
         return {"trace": ["NEGOTIATE"], "terminal": "NEGOTIATE", "audit_id": aid}
 
