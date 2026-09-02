@@ -319,7 +319,7 @@ the zero-key fallback.
 
 ## 11. Data
 
-Hand-authored, original, small. No employer data.
+Hand-authored, original, small. All catalog content was written for this project.
 
 - **~120 ingredients** — per-100g nutrition, allergen tags, religious tags
   (`beef`, `pork`, `gelatin`, `alcohol`, `root_vegetable`), dietary flags,
@@ -507,4 +507,4 @@ Patterns carried from prior work, reimplemented rather than copied:
   religious dietary rules requiring domain-expert encoding rather than model
   inference.
 
-No prior-employer code, catalog data, or credentials are used in this project.
+All code, catalog data and configuration in this project is original to it.

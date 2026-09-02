@@ -316,12 +316,12 @@ def docs_page() -> FileResponse:
 # already contain, so there is no traversal to defend against — the attack
 # surface is the dict, and the dict is six documents and four diagram exports.
 #
-# `INTERVIEW_PREP.md` and `VIDEO_SCRIPT.md` are deliberately NOT here. They
-# are local-only preparation notes (gitignored, never pushed), and an
-# allow-list entry would have served them from any deployment of this app —
-# which is the same leak as committing them, reached by a different route.
-# Keeping them out of the dict is what makes "local-only" true of the
-# running system, not just of the repository.
+# Local-only working notes are deliberately NOT listed here. Gitignoring a
+# file keeps it out of the repository; it does nothing about an allow-list
+# entry, which would serve that same file from any deployment of this app —
+# the identical leak reached by a different route. Keeping such files out of
+# this dict is what makes "local-only" true of the running system, not just
+# of the repository.
 _DOC_FILES: dict[str, tuple[Path, str]] = {
     "README.md": (ROOT / "README.md", "text/markdown"),
     "ARCHITECTURE.md": (ROOT / "ARCHITECTURE.md", "text/markdown"),

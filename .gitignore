@@ -16,11 +16,15 @@ htmlcov/
 .mypy_cache/
 .ruff_cache/
 
-# Local-only preparation material. Never pushed: these are personal notes
-# for rehearsing the submission, not part of the deliverable.
+# Local-only working notes. Never pushed: personal preparation material,
+# not part of the deliverable.
 docs/INTERVIEW_PREP.md
 docs/VIDEO_SCRIPT.md
 
 # Agent-facing build script, not documentation. Kept on disk, out of the
 # shipped tree.
 docs/plans/
+
+# The original requirements brief. Third-party document, kept on disk for
+# reference and never shipped.
+take_home_brief.pdf
