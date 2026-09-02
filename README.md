@@ -31,19 +31,14 @@ rather than improvise one. Catalog: 174 recipes, 137 ingredients, 21 preset
 profiles, 9 constraint kinds across 5 severities. Ships as a CLI, a FastAPI
 service, and a dashboard.
 
-## Quick start
-
-No keys, no network:
+## Quick start — 30 seconds, no keys, no network
 
 ```bash
-uv sync                          # add --extra qdrant for the Qdrant vector store
+curl -LsSf https://astral.sh/uv/install.sh | sh    # if you don't have uv
+git clone https://github.com/Ansumanbhujabal/beetroot.git && cd beetroot
+uv sync
 uv run beatroot recommend "something warm with rice" --medical peanut
 ```
-
-With no provider credentials, `beatroot.settings` logs that at `WARNING` and
-falls back to a deterministic offline provider (hashing-trick embeddings,
-templated completions). Every code path still runs for real; only the model's own
-opinion is a stub. `BEATROOT_OFFLINE=1` forces it even with keys present.
 
 ```
 trace: FEASIBILITY -> RETRIEVE -> SCORE -> TRUST -> EXPLAIN -> VERIFY -> COMMIT
@@ -53,91 +48,166 @@ COMMIT — Vegan ragi dosa with coconut chutney
   constraints satisfied: med0
 ```
 
+With no provider credentials, `beatroot.settings` says so at `WARNING` and falls
+back to a deterministic offline provider. Every code path still runs for real —
+retrieval, feasibility, trust scoring, verification — only the model's own
+opinion is a stub.
+
 `--medical` / `--exclude` build typed constraints; `query` only feeds retrieval
 ranking, so don't type an allergy into it and expect enforcement. Free text goes
-through `--preferences` (or `preferences` on `POST /recommend`, or the
-dashboard's text box) and can only ever *add* `PREFERENCE`-severity constraints —
-never medical or religious, never a removal.
+through `--preferences` and can only ever *add* constraints, never remove one.
 
-`uv run beatroot serve` starts the same app — API plus dashboard — on
-<http://localhost:7860>, keyless too.
+---
 
-## Full mode — Docker, Qdrant, a real provider, Langfuse
+## Two ways to run the full application
 
-Six steps, in order. Everything below has been run end to end from a clean
-clone.
+Both serve the identical app — same API, same four dashboard pages. They differ
+in one dependency and one deployment shape. Everything below was run end to end
+from a clean clone.
 
-**1. Prerequisites.** Docker with Compose ≥ 2.24 (`docker compose version`),
-and `uv` if you also want to run the CLI or the tests outside the container:
+| | Option 1 — local | Option 2 — Docker |
+|---|---|---|
+| Vector store | NumPy, in-process | **Qdrant**, real service |
+| Runs | `uvicorn` on your machine | two containers |
+| Needs | `uv` | Docker Compose ≥ 2.24 |
+| Start-up | seconds | ~4 min first build, then seconds |
+| Provider + Langfuse | yes | yes |
+| Use it for | development, the fastest loop | the production-shaped run |
 
-```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
+### Shared step — credentials
 
-**2. Credentials.** `.env` is gitignored and is never in the clone — create it:
+`.env` is gitignored and is **never in the clone**. Create it once; both options
+read the same file.
 
 ```bash
 cp .env.example .env
 ```
 
-Fill in `AZURE_API_KEY`, `AZURE_API_BASE`, `AZURE_API_VERSION` and set
-`BEATROOT_OFFLINE=0`. For Langfuse prompt management and tracing, add
-`LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`, and `LANGFUSE_HOST` — the host is
-**not** optional once the keys are set, because it defaults to the US cloud and
-EU-region keys then authenticate against nothing, silently. Leave the Langfuse
-values blank and everything still runs; prompts resolve from `prompts/*.md` and
-tracing is a clean no-op.
+| Variable | Purpose |
+|---|---|
+| `BEATROOT_OFFLINE=0` | use the real provider rather than the offline stub |
+| `AZURE_API_KEY`, `AZURE_API_BASE`, `AZURE_API_VERSION` | the chat model |
+| `BEATROOT_LLM__MODEL` | e.g. `azure/gpt-4o` |
+| `BEATROOT_LLM__EMBEDDING_MODEL` | `local` unless you have an embedding deployment |
+| `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY` | prompt management + tracing |
+| `LANGFUSE_HOST` | `https://us.cloud.langfuse.com` or `https://cloud.langfuse.com` |
 
-**3. Start the stack.** Compose brings up the app and Qdrant together and waits
-for Qdrant's healthcheck before starting the app:
+`LANGFUSE_HOST` is **not optional once the keys are set**: it defaults to the US
+cloud, so EU-region keys authenticate against nothing and every trace vanishes
+in silence. Leave all the Langfuse values blank and everything still runs —
+prompts resolve from `prompts/*.md`, tracing is a clean no-op.
+
+---
+
+### Option 1 — Local, no Docker, no Qdrant
 
 ```bash
-docker compose up -d --build          # first build ~4 min
+uv sync
+uv run beatroot serve                 # http://localhost:7860
 ```
 
-Port 7860 already taken? `BEATROOT_PORT=7861 docker compose up -d --build`
-overrides the *host* port; the container port stays 7860.
-
-**4. Confirm what actually answered.** A health check that only says "ok" is
-decoration — this one names each dependency:
+Add `--port 7899` if 7860 is taken. Confirm what actually answered:
 
 ```bash
 curl -s localhost:7860/health | python3 -m json.tool
 ```
 
-Expect `provider: azure`, `vector_store: qdrant`, `recipes: 174`,
-`skills_locked: true`, and `tracing.langfuse_configured: true`. Then prove the
-Langfuse half specifically, which credentials alone do not:
-
-```bash
-docker compose exec beatroot beatroot obs check       # real authenticated API call
-docker compose exec beatroot beatroot prompts status  # 4/4 @langfuse:vN, or @local:vN
+```json
+{ "provider": "azure", "llm_model": "azure/gpt-4o", "vector_store": "numpy",
+  "recipes": 174, "skills_locked": true,
+  "tracing": { "langfuse_configured": true, "host": "https://us.cloud.langfuse.com" } }
 ```
 
-`prompts push` publishes `prompts/*.md` to Langfuse at the `production` label;
-`prompts status` reports where each one *actually* resolved from, so a fallback
-to the local file is visible rather than assumed.
-
-**5. Populate the dashboards.** `/evals` and `/incidents` are **empty on a
-fresh install, by design.** They render runtime artifacts, not shipped data: an
-eval result is something you produce by running the suite, and an incident is
-something the system records when it refuses. Generate both:
+`vector_store: numpy` is correct here — with `QDRANT_URL` unset the in-process
+store is selected, and it needs no service. Then prove Langfuse specifically,
+which credentials alone do not:
 
 ```bash
-docker compose exec beatroot beatroot eval system      # writes eval/last_run.json
+uv run beatroot obs check         # real authenticated API call, names the project
+uv run beatroot prompts status    # 4/4 as @langfuse:vN, or @local:vN on fallback
+uv run beatroot prompts push      # publish prompts/*.md at the `production` label
+```
+
+Now jump to **[Populate the dashboards](#populate-the-dashboards)** below.
+
+---
+
+### Option 2 — Docker + Qdrant + everything
+
+```bash
+docker compose up -d --build          # app + Qdrant; first build ~4 min
+```
+
+Compose waits for Qdrant's own healthcheck before starting the app, so there is
+no start-up race. If port 7860 is taken:
+
+```bash
+BEATROOT_PORT=7861 docker compose up -d --build
+```
+
+That overrides the **host** port only; the container port stays 7860. Confirm:
+
+```bash
+curl -s localhost:7860/health | python3 -m json.tool
+```
+
+Identical to Option 1 except **`"vector_store": "qdrant"`** — that one field is
+how you know the real service answered rather than the fallback. Same two
+checks, run inside the container:
+
+```bash
+docker compose exec beatroot beatroot obs check
+docker compose exec beatroot beatroot prompts status
+```
+
+Stop with `docker compose down`.
+
+---
+
+### Populate the dashboards
+
+`/evals` and `/incidents` are **empty on a fresh install, by design.** They
+render runtime artifacts, not shipped data: an eval result is something you
+produce by running the suite, and an incident is something the system records
+when it refuses. Neither is baked into the repo or the image.
+
+Option 1 (local):
+
+```bash
+uv run beatroot eval system
+uv run beatroot eval components
+```
+
+Option 2 (Docker):
+
+```bash
+docker compose exec beatroot beatroot eval system
 docker compose exec beatroot beatroot eval components
 ```
 
-That single run also drives 33 golden cases through the real graph, so the
-infeasible and unverifiable ones leave incidents behind and `/incidents` and the
-drift ledger fill in too. Re-run either command at any time; the pages read the
-latest result.
+One `eval system` run drives 33 golden cases through the real graph, so the
+infeasible and unverifiable ones leave incidents behind — `/evals`, `/incidents`
+and the drift ledger all fill in together. Re-run at any time; the pages read
+the latest result.
 
-**6. Look at it.** `/` recommend · `/incidents` · `/evals` · `/docs`
-(pan/zoom architecture diagram plus downloadable documents). FastAPI's own API
-explorer is at `/api-docs`, moved so it does not shadow this project's `/docs`.
+### Where to look
 
-Shut down with `docker compose down`.
+| URL | What it is | Worth looking at |
+|---|---|---|
+| `/` | Recommend | Build a profile or pick one of 21 presets. The result card shows the trust composite broken into its three signals, the constraints satisfied in plain language, and the full ingredient list. Try the Vegan preset with a chicken query. |
+| `/incidents` | Incident feed + drift ledger | Every refusal, infeasibility and nutrition-drift finding, with the constraint set that caused it. Empty until step above. |
+| `/evals` | Eval scores | The six safety axes against their thresholds, the component metrics, and per-axis pass/fail. Empty until step above. |
+| `/docs` | Architecture | Pan/zoom architecture diagram plus every project document as a download. |
+| `/api-docs` | OpenAPI explorer | FastAPI's own docs — moved here so it does not shadow `/docs`. |
+| `/health` | Dependency report | Names the provider, model, vector store, catalog size, skill-lock state and tracing config. Not a bare "ok". |
+| `/metrics` | Cost + caches | Cost per plan and per stage, token counts, feasibility and embedding cache hit rates. |
+| `/profiles` | Preset profiles | The 21 dietary presets as JSON, the same shape `POST /recommend` accepts. |
+
+Two refusals worth demonstrating, because they are the point of the system: an
+impossible profile returns `NEGOTIATE` with a ranked relaxation ladder and the
+medical constraints locked out of it, and a constraint naming something the
+catalog has never heard of returns `ESCALATE` rather than a confident answer it
+never actually checked. Both cost zero model tokens.
 
 ## What the model may and may not do
 
