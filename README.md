@@ -1,24 +1,3 @@
----
-title: beatroot
-emoji: 🥁
-colorFrom: purple
-colorTo: red
-sdk: docker
-app_port: 7860
-pinned: false
-license: mit
-short_description: Meal planning with enforced model/validation boundaries
----
-
-# beatroot
-
-**Deterministic exactly where failure is irreversible; hybrid everywhere else.**
-
-Not "deterministic because models can't be trusted" — hybrid retrieval beats
-pure keyword search, and a rules-only planner is a worse product. But you cannot
-un-eat a peanut. Allergen enforcement, religious-restriction enforcement, and
-nutrition arithmetic never touch a model. Retrieval, ranking, and explanation
-prose do — under a filter the model cannot see past.
 
 ## What it is
 
@@ -244,6 +223,10 @@ wrong answer is a liability event, not a bad UX moment, so every escalation
 becomes a permanent regression case via `beatroot heal`.
 
 ## Observability and prompt management
+<img width="1638" height="825" alt="Screenshot from 2026-09-02 14-23-43" src="https://github.com/user-attachments/assets/6bd106f0-2cdc-4902-a5a7-84026a0e1f3a" />
+
+<img width="1638" height="825" alt="Screenshot from 2026-09-02 14-24-08" src="https://github.com/user-attachments/assets/b93986ea-1ff9-4ce5-b57b-52af9266bfe7" />
+
 
 All 4 prompts are published to Langfuse under the `production` label —
 `beatroot prompts status` shows each resolving as `<name>@langfuse:v1`. Without
@@ -263,6 +246,10 @@ logs asynchronously and builds its tracer provider lazily, so a flush from
 response middleware ran before the span existed. It is now deliberately
 unregistered, pinned by a named constant and a test; a 5s periodic flusher in the
 API lifespan keeps a long-running server's spans moving.
+
+
+
+
 
 `GET /health` from a running full-mode container:
 
