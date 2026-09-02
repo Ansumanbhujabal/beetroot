@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.12"
 resolution-markers = [
     "python_full_version >= '3.15'",
@@ -259,6 +259,7 @@ source = { editable = "." }
 dependencies = [
     { name = "fastapi" },
     { name = "httpx" },
+    { name = "langfuse" },
     { name = "langgraph" },
     { name = "langgraph-checkpoint-sqlite" },
     { name = "litellm" },
@@ -273,9 +274,6 @@ dependencies = [
 ]
 
 [package.optional-dependencies]
-obs = [
-    { name = "langfuse" },
-]
 qdrant = [
     { name = "qdrant-client" },
 ]
@@ -294,7 +292,7 @@ dev = [
 requires-dist = [
     { name = "fastapi", specifier = ">=0.115" },
     { name = "httpx", specifier = ">=0.27" },
-    { name = "langfuse", marker = "extra == 'obs'", specifier = ">=2.50" },
+    { name = "langfuse", specifier = ">=4.0" },
     { name = "langgraph", specifier = ">=0.2.60" },
     { name = "langgraph-checkpoint-sqlite", specifier = ">=2.0" },
     { name = "litellm", specifier = ">=1.55" },
@@ -308,7 +306,7 @@ requires-dist = [
     { name = "typer", specifier = ">=0.12" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.30" },
 ]
-provides-extras = ["qdrant", "obs"]
+provides-extras = ["qdrant"]
 
 [package.metadata.requires-dev]
 dev = [

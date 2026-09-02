@@ -27,7 +27,16 @@ docs/specs
 docs/NOTES.md
 docs/VIDEO_SCRIPT.md
 
-# Generated eval output directories (not the eval source under
-# src/beatroot/eval or the golden fixtures under eval/golden).
+# Generated eval output (not the eval source under src/beatroot/eval, nor
+# the golden fixtures under eval/golden, nor eval/thresholds.yaml).
+#
+# `last_run.json` in particular MUST NOT ship. It is the artifact the
+# `/evals` page renders, and baking it in meant the image carried whichever
+# eval result happened to be on the builder's disk — so the page showed real
+# scores that had nothing to do with this container, and a clone that built
+# its own image showed none at all. An eval result is something you produce
+# by running the suite, never something the image asserts on your behalf.
 eval/synthetic
 eval/healing
+eval/last_run.json
+eval/history

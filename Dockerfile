@@ -41,19 +41,18 @@ WORKDIR /app
 #                   beatroot.retrieval.dense switches to the real
 #                   QdrantVectorStore whenever that is set — so qdrant-client
 #                   has to be present for `docker compose up` to work.
-#   --extra obs     the Langfuse SDK, for prompt fetching and tracing.
-#                   Without it prompts silently fall back to the local files
-#                   and tracing is a no-op; the container keeps serving,
-#                   which is exactly what makes the omission easy to miss.
-#                   `beatroot prompts status` names the source either way.
+#
+# `langfuse` needs no extra: it is a real dependency now, precisely because
+# an install missing it kept serving while prompt management fell back to
+# local files and tracing did nothing at all.
 COPY pyproject.toml uv.lock README.md ./
-RUN uv sync --frozen --no-install-project --no-dev --extra qdrant --extra obs
+RUN uv sync --frozen --no-install-project --no-dev --extra qdrant
 
 # The project is installed as an editable pointer to /app/src, so the source
 # has to be present for the install to resolve — and the runtime stage has to
 # keep /app/src at the same path for that pointer to stay valid.
 COPY src ./src
-RUN uv sync --frozen --no-dev --extra qdrant --extra obs
+RUN uv sync --frozen --no-dev --extra qdrant
 
 # ---------------------------------------------------------------- runtime --
 FROM python:3.12-slim AS runtime

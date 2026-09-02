@@ -12,7 +12,8 @@ import shutil
 
 import pytest
 
-from beatroot.container import SKILLS_DIR, build_container
+from beatroot.container import DATA_DIR, SKILLS_DIR, build_container
+from beatroot.reasoning.llm import LLMClient
 from beatroot.settings import get_settings
 
 
@@ -78,3 +79,75 @@ def test_build_container_succeeds_when_the_copied_skills_are_untouched(tmp_path)
         assert container.health()["skills_locked"] is True
     finally:
         container.close()
+
+
+def test_langfuse_is_a_real_dependency_not_an_optional_extra():
+    """A plain `uv sync` must produce an install where prompt management and
+    tracing actually work.
+
+    `langfuse` used to be an optional `obs` extra. `uv sync` does not install
+    extras, so the ordinary setup path produced an environment where prompts
+    silently fell back to local files and tracing did nothing — while `.env`
+    said Langfuse was configured and `/health` reported
+    `langfuse_configured: true`. Every signal said working; nothing was.
+
+    The fallback in `reasoning.prompts.langfuse_client` exists for missing
+    CREDENTIALS, which is a real runtime state. It should never be papering
+    over a missing library, which is just a broken install.
+    """
+    import tomllib
+    from pathlib import Path
+
+    pyproject = tomllib.loads((Path(__file__).parents[1] / "pyproject.toml").read_text())
+    deps = " ".join(pyproject["project"]["dependencies"])
+    assert "langfuse" in deps, "langfuse must be a real dependency, not an extra"
+
+    extras = pyproject["project"].get("optional-dependencies", {})
+    for name, packages in extras.items():
+        assert not any("langfuse" in p for p in packages), (
+            f"langfuse reappeared in the {name!r} extra; a plain `uv sync` would "
+            "then produce a silently degraded install again"
+        )
+
+    # And it must genuinely import in this environment.
+    import langfuse  # noqa: F401
+
+
+def test_a_missing_qdrant_client_degrades_instead_of_crashing(monkeypatch, tmp_path):
+    """`QDRANT_URL` set without the optional client must fall back to NumPy.
+
+    Qdrant is optional by design — the store sits behind a protocol with an
+    in-memory implementation. But an ImportError here fires inside
+    `build_container()`, which runs in the API's `lifespan`, so the whole
+    process would die at startup before `/health` was reachable, over a
+    dependency that has a working alternative sitting right below it.
+    """
+    import builtins
+
+    from beatroot.container import _build_vector_store
+    from beatroot.settings import get_settings
+    from beatroot.store.db import connect, seed
+    from beatroot.trusted.catalog import Catalog
+
+    monkeypatch.setenv("QDRANT_URL", "http://localhost:6333")
+    get_settings.cache_clear()
+
+    real_import = builtins.__import__
+
+    def _no_qdrant(name, *args, **kwargs):
+        if name.startswith("beatroot.retrieval.qdrant_store") or name.startswith("qdrant_client"):
+            raise ImportError("qdrant-client is not installed")
+        return real_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "__import__", _no_qdrant)
+
+    conn = connect(tmp_path / "t.db")
+    seed(conn, DATA_DIR)
+    catalog = Catalog(conn)
+    try:
+        store = _build_vector_store(LLMClient.offline(), catalog, embedding_cache=None)
+        assert getattr(store, "name", "") == "numpy", "must degrade to the in-memory store"
+    finally:
+        monkeypatch.setattr(builtins, "__import__", real_import)
+        conn.close()
+        get_settings.cache_clear()

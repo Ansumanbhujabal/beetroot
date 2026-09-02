@@ -36,7 +36,7 @@ service, and a dashboard.
 No keys, no network:
 
 ```bash
-uv sync
+uv sync                          # add --extra qdrant for the Qdrant vector store
 uv run beatroot recommend "something warm with rice" --medical peanut
 ```
 
@@ -62,17 +62,82 @@ never medical or religious, never a removal.
 `uv run beatroot serve` starts the same app — API plus dashboard — on
 <http://localhost:7860>, keyless too.
 
-Full mode — Docker, Qdrant, a real provider, Langfuse:
+## Full mode — Docker, Qdrant, a real provider, Langfuse
+
+Six steps, in order. Everything below has been run end to end from a clean
+clone.
+
+**1. Prerequisites.** Docker with Compose ≥ 2.24 (`docker compose version`),
+and `uv` if you also want to run the CLI or the tests outside the container:
 
 ```bash
-cp .env.example .env                      # fill in provider + Langfuse keys
-BEATROOT_PORT=7861 docker compose up -d --build && curl localhost:7861/health
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-Compose brings up the app and Qdrant together. `BEATROOT_PORT` overrides the
-*host* port (default 7860; the container port stays 7860) — a hardcoded one
-fails outright when anything else holds it. Pages: `/`, `/incidents`, `/evals`,
-`/docs`; FastAPI's own API docs move to `/api-docs`.
+**2. Credentials.** `.env` is gitignored and is never in the clone — create it:
+
+```bash
+cp .env.example .env
+```
+
+Fill in `AZURE_API_KEY`, `AZURE_API_BASE`, `AZURE_API_VERSION` and set
+`BEATROOT_OFFLINE=0`. For Langfuse prompt management and tracing, add
+`LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`, and `LANGFUSE_HOST` — the host is
+**not** optional once the keys are set, because it defaults to the US cloud and
+EU-region keys then authenticate against nothing, silently. Leave the Langfuse
+values blank and everything still runs; prompts resolve from `prompts/*.md` and
+tracing is a clean no-op.
+
+**3. Start the stack.** Compose brings up the app and Qdrant together and waits
+for Qdrant's healthcheck before starting the app:
+
+```bash
+docker compose up -d --build          # first build ~4 min
+```
+
+Port 7860 already taken? `BEATROOT_PORT=7861 docker compose up -d --build`
+overrides the *host* port; the container port stays 7860.
+
+**4. Confirm what actually answered.** A health check that only says "ok" is
+decoration — this one names each dependency:
+
+```bash
+curl -s localhost:7860/health | python3 -m json.tool
+```
+
+Expect `provider: azure`, `vector_store: qdrant`, `recipes: 174`,
+`skills_locked: true`, and `tracing.langfuse_configured: true`. Then prove the
+Langfuse half specifically, which credentials alone do not:
+
+```bash
+docker compose exec beatroot beatroot obs check       # real authenticated API call
+docker compose exec beatroot beatroot prompts status  # 4/4 @langfuse:vN, or @local:vN
+```
+
+`prompts push` publishes `prompts/*.md` to Langfuse at the `production` label;
+`prompts status` reports where each one *actually* resolved from, so a fallback
+to the local file is visible rather than assumed.
+
+**5. Populate the dashboards.** `/evals` and `/incidents` are **empty on a
+fresh install, by design.** They render runtime artifacts, not shipped data: an
+eval result is something you produce by running the suite, and an incident is
+something the system records when it refuses. Generate both:
+
+```bash
+docker compose exec beatroot beatroot eval system      # writes eval/last_run.json
+docker compose exec beatroot beatroot eval components
+```
+
+That single run also drives 33 golden cases through the real graph, so the
+infeasible and unverifiable ones leave incidents behind and `/incidents` and the
+drift ledger fill in too. Re-run either command at any time; the pages read the
+latest result.
+
+**6. Look at it.** `/` recommend · `/incidents` · `/evals` · `/docs`
+(pan/zoom architecture diagram plus downloadable documents). FastAPI's own API
+explorer is at `/api-docs`, moved so it does not shadow this project's `/docs`.
+
+Shut down with `docker compose down`.
 
 ## What the model may and may not do
 
@@ -147,7 +212,15 @@ trace costs reconcile with `/metrics` exactly.
 
 ## Numbers
 
-Offline is the default: no credentials, no network, deterministic.
+Offline is the default: no credentials, no network, deterministic — and the
+figures below are all **NumPy-store** measurements, which is what an unset
+`QDRANT_URL` selects. That is stated because it is a variable, not a detail:
+re-running the component suite against Qdrant inside the container gives
+`recall@k` **0.972** rather than 0.988, on the same catalog and the same cases.
+Neither number is wrong; they measure two different vector stores, and the
+safety-critical ones do not move — `hard-only recall` stays 1.000 and retrieval
+leakage stays 0 either way, because the legality gate runs before ranking in
+both paths.
 
 ```
 uv run python -m beatroot.eval.runners.system                33 golden cases
@@ -159,13 +232,19 @@ uv run python -m beatroot.eval.runners.components
   recall@k 0.988 full oracle / 1.000 hard-only oracle · retrieval leakage 0
   feasibility accuracy 1.000 · nutrition determinism 1.000 · drift recall 1.000
 
-uv run pytest              654 passed, 5 skipped, coverage 90.25% (gate 80%)
+uv run pytest              679 passed, 5 skipped, coverage ~91% (gate 80%)
 uv run mypy --strict src   no issues, 73 source files
 uv run ruff check .        all checks passed
 ```
 
-The 5 skips are the Qdrant store tests, which skip when `QDRANT_URL` is unset and
-pass against a running container. The suite is hermetic — a session fixture hides
+The 5 skips are the Qdrant store tests, which skip when `QDRANT_URL` is unset.
+Against a running container all 7 Qdrant tests pass:
+
+```bash
+docker compose up -d qdrant
+QDRANT_URL=http://localhost:6333 uv run pytest tests/retrieval/test_qdrant_store.py \
+                                               tests/retrieval/test_qdrant_retry.py
+``` The suite is hermetic — a session fixture hides
 the repo `.env` and strips provider credentials, so it cannot silently run
 against a live provider on a machine holding real keys. The same system suite
 also passes against live Azure: 6/6 axes 1.000, 0 violations, p50 7932ms, p95

@@ -119,15 +119,32 @@ def _build_vector_store(
     `/metrics` reports hit/miss activity from the cache that actually did
     the embedding work, not a second instance nobody ever calls.
     """
+    import logging
+
     from beatroot.settings import get_settings
 
+    log = logging.getLogger("beatroot.container")
     settings = get_settings()
     if settings.qdrant_url:
-        from beatroot.retrieval.qdrant_store import QdrantVectorStore
-
-        return QdrantVectorStore(
-            llm, catalog, url=settings.qdrant_url, embedding_cache=embedding_cache
-        )
+        try:
+            from beatroot.retrieval.qdrant_store import QdrantVectorStore
+        except ImportError:
+            # `qdrant-client` is an optional extra, so `QDRANT_URL` being set
+            # does not guarantee the client is installed. Crashing here would
+            # take the whole process down at startup — before `/health` is
+            # even reachable — over a vector store that has a working
+            # in-memory alternative sitting right below. Warn loudly and
+            # degrade, the same posture every other optional dependency in
+            # this codebase takes.
+            log.warning(
+                "QDRANT_URL is set but qdrant-client is not installed "
+                "(install the 'qdrant' extra: uv sync --extra qdrant); "
+                "falling back to the in-memory NumPy vector store"
+            )
+        else:
+            return QdrantVectorStore(
+                llm, catalog, url=settings.qdrant_url, embedding_cache=embedding_cache
+            )
 
     from beatroot.retrieval.dense import DenseIndex
 
