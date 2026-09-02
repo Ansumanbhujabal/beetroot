@@ -17,6 +17,7 @@ dependencies = [
     "pydantic>=2.7",
     "pydantic-settings>=2.6",
     "pyyaml>=6",
+    "qdrant-client>=1.12",
     "rich>=13",
     "tenacity>=9.0",
     "typer>=0.12",
@@ -45,25 +46,6 @@ addopts = "-q"
 [project.scripts]
 beatroot = "beatroot.cli.main:app"
 
-[project.optional-dependencies]
-# Qdrant stays OPTIONAL on purpose: the vector store sits behind a protocol
-# with an in-memory NumPy implementation, and `QDRANT_URL` selects between
-# them at runtime. Making it mandatory would contradict that design and add
-# grpcio/protobuf to every install for a path most local runs never take.
-# `container._build_vector_store` degrades to NumPy with a warning when the
-# URL is set but the client is absent, so the optionality cannot strand a
-# deployment.
-#
-# `langfuse` is deliberately NOT here any more. It was an extra, and a plain
-# `uv sync` therefore produced an install where prompt management fell back
-# to local files and tracing silently did nothing — while `.env` said
-# Langfuse was configured. That is the "advertised but silently dropped"
-# shape this codebase rejects elsewhere: the fallback exists for missing
-# CREDENTIALS, which is a real runtime state, not for a missing library,
-# which is just a broken install.
-qdrant = [
-    "qdrant-client>=1.12",
-]
 
 [tool.ruff]
 line-length = 100

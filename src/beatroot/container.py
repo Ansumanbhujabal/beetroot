@@ -129,16 +129,15 @@ def _build_vector_store(
         try:
             from beatroot.retrieval.qdrant_store import QdrantVectorStore
         except ImportError:
-            # `qdrant-client` is an optional extra, so `QDRANT_URL` being set
-            # does not guarantee the client is installed. Crashing here would
-            # take the whole process down at startup — before `/health` is
-            # even reachable — over a vector store that has a working
-            # in-memory alternative sitting right below. Warn loudly and
-            # degrade, the same posture every other optional dependency in
-            # this codebase takes.
+            # `qdrant-client` is a real dependency, so this should not
+            # happen from a clean `uv sync` — but a partial or hand-edited
+            # environment can still reach here, and crashing would take the
+            # whole process down at startup, before `/health` is reachable,
+            # over a vector store that has a working in-memory alternative
+            # sitting right below. Warn loudly and degrade.
             log.warning(
-                "QDRANT_URL is set but qdrant-client is not installed "
-                "(install the 'qdrant' extra: uv sync --extra qdrant); "
+                "QDRANT_URL is set but qdrant-client is not importable "
+                "(run `uv sync` to repair the environment); "
                 "falling back to the in-memory NumPy vector store"
             )
         else:

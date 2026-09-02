@@ -267,15 +267,11 @@ dependencies = [
     { name = "pydantic" },
     { name = "pydantic-settings" },
     { name = "pyyaml" },
+    { name = "qdrant-client" },
     { name = "rich" },
     { name = "tenacity" },
     { name = "typer" },
     { name = "uvicorn", extra = ["standard"] },
-]
-
-[package.optional-dependencies]
-qdrant = [
-    { name = "qdrant-client" },
 ]
 
 [package.dev-dependencies]
@@ -300,13 +296,12 @@ requires-dist = [
     { name = "pydantic", specifier = ">=2.7" },
     { name = "pydantic-settings", specifier = ">=2.6" },
     { name = "pyyaml", specifier = ">=6" },
-    { name = "qdrant-client", marker = "extra == 'qdrant'", specifier = ">=1.12" },
+    { name = "qdrant-client", specifier = ">=1.12" },
     { name = "rich", specifier = ">=13" },
     { name = "tenacity", specifier = ">=9.0" },
     { name = "typer", specifier = ">=0.12" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.30" },
 ]
-provides-extras = ["qdrant"]
 
 [package.metadata.requires-dev]
 dev = [

@@ -81,14 +81,15 @@ def test_build_container_succeeds_when_the_copied_skills_are_untouched(tmp_path)
         container.close()
 
 
-def test_langfuse_is_a_real_dependency_not_an_optional_extra():
+def test_langfuse_and_qdrant_are_real_dependencies_not_optional_extras():
     """A plain `uv sync` must produce an install where prompt management and
     tracing actually work.
 
-    `langfuse` used to be an optional `obs` extra. `uv sync` does not install
-    extras, so the ordinary setup path produced an environment where prompts
-    silently fell back to local files and tracing did nothing — while `.env`
-    said Langfuse was configured and `/health` reported
+    Both `langfuse` and `qdrant-client` used to be optional extras, and
+    `uv sync` does not install extras — so the ordinary setup path produced an
+    environment where prompts silently fell back to local files, tracing did
+    nothing, and `QDRANT_URL` degraded to the in-memory store, while `.env`
+    said all three were configured and `/health` reported
     `langfuse_configured: true`. Every signal said working; nothing was.
 
     The fallback in `reasoning.prompts.langfuse_client` exists for missing
@@ -100,17 +101,20 @@ def test_langfuse_is_a_real_dependency_not_an_optional_extra():
 
     pyproject = tomllib.loads((Path(__file__).parents[1] / "pyproject.toml").read_text())
     deps = " ".join(pyproject["project"]["dependencies"])
-    assert "langfuse" in deps, "langfuse must be a real dependency, not an extra"
+    for package in ("langfuse", "qdrant-client"):
+        assert package in deps, f"{package} must be a real dependency, not an extra"
 
     extras = pyproject["project"].get("optional-dependencies", {})
     for name, packages in extras.items():
-        assert not any("langfuse" in p for p in packages), (
-            f"langfuse reappeared in the {name!r} extra; a plain `uv sync` would "
-            "then produce a silently degraded install again"
-        )
+        for package in ("langfuse", "qdrant-client"):
+            assert not any(package in p for p in packages), (
+                f"{package} reappeared in the {name!r} extra; a plain `uv sync` "
+                "would then produce a silently degraded install again"
+            )
 
-    # And it must genuinely import in this environment.
+    # And they must genuinely import in this environment.
     import langfuse  # noqa: F401
+    import qdrant_client  # noqa: F401
 
 
 def test_a_missing_qdrant_client_degrades_instead_of_crashing(monkeypatch, tmp_path):

@@ -1,7 +1,7 @@
 .PHONY: install lint types test cov eval check clean
 
 install:
-	uv sync --all-extras
+	uv sync
 
 lint:
 	uv run ruff check src tests

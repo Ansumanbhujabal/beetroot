@@ -34,25 +34,24 @@ COPY --from=ghcr.io/astral-sh/uv:0.7.19 /uv /usr/local/bin/uv
 
 WORKDIR /app
 
-# Dependency layer first so source edits do not invalidate it. Both extras
-# matter, not just for parity with local development:
+# Dependency layer first so source edits do not invalidate it. No extras
+# flags: `qdrant-client` and `langfuse` are both real dependencies, so a
+# plain sync produces a complete install.
 #
-#   --extra qdrant  docker-compose.yml sets QDRANT_URL, and
-#                   beatroot.retrieval.dense switches to the real
-#                   QdrantVectorStore whenever that is set — so qdrant-client
-#                   has to be present for `docker compose up` to work.
-#
-# `langfuse` needs no extra: it is a real dependency now, precisely because
-# an install missing it kept serving while prompt management fell back to
-# local files and tracing did nothing at all.
+# That is deliberate rather than incidental. Both were optional extras, and
+# `uv sync` does not install extras — so the ordinary setup path produced an
+# environment where the app still ran: Qdrant fell back to the in-memory
+# store, prompt management fell back to local files, and tracing did nothing,
+# while the configuration said all three were on. An install that is missing
+# a dependency should fail, not quietly do less.
 COPY pyproject.toml uv.lock README.md ./
-RUN uv sync --frozen --no-install-project --no-dev --extra qdrant
+RUN uv sync --frozen --no-install-project --no-dev
 
 # The project is installed as an editable pointer to /app/src, so the source
 # has to be present for the install to resolve — and the runtime stage has to
 # keep /app/src at the same path for that pointer to stay valid.
 COPY src ./src
-RUN uv sync --frozen --no-dev --extra qdrant
+RUN uv sync --frozen --no-dev
 
 # ---------------------------------------------------------------- runtime --
 FROM python:3.12-slim AS runtime
