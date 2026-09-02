@@ -8,7 +8,7 @@ are different bars, and the honest answer differs. Part 3 is the split.
 
 ## Part 1 — Requirements coverage
 
-Against the take-home brief, which ships in the repo root as a PDF.
+Against the original requirements brief.
 
 | Requirement | Verdict | Where |
 |---|---|---|
