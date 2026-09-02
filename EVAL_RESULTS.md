@@ -42,9 +42,16 @@ Hard-constraint violations: **0** (gate 0 — a count, not a rate; the right
 unit for irreversible harm). Latency p50 ≈50ms / p95 ≈400ms, cost $0.0000.
 Overall: PASS.
 
-`thresholds.yaml` also declares `performance.p50_latency_ms` /
-`p95_latency_ms`. They are loaded but never compared — `run_system`'s verdict
-is axes plus the violation count only. Declared, not gating.
+Latency is gated too, per EXECUTION MODE — 2s/8s p50/p95 offline, 15s/25s
+live. One budget cannot describe both: offline puts no network on the path and
+a case finishes in tens of milliseconds, while a live case makes two or three
+SERIAL model calls at roughly two seconds each, so a 7-9s p50 is the healthy
+number. The shared budget failed every live run on latency alone while all six
+safety axes read 1.000. `run_system` selects the pair by `settings.offline` and
+the report names which one it applied, because a latency verdict is meaningless
+without saying what it was measured against. Breaches are reported separately
+from correctness failures — slow-but-correct and fast-but-unsafe are different
+problems.
 
 ## Component eval — one layer at a time
 
