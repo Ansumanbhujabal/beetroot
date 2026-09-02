@@ -1,8 +1,9 @@
 # Production readiness
 
 Two questions that get answered as one and should not be. "Is this a strong
-take-home?" and "would I let this tell a peanut-allergic person what to eat?"
-are different bars, and the honest answer differs. Part 3 is the split.
+piece of engineering?" and "would I let this tell a peanut-allergic person
+what to eat?" are different bars, and the honest answer differs. Part 3 is
+the split.
 
 ---
 
@@ -93,10 +94,10 @@ structural prevents a fourth instance.
 
 ## Part 3 — The verdict, split
 
-**As a take-home submission: yes, and unusually so.** The system does the thing
-most submissions do not — it caught and fixed several of its own real safety
-defects, documented each rather than papering over it, and left evidence that
-makes an audit like this one possible. The gates are green, the safety
+**As a prototype and reference implementation: yes, and unusually so.** The
+system does the thing most prototypes do not — it caught and fixed several of
+its own real safety defects, documented each rather than papering over it, and
+left evidence that makes an audit like this one possible. The gates are green, the safety
 invariants are enforced by tests rather than by convention, the eval suite has
 been mutation-tested against itself, and every headline number in
 `EVAL_RESULTS.md` carries the caveat that limits it. Deployment, the Qdrant

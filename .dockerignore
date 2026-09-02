@@ -9,7 +9,7 @@ __pycache__
 .coverage
 htmlcov
 
-# Runtime state that must never ship baked into the image — a reviewer's
+# Runtime state that must never ship baked into the image — a developer's
 # container starts with a clean catalog/checkpoint DB, not this machine's.
 beatroot.db
 beatroot.checkpoints.db

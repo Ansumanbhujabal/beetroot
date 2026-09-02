@@ -104,7 +104,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 # `docs_url="/api-docs"`: FastAPI mounts Swagger UI at "/docs" BY DEFAULT and
 # registers it during __init__, before any route below — so it would silently
 # shadow this project's own documentation page. Moved rather than renaming our
-# page: "/docs" is what a reviewer types looking for the architecture, and the
+# page: "/docs" is what a user types looking for the architecture, and the
 # OpenAPI explorer is the less-visited of the two.
 app = FastAPI(title="beatroot", version="0.1.0", lifespan=lifespan, docs_url="/api-docs")
 
@@ -305,7 +305,7 @@ def docs_page() -> FileResponse:
 
     The FastAPI interactive docs live at `/api-docs` (see `docs_url` on the
     `FastAPI(...)` constructor); this path is the project's OWN documentation
-    page, which is what a reviewer means by "/docs".
+    page, which is what a user means by "/docs".
     """
     return FileResponse(_DOCS_PATH, media_type="text/html")
 

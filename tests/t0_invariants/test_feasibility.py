@@ -297,7 +297,7 @@ def test_nothing_survives_returns_empty_via_both_paths():
 def test_assess_and_rank_relaxations_agree_with_and_without_index():
     """Important: exercise the PUBLIC entry points (assess, rank_relaxations)
     with a real TagIndex, not just the private _survivors helper — those are
-    the brief-specified seam and must agree end to end: feasibility, the
+    the specified seam and must agree end to end: feasibility, the
     surviving id set, and the full relaxation ladder (descriptions, unlocks,
     ordering)."""
     recipes = _build_survivor_fixture()

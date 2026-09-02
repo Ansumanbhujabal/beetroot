@@ -1,9 +1,9 @@
 # syntax=docker/dockerfile:1
 #
 # beatroot — packaged for HF Spaces (Docker SDK, port 7860) and for a plain
-# `docker run`/`docker compose up` on a reviewer's machine.
+# `docker run`/`docker compose up` on a developer's machine.
 #
-# The whole submission's premise is that this boots with NO credentials.
+# The whole project's premise is that this boots with NO credentials.
 # That guarantee lives in TWO places, deliberately redundant:
 #
 #   1. `beatroot.settings.Settings` (the real fix — see its
@@ -17,7 +17,7 @@
 #      credential-less real `LLMClient` used to take the whole process
 #      down at startup, not on first request.
 #   2. `BEATROOT_OFFLINE=1` below, belt-and-braces: makes the containerised
-#      path explicitly offline unless a reviewer supplies real provider
+#      path explicitly offline unless someone supplies real provider
 #      credentials and sets `BEATROOT_OFFLINE=0` (`docker run -e ...`, or
 #      the same via `.env`/compose — see README.md). Redundant with (1) on
 #      purpose — this must never be the ONLY thing keeping it keyless.

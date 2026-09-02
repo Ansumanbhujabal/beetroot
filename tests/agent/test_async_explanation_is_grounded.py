@@ -8,7 +8,7 @@ checked it at all.
 
 That gap was dormant while async was opt-in, and became the DEFAULT path when
 async_explanation was switched on for latency (e75c9a7). A latency change
-silently disabled the assignment's "grounded in trusted data" guarantee on
+silently disabled the project's "grounded in trusted data" guarantee on
 the only surface a diner reads.
 """
 

@@ -3,7 +3,7 @@
 # Every profile here is plain data in the exact `Constraint` shape the API
 # already accepts (`kind`, `severity`, `value`, optional `nutrient`) — the
 # dropdown built on top of this file loads a profile's constraints into the
-# SAME builder a reviewer would otherwise hand-fill, never a shortcut that
+# SAME builder a user would otherwise hand-fill, never a shortcut that
 # hides the underlying model. `severity` still means what it always meant:
 # `medical`/`religious` are never relaxable, `goal`/`preference` are.
 #

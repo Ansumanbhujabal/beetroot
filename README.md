@@ -178,7 +178,7 @@ numbers do *not* prove: [`EVAL_RESULTS.md`](EVAL_RESULTS.md).
 |---|---|
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | Trust tiers, enforcement tests, state machine, retrieval pipeline, evolution under scale |
 | [`EVAL_RESULTS.md`](EVAL_RESULTS.md) | Eval design, the independent oracles, and the limits of every score |
-| [`docs/WALKTHROUGH.md`](docs/WALKTHROUGH.md) | Reviewer walkthrough — scenarios run against a live server with observed output |
+| [`docs/WALKTHROUGH.md`](docs/WALKTHROUGH.md) | Hands-on walkthrough — scenarios run against a live server with observed output |
 | [`CUT_LIST.md`](CUT_LIST.md) | What was deliberately not built, why, and what it would cost to add |
 | [`docs/PRODUCTION_READINESS.md`](docs/PRODUCTION_READINESS.md) | Requirements coverage and the gap between "ready as a prototype" and "ready to serve users with allergies" |
 

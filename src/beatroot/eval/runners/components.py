@@ -125,7 +125,7 @@ def _derive_query(case: SyntheticCase, catalog: Catalog) -> str:
     Deliberately NEVER derived from `case.oracle_valid_ids`: building the
     query out of an oracle-valid recipe's own name/cuisine would point
     the query at the very answers recall is graded against and inflate
-    the number for free — the exact "gaming the metric" the brief warns
+    the number for free — the exact "gaming the metric" the requirements warn
     against, just moved from `top_k` into the query text instead. This
     function never looks at the oracle at all.
 

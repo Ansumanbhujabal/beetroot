@@ -3,7 +3,7 @@
 # beatroot — Design Spec
 
 **AI Meal Planning & Validation Assistant**
-Take-home submission · drafted 2026-08-30
+Design intent · drafted 2026-08-30
 
 ---
 
@@ -13,7 +13,7 @@ Build a local meal-planning assistant that takes a user profile with dietary
 preferences and constraints, recommends a meal, validates it, and explains why
 it is appropriate — grounded in a small trusted nutrition/ingredient dataset.
 
-The brief's real question is stated in its own words:
+The real question, stated in its own words:
 
 > "We care about the boundaries between model reasoning, deterministic
 > validation, trusted data, and actions that should require confirmation."
@@ -166,7 +166,7 @@ type system refuses to represent a model-generated nutrition value.
 
 ## 6. State machine
 
-Hand-rolled, typed, roughly 80 lines. The brief permits "a lightweight
+Hand-rolled, typed, roughly 80 lines. The requirements permit "a lightweight
 tool-calling flow, state machine, or agent framework"; a framework would hide
 the transitions inside its runtime, and the transitions are the thing being
 demonstrated.
@@ -414,7 +414,7 @@ constraint system.
 ## 13. Observability and cost
 
 Langfuse tracing on every LLM call, **no-op when no key is configured** — a
-reviewer must never hit a missing-credential wall. Cost accounting is recorded
+clone must never hit a missing-credential wall. Cost accounting is recorded
 per stage in the audit record and surfaced as **cost per plan**, alongside
 **tokens not spent** (infeasible profiles short-circuit before any model call).
 
@@ -457,7 +457,7 @@ Deliberately excluded, recorded in `CUT_LIST.md` and stated in the video:
 
 ## 17. Evolution under scale
 
-Answering the brief's closing question directly.
+Answering the closing question directly.
 
 **What bottlenecks first.** Not the LLM — the T0 feasibility scan. It is
 `O(recipes x constraints)` per request, fine at 100 recipes and fatal at

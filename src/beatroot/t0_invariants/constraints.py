@@ -242,7 +242,7 @@ def _require_any_tag(recipe: Recipe, c: Constraint) -> Outcome:
     Deliberately NOT a generic boolean expression language. `require_tag` for
     "must be X" and `require_any_tag` for "must be one of X, Y" cover the
     dietary identities this catalog can express, and each stays a pure
-    O(len(value)) set membership test that a reviewer can verify by reading.
+    O(len(value)) set membership test that a reader can verify by reading.
     An arbitrary AND/OR/NOT tree over tags would be more expressive and far
     harder to audit, and this is the layer where auditability outranks
     expressiveness.

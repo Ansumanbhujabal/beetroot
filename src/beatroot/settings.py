@@ -194,7 +194,7 @@ class HealingConfig(BaseModel):
 class ObsConfig(BaseModel):
     """Optional tracing/logging configuration. Everything here defaults to
     a clean no-op: `langfuse_enabled` is true only when BOTH Langfuse keys
-    are present, so a reviewer with a blank `.env` never hits a credential
+    are present, so a clone with a blank `.env` never hits a credential
     error. Spec §13."""
 
     langfuse_public_key: str = ""
@@ -302,7 +302,7 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def _default_to_offline_without_credentials(self) -> "Settings":
-        """The whole submission's premise is that a reviewer with a blank
+        """The whole project's premise is that a clone with a blank
         `.env` gets a fully working, keyless run. `offline` alone used to
         be a purely opt-in toggle (`BEATROOT_OFFLINE=1`) — everything else
         constructed a real `LLMClient` that only failed once something

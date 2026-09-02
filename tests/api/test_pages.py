@@ -106,7 +106,7 @@ def test_profiles_endpoint_returns_every_validated_preset(client):
             assert c["severity"] in {s.value for s in Severity}
 
     # The two profiles that exist specifically to demonstrate a refusal
-    # must say so in their own description, so a reviewer never reads a
+    # must say so in their own description, so a user never reads a
     # NEGOTIATE/ESCALATE result as a bug.
     by_id = {p["id"]: p for p in profiles}
     assert "not a bug" in by_id["deliberately_impossible"]["description"].lower()

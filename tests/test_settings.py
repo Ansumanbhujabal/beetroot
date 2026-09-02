@@ -132,7 +132,7 @@ def test_offline_defaults_to_true_without_credentials(monkeypatch):
 def test_offline_stays_false_when_credentials_are_present(monkeypatch):
     """The flip side: real credentials for the configured provider must
     still select the real client — the fallback only ever fires on
-    genuine absence, never overriding a reviewer who has actually
+    genuine absence, never overriding someone who has actually
     supplied keys."""
     monkeypatch.delenv("BEATROOT_OFFLINE", raising=False)
     monkeypatch.setenv("AZURE_API_KEY", "test-key")

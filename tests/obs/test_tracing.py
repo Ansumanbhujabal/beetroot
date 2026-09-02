@@ -84,7 +84,7 @@ def _configured(monkeypatch) -> None:
 
 
 def test_configure_is_a_clean_no_op_without_credentials(monkeypatch):
-    """A reviewer with a blank .env must never hit a credential error."""
+    """A clone with a blank .env must never hit a credential error."""
     _blank(monkeypatch)
     configure_observability()  # must not raise
 

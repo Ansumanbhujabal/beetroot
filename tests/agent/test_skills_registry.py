@@ -37,7 +37,7 @@ def test_t0_skills_declare_no_llm(skills_dir):
 
 def test_frontmatter_matches_spec_table(skills_dir):
     """tier / llm_permitted / priority carry real weight — pin them to the
-    table in the brief so a typo in a skill file is caught here, not
+    table in the requirements so a typo in a skill file is caught here, not
     discovered downstream by something that trusted the frontmatter."""
     skills = load_skills(skills_dir)
     expected = {

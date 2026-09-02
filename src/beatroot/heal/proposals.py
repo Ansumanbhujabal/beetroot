@@ -183,7 +183,7 @@ def _threshold_proposal(cluster_: Cluster, proposals_dir: Path) -> Proposal:
         f"#\n"
         f"# The model is repeatedly stating nutrition numbers that do not\n"
         f"# match the catalog by more than the current drift tolerance. Two\n"
-        f"# options, either of which a reviewer should choose deliberately:\n"
+        f"# options, either of which a maintainer should choose deliberately:\n"
         f"#   1. Tighten the explanation prompt (prompts/explain.md) to\n"
         f"#      forbid restating computed numbers in prose.\n"
         f"#   2. Lower verifiers.nutrition_drift_pct in eval/thresholds.yaml\n"

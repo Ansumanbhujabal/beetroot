@@ -70,7 +70,7 @@ UNUSED_LITELLM_CALLBACK = "langfuse_otel"
 def configure_observability() -> None:
     """Prepare tracing if credentials exist. A clean no-op otherwise.
 
-    A reviewer with a blank `.env` must never hit a credential error:
+    A clone with a blank `.env` must never hit a credential error:
     `settings.obs.langfuse_enabled` is true only when BOTH Langfuse keys are
     present.
 

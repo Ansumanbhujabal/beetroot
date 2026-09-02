@@ -1,8 +1,7 @@
 # Cut list
 
-The brief asks directly what shortcuts and tradeoffs were made because this is
-a 2–3 hour local prototype. This is that answer, stated as judgment rather than
-omission: what was deliberately not built and what it would cost to add, which
+What shortcuts and tradeoffs were made because this is a local prototype,
+stated as judgment rather than omission: what was deliberately not built and what it would cost to add, which
 design decisions were reversed once they met the code, and what remains
 limited on purpose.
 
@@ -19,8 +18,8 @@ transitions inside its runtime, and the transitions are the thing being
 demonstrated." That argument held until it was tested against what a
 hand-rolled version would have to *fake* to look production-grade: durable
 checkpointing across a process restart, and an `interrupt_before` approval gate
-for the medical grey band. Simulating both is a worse signal in a submission
-judged on production judgment than using the real thing. Shipped with
+for the medical grey band. Simulating both demonstrates less than using the
+real thing. Shipped with
 `StateGraph` plus a file-backed `SqliteSaver`; the state names in
 `agent/graph.py` are exactly as visible and testable as hand-rolled ones would
 have been, and `beatroot resume` finding a paused thread in a *fresh process*
@@ -56,7 +55,7 @@ Two decisions the spec made that were re-examined and kept:
   second failure mode.
 - **NumPy in dev, Qdrant in production, behind one `VectorStore` protocol
   selected by `QDRANT_URL`.** A hard Qdrant dependency would break the property
-  that a reviewer clones and runs with zero services; building only NumPy would
+  that anyone clones and runs with zero services; building only NumPy would
   leave the production path unproven. Both exist, and the Qdrant path is not
   theoretical — the compose stack runs it, `/health` reports
   `vector_store: qdrant`, and live requests are served through it. The tests
@@ -70,7 +69,7 @@ Two decisions the spec made that were re-examined and kept:
 
 | Cut | Why | Cost to add |
 |---|---|---|
-| **Multi-day / multi-meal planning** | Single-meal recommendation already exercises every trust-tier boundary the brief asks about. A planning horizon adds combinatorics, not architectural insight. | A `PlanState` wrapping N single-meal runs plus a cross-meal nutrition-budget constraint kind. The T0–T3 boundary is untouched. 1–2 days. |
+| **Multi-day / multi-meal planning** | Single-meal recommendation already exercises every trust-tier boundary that matters here. A planning horizon adds combinatorics, not architectural insight. | A `PlanState` wrapping N single-meal runs plus a cross-meal nutrition-budget constraint kind. The T0–T3 boundary is untouched. 1–2 days. |
 | **Auth, multi-tenancy, rate limiting** | Out of scope for a local prototype graded on architecture. | FastAPI middleware plus a tenant column on every table. ~1 day, no core-logic change. |
 | **A hand-authored adversarial suite in the hundreds** | 33 reviewed golden cases carry the contract; generated families carry the statistical power. Hand-authoring hundreds of near-duplicates buys neither. | The generators scale to arbitrary `n` for free. The real cost is *golden* cases — reviewed and locked — at roughly 5 minutes each. |
 | **Fine-tuning** | The catalog is the grounding mechanism. A fine-tuned model would still need every T0/T1 check already here, for no safety gain. | Needs a labelled preference dataset that does not exist. Weeks, and a data problem before a code problem. |

@@ -92,7 +92,7 @@ def _provider_name(llm: object) -> str:
     'echo' for the offline stub, otherwise the LiteLLM provider prefix
     ('azure', 'ollama', ...) off the configured model string. A health
     check that can only say 'ok' is decoration; this is the fact a
-    reviewer actually wants when something looks wrong."""
+    operator actually wants when something looks wrong."""
     if getattr(llm, "_offline", False):
         return "echo"
     model = getattr(llm, "model", "") or ""

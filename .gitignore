@@ -18,7 +18,7 @@ htmlcov/
 
 # Local-only working notes. Never pushed: personal preparation material,
 # not part of the deliverable.
-docs/INTERVIEW_PREP.md
+docs/NOTES.md
 docs/VIDEO_SCRIPT.md
 
 # Agent-facing build script, not documentation. Kept on disk, out of the
@@ -27,4 +27,4 @@ docs/plans/
 
 # The original requirements brief. Third-party document, kept on disk for
 # reference and never shipped.
-take_home_brief.pdf
+requirements_brief.pdf

@@ -1,7 +1,7 @@
 """API tests. Spec §15.
 
 Node names in `trace` come from `agent.nodes.make_nodes` (Task 11) —
-`FEASIBILITY`, not the brief's stale `INTAKE` — so assertions below match
+`FEASIBILITY`, not the original spec's stale `INTAKE` — so assertions below match
 the real graph.
 """
 

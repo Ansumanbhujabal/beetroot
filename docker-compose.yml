@@ -26,7 +26,7 @@ services:
       # not the only thing making it true). `${BEATROOT_OFFLINE:-1}` is
       # compose's own variable substitution — sourced from the shell env
       # and from a `.env` file at the PROJECT ROOT, a distinct mechanism
-      # from the `env_file:` key above — so a reviewer who sets
+      # from the `env_file:` key above — so someone who sets
       # `BEATROOT_OFFLINE=0` in `.env` still overrides this; one who sets
       # nothing gets offline.
       BEATROOT_OFFLINE: ${BEATROOT_OFFLINE:-1}

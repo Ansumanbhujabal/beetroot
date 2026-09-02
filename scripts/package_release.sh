@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Build a submission archive that CANNOT contain a live credential.
+# Build a release archive that CANNOT contain a live credential.
 #
 # The risk this closes is not git — `.env` is gitignored and its key value
 # appears in no tracked file. The risk is a naive `zip -r beatroot.zip .`,
@@ -11,13 +11,13 @@
 #
 # Fails closed: any hit and the archive is deleted, not shipped.
 #
-# Usage: ./scripts/package_submission.sh [output.zip]
+# Usage: ./scripts/package_release.sh [output.zip]
 
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
 
-OUT="${1:-beatroot-submission.zip}"
+OUT="${1:-beatroot.zip}"
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 

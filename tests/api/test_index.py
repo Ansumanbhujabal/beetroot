@@ -1,7 +1,7 @@
 """Smoke tests for the `/` (recommend) page. Task 18, spec §15; PAGES task.
 
 The page itself is one self-contained file (`beatroot/web/index.html`) with
-no build step and no external network calls — the whole submission's
+no build step and no external network calls — the whole project's
 premise is that it runs offline. These tests assert exactly that plus the
 four terminal-state names a viewer must be able to see without reading any
 code: `COMMIT`, `NEGOTIATE`, `ESCALATE`, and `PENDING_REVIEW` (the medical
