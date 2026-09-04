@@ -498,6 +498,61 @@ def recommend_explanation(thread_id: str, c: ContainerDep) -> dict[str, Any] | J
     return {"thread_id": thread_id, "explanation_status": status, "explanation": text}
 
 
+class WeeklyPlanRequest(BaseModel):
+    """One week, submitted once. CUT_LIST's "multi-day / multi-meal planning".
+
+    The first four fields are `RecommendRequest`'s, carried over unchanged:
+    a day of a week is the same request a single recommendation is, and a
+    constraint set that is too large for one meal is no more acceptable for
+    seven. `days` says how many of them to build.
+    """
+
+    profile_id: str = Field(min_length=1, max_length=128)
+    constraints: list[Constraint] = Field(default_factory=list, max_length=50)
+    query: str = Field("", max_length=2000)
+    preferences: str = Field("", max_length=2000)
+    days: int = Field(7)
+
+
+@app.post("/plan/week", status_code=202)
+def plan_week(req: WeeklyPlanRequest, c: ContainerDep) -> dict[str, Any]:
+    """Queue an N-day plan and hand back the id to poll it with.
+
+    `202`, not `200`: N agent runs is not request-path work. This returns
+    before the first day has finished, so there is no plan to return yet
+    and pretending otherwise would mean blocking the caller for the length
+    of the whole week. The companion GET route is where the answer arrives,
+    a day at a time.
+    """
+    cs = ConstraintSet(profile_id=req.profile_id, constraints=req.constraints)
+    job_id = c.planner.submit(cs, query=req.query, preferences=req.preferences, days=req.days)
+    log.info(f"weekly plan {job_id} for {req.profile_id}: {req.constraints} / {req.preferences}")
+    return {"job_id": job_id, "status": c.planner.status(job_id), "days_requested": req.days}
+
+
+@app.get("/plan/week/{job_id}", response_model=None)
+def plan_week_status(job_id: str, c: ContainerDep) -> dict[str, Any] | JSONResponse:
+    """Where a submitted week stands, plus the days that have landed.
+
+    The plan is returned at every poll, not only once the week is `ready` —
+    a day that has finished is a complete, independently verified
+    recommendation, and withholding four good days because three are still
+    running would be an arbitrary rule this API has no reason to invent.
+    `completed` against the week's own length is what a caller renders
+    progress from.
+    """
+    status = c.planner.status(job_id)
+    if status == "unknown":
+        return JSONResponse(status_code=404, content={"error": "not_found", "job_id": job_id})
+    plan = c.planner.get(job_id)
+    return {
+        "job_id": job_id,
+        "status": status,
+        "completed": c.planner.completed(job_id),
+        "plan": plan.model_dump(mode="json") if plan is not None else None,
+    }
+
+
 @app.get("/metrics")
 def metrics(c: ContainerDep) -> dict[str, Any]:
     """Cache hit rates and incident count — the numbers that make the
