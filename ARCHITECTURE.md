@@ -468,6 +468,18 @@ turns them into permanent regression cases (`heal/proposals.py`), so a failure c
 silently recur; its proposal queue gets a review UI and an approval audit trail. The allergen axis
 stays a **count**, at any scale — a percentage is the wrong unit for irreversible harm.
 
+**Fan-out.** `POST /plan/week` (`agent/batch_plan.py`) is the first endpoint whose unit of work is
+*N agent runs* rather than one, and that changes which questions the system has to answer. A week
+is explicitly **not a transaction**: the days are independent, nothing about day 4 depends on day
+2, and one day escalating does not invalidate the other six — a failed day lands as a recorded
+day and the week still completes, because throwing away six good meals to punish the seventh
+serves nobody. What genuinely becomes load-bearing at fan-out and did not exist on the
+single-meal path is admission control: the per-tenant daily budget has to be enforced *before* N
+runs are queued, not discovered N runs later, and `obs/cost.py:CostLedger` is an in-process
+counter that cannot do that across replicas. The planner reports each finished week's spend into
+that ledger so `/metrics` sees it at all — accounting after the fact, which is the honest
+description of what is built and not a substitute for the reservation this needs next.
+
 ---
 
 ## 10. Module map
@@ -484,7 +496,7 @@ beatroot/
   reasoning/       T2 — the single LiteLLM wrapper, prompts as versioned content
   confirm/         T3 — composite trust scoring, conjunctive escalation gate
   agent/           LangGraph StateGraph wiring the tiers, typed state with reducers, SqliteSaver
-                   checkpoints, async explanation queue, skills registry
+                   checkpoints, async explanation queue, weekly batch planner, skills registry
   skills/          *.skill.md declarative definitions + skills-lock.json provenance
   eval/            component + system runners, synthetic generation with an independent oracle,
                    verifiers, calibration

@@ -222,6 +222,23 @@ names the failing signal instead of guessing. In a health-adjacent product a
 wrong answer is a liability event, not a bad UX moment, so every escalation
 becomes a permanent regression case via `beatroot heal`.
 
+## Weekly plans
+
+`CUT_LIST.md` named multi-day planning as deliberately not built; it is built now.
+`POST /plan/week` takes the same body `POST /recommend` does plus a `days` count,
+answers `202` with a `job_id`, and fans the week out across a small pool off the
+request path — N days is not work to hold an HTTP connection open for. Poll
+`GET /plan/week/<job_id>` for the status and for however many days have landed so
+far; a half-finished week is a legitimate answer, because each day that has
+finished is already a complete, independently verified recommendation. A day that
+negotiates or escalates is reported as exactly that, so a week is a container for
+whatever each day actually produced rather than a promise of seven meals. On the
+CLI the same job is collected rather than handed over:
+
+```bash
+uv run beatroot plan-week "something warm with rice" --days 7 --medical peanut
+```
+
 ## Observability and prompt management
 <img width="1638" height="825" alt="Screenshot from 2026-09-02 14-23-43" src="https://github.com/user-attachments/assets/6bd106f0-2cdc-4902-a5a7-84026a0e1f3a" />
 
