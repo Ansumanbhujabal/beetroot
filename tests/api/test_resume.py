@@ -18,6 +18,7 @@ import pytest
 import yaml
 from fastapi.testclient import TestClient
 
+from beatroot.agent.batch_plan import WeeklyPlanner
 from beatroot.agent.graph import MealPlanningAgent
 from beatroot.agent.nodes import Deps
 from beatroot.agent.skills_registry import load_skills
@@ -70,6 +71,7 @@ def _grey_band_container(tmp_path) -> Container:
         preferences=None,
         feasibility_cache=feasibility_cache,
     )
+    agent = MealPlanningAgent(deps)
     return Container(
         conn=conn,
         catalog=catalog,
@@ -83,8 +85,9 @@ def _grey_band_container(tmp_path) -> Container:
         embedding_cache=embedding_cache,
         skills=skills,
         thresholds=load_thresholds(THRESHOLDS_PATH),
-        agent=MealPlanningAgent(deps),
+        agent=agent,
         cost_ledger=CostLedger(),
+        planner=WeeklyPlanner(agent, catalog),
     )
 
 
