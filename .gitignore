@@ -27,6 +27,7 @@ htmlcov/
 docs/NOTES.md
 docs/VIDEO_SCRIPT.md
 docs/RUN_ANALYSIS.md
+docs/BACKEND.md
 
 # Agent-facing build script, not documentation. Kept on disk, out of the
 # shipped tree.
