@@ -28,6 +28,8 @@ docs/NOTES.md
 docs/VIDEO_SCRIPT.md
 docs/RUN_ANALYSIS.md
 docs/BACKEND.md
+docs/PR_REVIEW.md
+docs/PR_REVIEW_DRAFT.md
 
 # Agent-facing build script, not documentation. Kept on disk, out of the
 # shipped tree.
