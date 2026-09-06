@@ -18,6 +18,7 @@ only renders it as a `beatroot` subcommand. See `CUT_LIST.md` for why these
 were not wired sooner.
 """
 
+import time
 from pathlib import Path
 from typing import Annotated
 
@@ -170,6 +171,69 @@ def recommend(
             # that union without a matching CLI branch prints something
             # instead of silently falling through with no output.
             console.print(f"[red]unrecognised terminal state:[/red] {result!r}")  # type: ignore[unreachable]
+    finally:
+        container.close()
+
+
+@app.command()
+def plan_week(
+    query: Annotated[str, typer.Argument()] = "a balanced meal",
+    days: Annotated[int, typer.Option("--days", help="how many days to plan")] = 7,
+    exclude: Annotated[
+        list[str], typer.Option("--exclude", help="tag to exclude (relaxable preference)")
+    ] = [],  # noqa: B006 — see `recommend` above
+    medical: Annotated[
+        list[str], typer.Option("--medical", help="tag to exclude (medical, never relaxed)")
+    ] = [],  # noqa: B006 — see `recommend` above
+    max_prep: Annotated[int | None, typer.Option("--max-prep", help="maximum prep minutes")] = None,
+    profile_id: Annotated[str, typer.Option("--profile-id")] = "cli",
+    preferences: Annotated[
+        str, typer.Option("--preferences", help="free-text preferences — see `recommend`")
+    ] = "",
+) -> None:
+    """Build an N-day plan for one profile and print the week.
+
+    The API answers `202` and hands back a job to poll, because an HTTP
+    caller should not hold a connection open for N agent runs. A CLI
+    invocation has nowhere to poll from and nothing else to do, so this
+    waits for the week and prints it — the same job, collected rather than
+    handed over.
+
+    Each day is rendered as whatever terminal it actually reached, for the
+    same reason `recommend` does: a week containing a NEGOTIATE reads as a
+    week containing a NEGOTIATE.
+    """
+    constraints = _build_constraints(exclude, medical, max_prep)
+    container = build_container()
+    try:
+        cs = ConstraintSet(profile_id=profile_id, constraints=constraints)
+        job_id = container.planner.submit(
+            cs, query=query, preferences=preferences, days=days
+        )
+        console.print(f"[dim]job {job_id} — planning {days} day(s)[/dim]")
+        while container.planner.status(job_id) == "running":
+            time.sleep(0.1)
+
+        plan = container.planner.get(job_id)
+        if plan is None:  # pragma: no cover - the id was issued three lines up
+            console.print("[red]the planner lost this job.[/red]")
+            return
+
+        table = Table("day", "state", "meal", "kcal", title=f"weekly plan — {profile_id}")
+        for day in plan.days:
+            table.add_row(
+                str(day.day + 1),
+                day.terminal_state,
+                day.recipe_name or (day.detail or "—"),
+                f"{day.nutrition.kcal:g}" if day.nutrition else "—",
+            )
+        console.print(table)
+        t = plan.totals
+        console.print(
+            f"  over {t.days_counted} day(s) with a meal: kcal={t.kcal:g} "
+            f"protein={t.protein_g:g}g carbs={t.carbs_g:g}g fat={t.fat_g:g}g "
+            f"sodium={t.sodium_mg:g}mg fibre={t.fibre_g:g}g"
+        )
     finally:
         container.close()
 

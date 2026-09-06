@@ -1,4 +1,5 @@
 import sqlite3
+from collections.abc import Callable
 from pathlib import Path
 
 import pytest
@@ -7,6 +8,7 @@ import yaml
 from beatroot.agent.graph import MealPlanningAgent
 from beatroot.agent.nodes import Deps
 from beatroot.agent.skills_registry import load_skills
+from beatroot.contracts.core import Constraint, ConstraintSet
 from beatroot.contracts.trust import CostRecord
 from beatroot.reasoning.llm import LLMClient
 from beatroot.retrieval.dense import DenseIndex
@@ -107,6 +109,36 @@ def agent_deps(tmp_path) -> Deps:
 @pytest.fixture
 def agent(agent_deps) -> MealPlanningAgent:
     return MealPlanningAgent(agent_deps)
+
+
+@pytest.fixture
+def preset_cs() -> Callable[[str], ConstraintSet]:
+    """Build a `ConstraintSet` from a shipped preset in `data/profiles.yaml`.
+
+    `data/profiles.yaml` is data, not a fixture, and a test that wants "the
+    pescetarian peanut-allergy profile" otherwise hand-maps
+    `kind`/`severity`/`value` dicts — including the list-valued
+    `require_any_tag` case — before it can make its first assertion. These
+    are the profiles the API's own `/profiles` route serves and the ones a
+    real caller picks from, so a test asserting against them is asserting
+    against something that ships.
+
+    `ConstraintSet` also requires a `profile_id`; this uses the preset's own
+    id, so two different presets never collide on one identity.
+    """
+
+    def build(profile_id: str) -> ConstraintSet:
+        raw = yaml.safe_load((DATA / "profiles.yaml").read_text()) or []
+        entry = next((e for e in raw if e["id"] == profile_id), None)
+        if entry is None:
+            known = ", ".join(sorted(e["id"] for e in raw))
+            raise KeyError(f"no preset profile {profile_id!r} in profiles.yaml; have: {known}")
+        return ConstraintSet(
+            profile_id=entry["id"],
+            constraints=[Constraint(**c) for c in entry.get("constraints", [])],
+        )
+
+    return build
 
 
 @pytest.fixture

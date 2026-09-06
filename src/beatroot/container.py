@@ -65,6 +65,7 @@ if TYPE_CHECKING:
     from langgraph.checkpoint.sqlite import SqliteSaver
 
     from beatroot.agent.async_explain import ExplanationQueue
+    from beatroot.agent.batch_plan import WeeklyPlanner
     from beatroot.agent.graph import MealPlanningAgent
     from beatroot.agent.skills_registry import Skill
     from beatroot.confirm.trust_score import EvalThresholds
@@ -212,6 +213,11 @@ class Container:
     # accumulating cost-per-plan rather than a per-request number nobody
     # aggregates.
     cost_ledger: CostLedger
+    # The weekly-plan batch runner behind `POST /plan/week`. Built for every
+    # Container: a route that 202s and then has nowhere to put the work is
+    # worse than no route, so this is not something a deployment gets to be
+    # half-configured for.
+    planner: WeeklyPlanner
     # Task 23: `None` unless `settings.async_explanation` is on — the SAME
     # instance handed to `agent.nodes.Deps.explanation_queue`, so a route
     # handler (`GET /recommend/{id}/explanation`) reads exactly the job
@@ -227,6 +233,10 @@ class Container:
         checkpointer_conn = getattr(self.agent.checkpointer, "conn", None)
         if checkpointer_conn is not None:
             checkpointer_conn.close()
+        # Same reasoning as the explanation queue below: the `202` for every
+        # in-flight week has already been sent, so nothing is waiting on
+        # these threads to answer a request.
+        self.planner.shutdown(wait=False)
         if self.explanation_queue is not None:
             # Don't block process shutdown on in-flight explanations — the
             # recommendations they belong to have already been served
@@ -295,6 +305,7 @@ def build_container(
     `tests/test_container.py`.
     """
     from beatroot.agent.async_explain import ExplanationQueue
+    from beatroot.agent.batch_plan import WeeklyPlanner
     from beatroot.agent.graph import MealPlanningAgent
     from beatroot.agent.nodes import Deps
     from beatroot.agent.skills_registry import load_skills
@@ -403,6 +414,15 @@ def build_container(
         explanation_queue=explanation_queue,
     )
 
+    # Hoisted out of the `Container(...)` call below because the planner
+    # needs the same agent instance the routes use — a week's days must run
+    # through the deps this Container actually owns, not a second graph.
+    agent = MealPlanningAgent(deps, checkpointer=_build_checkpointer(resolved_db_path))
+    # `cost_ledger.fold` for the same reason the explanation queue gets it:
+    # a week finishes after its `202` has gone out, so the request handler
+    # that started it is long gone by the time there is a bill to record.
+    planner = WeeklyPlanner(agent, catalog, on_complete=cost_ledger.fold)
+
     return Container(
         conn=conn,
         catalog=catalog,
@@ -416,8 +436,9 @@ def build_container(
         embedding_cache=embedding_cache,
         skills=skills,
         thresholds=load_thresholds(THRESHOLDS_PATH),
-        agent=MealPlanningAgent(deps, checkpointer=_build_checkpointer(resolved_db_path)),
+        agent=agent,
         cost_ledger=cost_ledger,
+        planner=planner,
         explanation_queue=explanation_queue,
     )
 
